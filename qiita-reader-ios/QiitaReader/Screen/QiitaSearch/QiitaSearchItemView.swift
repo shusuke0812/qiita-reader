@@ -12,7 +12,7 @@ struct QiitaSearchItemView: View {
         VStack(alignment: .leading, spacing: 14) {
             HeaderView()
             TitleView()
-            TagCloudView {}
+            FooterView()
         }
     }
 }
@@ -45,6 +45,15 @@ private struct TitleView: View {
         Text("【Playwright】並列機能とシャーディングでテスト実行時間を大幅短縮！GitHub ActionsのCI設定実例付き")
             .font(.system(size: 20, weight: .semibold))
             .lineLimit(2)
+    }
+}
+
+private struct FooterView: View {
+    var body: some View {
+        VStack(alignment: .leading) {
+            TagCloudView {}
+            LikeView(likeCount: 146)
+        }
     }
 }
 
