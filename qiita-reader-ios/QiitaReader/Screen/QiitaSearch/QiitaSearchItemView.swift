@@ -9,9 +9,10 @@ import SwiftUI
 
 struct QiitaSearchItemView: View {
     var body: some View {
-        VStack(spacing: 14) {
+        VStack(alignment: .leading, spacing: 14) {
             HeaderView()
             TitleView()
+            TagCloudView {}
         }
     }
 }
@@ -44,6 +45,31 @@ private struct TitleView: View {
         Text("【Playwright】並列機能とシャーディングでテスト実行時間を大幅短縮！GitHub ActionsのCI設定実例付き")
             .font(.system(size: 20, weight: .semibold))
             .lineLimit(2)
+    }
+}
+
+private struct TagCloudView: View {
+    let onTapTag: () -> Void
+
+    var body: some View {
+        TagButtonView(onTapTag: onTapTag) // TODO: タグの数を動的に変更して表示させる
+    }
+}
+
+private struct TagButtonView: View {
+    let onTapTag: () -> Void
+
+    var body: some View {
+        Button(action: {
+            onTapTag()
+        }, label: {
+            Text("Supabase")
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(.gray)
+                .padding(8)
+                .background(Color.gray.opacity(0.1))
+                .clipShape(.buttonBorder)
+        })
     }
 }
 
