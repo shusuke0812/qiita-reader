@@ -50,9 +50,20 @@ private struct TitleView: View {
 
 private struct FooterView: View {
     var body: some View {
-        VStack(alignment: .leading) {
-            TagCloudView {}
-            LikeView(likeCount: 146)
+        HStack(alignment: .bottom) {
+            VStack(alignment: .leading) {
+                TagCloudView {}
+                LikeView(likeCount: 146)
+            }
+            Spacer()
+            Button(action: {
+                // TODO: タップアクション
+            }, label: {
+                Image(systemName: "bookmark")
+                    .resizable()
+                    .frame(width: 18, height: 24)
+                    .foregroundStyle(.gray)
+            })
         }
     }
 }
