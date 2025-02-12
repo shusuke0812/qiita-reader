@@ -32,6 +32,9 @@ final class APIClient: APIClientProtocol {
     func start<T: APIRequestProtocol>(_ request: T) -> AnyPublisher<T.Response, Error> {
         return session
             .dataTaskPublisher(for: request.buildUrlRequest())
+            .validateNetworkConnectivity()
+            .validateError()
+            .handleError()
             .retry(retryiesLeft)
             .map { $0.data }
             .decode(type: T.Response.self, decoder: jsonDecoder)
