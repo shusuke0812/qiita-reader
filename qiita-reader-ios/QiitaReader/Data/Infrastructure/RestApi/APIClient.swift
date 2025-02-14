@@ -16,15 +16,15 @@ protocol APIClientProtocol {
 
 final class APIClient: APIClientProtocol {
     private let session: URLSession
-    private let retryiesLeft: Int
+    private let retriesLeft: Int
     private let jsonDecoder: JSONDecoder
 
     init(
         session: URLSession = URLSession.shared,
-        retryiesLeft: Int = 3
+        retriesLeft: Int = 3
     ) {
         self.session = session
-        self.retryiesLeft = retryiesLeft
+        self.retriesLeft = retriesLeft
         self.jsonDecoder = JSONDecoder()
         jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
     }
@@ -35,7 +35,7 @@ final class APIClient: APIClientProtocol {
             .validateNetworkConnectivity()
             .validateError()
             .handleError()
-            .retry(retryiesLeft)
+            .retry(retriesLeft)
             .map { $0.data }
             .decode(type: T.Response.self, decoder: jsonDecoder)
             .eraseToAnyPublisher()
