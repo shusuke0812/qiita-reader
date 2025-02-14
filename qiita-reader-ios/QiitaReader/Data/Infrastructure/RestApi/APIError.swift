@@ -9,9 +9,9 @@ import Foundation
 
 enum APIError: Error {
     case networkError(Error)
-    case invalidRequest(message: String?, statusCode: Int)
+    case invalidRequest(dataString: String?, statusCode: Int)
     case responseParseError(Error)
-    case serverError(message: String?, statusCode: Int)
+    case serverError(dataString: String?, statusCode: Int)
     case unknown
 
     var description: String {

@@ -23,15 +23,15 @@ extension URLSession.DataTaskPublisher {
 
     func validateError() -> Self {
         tryMap { data, response -> Data in
-            let message = String(data: data, encoding: .utf8)
+            let dataString = String(data: data, encoding: .utf8)
 
             switch (response as? HTTPURLResponse)?.statusCode {
             case .some(let code) where (200...300).contains(code):
                 return data
             case .some(let code) where (300...400).contains(code):
-                throw APIError.invalidRequest(message: message, statusCode: code)
+                throw APIError.invalidRequest(dataString: dataString, statusCode: code)
             case .some(let code) where (400...500).contains(code):
-                throw APIError.serverError(message: message, statusCode: code)
+                throw APIError.serverError(dataString: dataString, statusCode: code)
             default:
                 throw APIError.unknown
             }
