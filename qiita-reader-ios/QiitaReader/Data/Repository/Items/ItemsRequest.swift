@@ -20,7 +20,7 @@ struct ItemsRequest: APIRequestProtocol {
     }
 
     var baseUrl: String {
-        "https://qiita.com/api/v2"
+        EndPoint.qiita.urlString
     }
     var path: String {
         "/items"
