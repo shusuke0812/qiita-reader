@@ -10,13 +10,13 @@ import Foundation
 struct ItemsRequest: APIRequestProtocol {
     typealias Response = Items
 
-    private let query: String
     private let page: Int
+    private let query: String
     private let perPage: String = "20"
 
-    init(query: String, page: Int) {
-        self.query = query
+    init(page: Int, query: String) {
         self.page = page
+        self.query = query
     }
 
     var baseUrl: String {
