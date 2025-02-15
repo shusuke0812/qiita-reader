@@ -11,7 +11,7 @@ import Foundation
 // Ref: https://developer.apple.com/documentation/foundation/urlsession/processing_url_session_data_task_results_with_combine
 
 protocol APIClientProtocol {
-    func start<T: APIRequestProtocol>(_ request: T) -> AnyPublisher<T.Response, Error>
+    func start<T: APIRequestProtocol>(_ request: T) -> AnyPublisher<T.Response, APIError>
 }
 
 final class APIClient: APIClientProtocol {
@@ -29,7 +29,7 @@ final class APIClient: APIClientProtocol {
         jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
     }
 
-    func start<T: APIRequestProtocol>(_ request: T) -> AnyPublisher<T.Response, Error> {
+    func start<T: APIRequestProtocol>(_ request: T) -> AnyPublisher<T.Response, APIError> {
         return session
             .dataTaskPublisher(for: request.buildUrlRequest())
             .validateNetworkConnectivity()
@@ -38,6 +38,9 @@ final class APIClient: APIClientProtocol {
             .retry(retriesLeft)
             .map { $0.data }
             .decode(type: T.Response.self, decoder: jsonDecoder)
+            .mapError { error -> APIError in
+                return APIError.responseParseError(error)
+            }
             .eraseToAnyPublisher()
     }
 }
