@@ -8,7 +8,7 @@
 import Foundation
 
 struct ItemsRequest: APIRequestProtocol {
-    typealias Response = Items
+    typealias Response = [Item]
 
     private let page: Int
     private let query: String
