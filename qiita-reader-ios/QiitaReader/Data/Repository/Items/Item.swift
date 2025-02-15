@@ -1,5 +1,5 @@
 //
-//  Items.swift
+//  Item.swift
 //  QiitaReader
 //
 //  Created by Shusuke Ota on 2025/2/15.
@@ -7,27 +7,25 @@
 
 import Foundation
 
-struct Items: Decodable {
-    let list: [Item]
-}
-
 struct Item: Decodable {
-    let user: User
-    let updatedAtString: String
-    let title: String
     let likesCount: Int
+    let tags: [Tag]
+    let title: String
+    let updatedAtString: String
+    let user: User
+
+    enum CodingKeys: String, CodingKey {
+        case likesCount = "likes_count"
+        case tags
+        case title
+        case updatedAtString = "updated_at"
+        case user
+    }
 
     var updatedAt: Date? {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy年MM月dd日"
         return formatter.date(from: updatedAtString)
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case user
-        case updatedAtString = "updated_at"
-        case title
-        case likesCount = "likes_count"
     }
 
     struct User: Decodable {
@@ -43,12 +41,8 @@ struct Item: Decodable {
             URL(string: profileImageUrlString)
         }
     }
-}
 
-struct Tags: Decodable {
-    let list: [Tag]
-}
-
-struct Tag: Decodable {
-    let name: String
+    struct Tag: Decodable {
+        let name: String
+    }
 }
