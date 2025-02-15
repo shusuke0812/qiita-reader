@@ -26,7 +26,6 @@ final class APIClient: APIClientProtocol {
         self.session = session
         self.retriesLeft = retriesLeft
         self.jsonDecoder = JSONDecoder()
-        jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
     }
 
     func start<T: APIRequestProtocol>(_ request: T) -> AnyPublisher<T.Response, APIError> {
