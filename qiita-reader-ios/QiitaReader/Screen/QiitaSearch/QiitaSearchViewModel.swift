@@ -9,12 +9,13 @@ import Combine
 import Foundation
 
 protocol QiitaSearchViewModelInput {
-    var itemsPublisher: Published<ItemList>.Publisher { get }
-    var errorMessagePublisher: Published<String?>.Publisher { get }
+    func changeQuery(query: String)
+    func searchItems()
 }
 
 protocol QiitaSearchViewModelOutput {
-    func searchItems(query: String)
+    var itemsPublished: Published<ItemList> { get }
+    var errorMessagePublished: Published<String?> { get }
 }
 
 protocol QiitaSearchViewModelProtocol: ObservableObject {
@@ -25,8 +26,8 @@ protocol QiitaSearchViewModelProtocol: ObservableObject {
 class QiitaSearchViewModel: QiitaSearchViewModelProtocol, QiitaSearchViewModelInput, QiitaSearchViewModelOutput  {
     // MARK: Input
     var input: QiitaSearchViewModelInput { self }
-    var itemsPublisher: Published<ItemList>.Publisher { $itemList }
-    var errorMessagePublisher: Published<String?>.Publisher { $errorMessage }
+    var itemsPublished: Published<ItemList> { _itemList }
+    var errorMessagePublished: Published<String?> { _errorMessage }
 
     // MARK: Output
     var output: QiitaSearchViewModelOutput { self }
@@ -37,12 +38,17 @@ class QiitaSearchViewModel: QiitaSearchViewModelProtocol, QiitaSearchViewModelIn
     private let itemsRepository: ItemsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
     private var page = 1
+    private var query = ""
 
     init(itemsRepository: ItemsRepositoryProtocol = ItemsRepository()) {
         self.itemsRepository = itemsRepository
     }
 
-    func searchItems(query: String) {
+    func changeQuery(query: String) {
+        self.query = query
+    }
+
+    func searchItems() {
         itemsRepository.getItems(page: page, query: query)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
