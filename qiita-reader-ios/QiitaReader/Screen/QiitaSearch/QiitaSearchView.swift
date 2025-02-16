@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  QiitaSearchView.swift
 //  QiitaReader
 //
 //  Created by Shusuke Ota on 2025/2/9.
@@ -7,12 +7,13 @@
 
 import SwiftUI
 
-struct QiitaSerachView<ViewModel: QiitaSearchViewModelProtocol>: View {
+struct QiitaSearchView<ViewModel: QiitaSearchViewModelProtocol>: View {
     @StateObject var viewModel: ViewModel
 
     var body: some View {
         NavigationStack {
-            Text("Qiita")
+            List(viewModel.output.itemList.list) { item in
+            }
         }
         .searchable(text: $viewModel.input.query)
         .onSubmit(of: .search) {
@@ -22,5 +23,5 @@ struct QiitaSerachView<ViewModel: QiitaSearchViewModelProtocol>: View {
 }
 
 #Preview {
-    QiitaSerachView(viewModel: QiitaSearchViewModel())
+    QiitaSearchView(viewModel: QiitaSearchViewModel())
 }
