@@ -8,7 +8,28 @@
 import Combine
 import Foundation
 
-class QiitaSearchViewModel: ObservableObject {
+protocol QiitaSearchViewModelInput {
+    var itemsPublisher: Published<[Item]>.Publisher { get }
+}
+
+protocol QiitaSearchViewModelOutput {
+    func searchItems(query: String)
+}
+
+protocol QiitaSearchViewModelProtocol: ObservableObject {
+    var input: QiitaSearchViewModelInput { get }
+    var output: QiitaSearchViewModelOutput { get }
+}
+
+class QiitaSearchViewModel: QiitaSearchViewModelProtocol, QiitaSearchViewModelInput, QiitaSearchViewModelOutput  {
+    // MARK: Input
+    var input: QiitaSearchViewModelInput { self }
+    var itemsPublisher: Published<[Item]>.Publisher { $items }
+
+    // MARK: Output
+    var output: QiitaSearchViewModelOutput { self }
+
+    @Published private(set) var items: [Item] = []
     private let itemsRepository: ItemsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
 
