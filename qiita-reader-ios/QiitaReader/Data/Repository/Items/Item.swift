@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Item: Decodable {
+struct Item: Decodable, Identifiable {
     let likesCount: Int
     let tags: [Tag]
     let title: String
@@ -22,11 +22,20 @@ struct Item: Decodable {
         case user
     }
 
-    var updatedAt: Date? {
+    var formattedUpdatedAtString: String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy年MM月dd日"
-        return formatter.date(from: updatedAtString)
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        formatter.locale = Locale(identifier: "ja_JP")
+
+        if let date = formatter.date(from: updatedAtString) {
+            let outputFormatter = DateFormatter()
+            outputFormatter.dateFormat = "yyyy年MM月dd日"
+            return outputFormatter.string(from: date)
+        }
+        return "-"
     }
+
+    let id: UUID = UUID()
 
     struct User: Decodable {
         let id: String
