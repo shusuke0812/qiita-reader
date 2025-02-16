@@ -10,6 +10,7 @@ import Foundation
 
 protocol QiitaSearchViewModelInput {
     var itemsPublisher: Published<[Item]>.Publisher { get }
+    var errorMessagePublisher: Published<String?>.Publisher { get }
 }
 
 protocol QiitaSearchViewModelOutput {
@@ -25,30 +26,34 @@ class QiitaSearchViewModel: QiitaSearchViewModelProtocol, QiitaSearchViewModelIn
     // MARK: Input
     var input: QiitaSearchViewModelInput { self }
     var itemsPublisher: Published<[Item]>.Publisher { $items }
+    var errorMessagePublisher: Published<String?>.Publisher { $errorMessage }
 
     // MARK: Output
     var output: QiitaSearchViewModelOutput { self }
 
-    @Published private(set) var items: [Item] = []
+    @Published private var items: [Item] = []
+    @Published private var errorMessage: String?
+
     private let itemsRepository: ItemsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
+    private var page = 1
 
     init(itemsRepository: ItemsRepositoryProtocol = ItemsRepository()) {
         self.itemsRepository = itemsRepository
     }
 
     func searchItems(query: String) {
-        itemsRepository.getItems(page: 1, query: query)
+        itemsRepository.getItems(page: page, query: query)
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
+            .sink(receiveCompletion: { [weak self] completion in
                 switch completion {
                 case .finished:
                     break
                 case .failure(let error):
-                    print("debug: error \(error)")
+                    self?.errorMessage = error.description
                 }
-            }, receiveValue: { result in
-                print("debug: result \(result)")
+            }, receiveValue: { [weak self] result in
+                self?.items = result
             })
             .store(in: &cancellables)
     }
