@@ -8,18 +8,18 @@
 import SwiftUI
 
 struct LikeView: View {
-    let likeCount: Int
+    let likesCount: Int
 
     var body: some View {
         HStack {
             Image(systemName: "heart")
                 .frame(width: 20, height: 20)
                 .foregroundStyle(.gray)
-            Text("\(likeCount)")
+            Text("\(likesCount)")
         }
     }
 }
 
 #Preview {
-    LikeView(likeCount: 146)
+    LikeView(likesCount: 146)
 }
