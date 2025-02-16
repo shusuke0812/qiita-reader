@@ -11,18 +11,22 @@ struct TagCloudView: View {
     let onTapTag: () -> Void
 
     var body: some View {
-        TagButtonView(onTapTag: onTapTag) // TODO: タグの数を動的に変更して表示させる
+        TagButtonView(
+            tagName: "Supabase",
+            onTapTag: onTapTag
+        ) // TODO: タグの数を動的に変更して表示させる
     }
 }
 
 private struct TagButtonView: View {
+    let tagName: String
     let onTapTag: () -> Void
 
     var body: some View {
         Button(action: {
             onTapTag()
         }, label: {
-            Text("Supabase")
+            Text(tagName)
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.gray)
                 .padding(8)
