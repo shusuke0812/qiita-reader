@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 protocol QiitaSearchViewModelInput {
-    var itemsPublisher: Published<[Item]>.Publisher { get }
+    var itemsPublisher: Published<ItemList>.Publisher { get }
     var errorMessagePublisher: Published<String?>.Publisher { get }
 }
 
@@ -25,13 +25,13 @@ protocol QiitaSearchViewModelProtocol: ObservableObject {
 class QiitaSearchViewModel: QiitaSearchViewModelProtocol, QiitaSearchViewModelInput, QiitaSearchViewModelOutput  {
     // MARK: Input
     var input: QiitaSearchViewModelInput { self }
-    var itemsPublisher: Published<[Item]>.Publisher { $items }
+    var itemsPublisher: Published<ItemList>.Publisher { $itemList }
     var errorMessagePublisher: Published<String?>.Publisher { $errorMessage }
 
     // MARK: Output
     var output: QiitaSearchViewModelOutput { self }
 
-    @Published private var items: [Item] = []
+    @Published private var itemList: ItemList = ItemList(list: [])
     @Published private var errorMessage: String?
 
     private let itemsRepository: ItemsRepositoryProtocol
@@ -52,8 +52,8 @@ class QiitaSearchViewModel: QiitaSearchViewModelProtocol, QiitaSearchViewModelIn
                 case .failure(let error):
                     self?.errorMessage = error.description
                 }
-            }, receiveValue: { [weak self] result in
-                self?.items = result
+            }, receiveValue: { [weak self] itemList in
+                self?.itemList = itemList
             })
             .store(in: &cancellables)
     }

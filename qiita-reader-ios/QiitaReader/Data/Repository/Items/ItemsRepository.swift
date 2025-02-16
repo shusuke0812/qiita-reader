@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 protocol ItemsRepositoryProtocol {
-    func getItems(page: Int, query: String) -> AnyPublisher<ItemsRequest.Response, APIError>
+    func getItems(page: Int, query: String) -> AnyPublisher<ItemList, APIError>
 }
 
 class ItemsRepository: ItemsRepositoryProtocol {
@@ -19,8 +19,13 @@ class ItemsRepository: ItemsRepositoryProtocol {
         self.apiClient = apiClient
     }
 
-    func getItems(page: Int, query: String) -> AnyPublisher<ItemsRequest.Response, APIError> {
+    func getItems(page: Int, query: String) -> AnyPublisher<ItemList, APIError> {
         let request = ItemsRequest(page: page, query: query)
-        return apiClient.start(request)
+        return apiClient
+            .start(request)
+            .map { items in
+                return ItemList(list: items)
+            }
+            .eraseToAnyPublisher()
     }
 }
