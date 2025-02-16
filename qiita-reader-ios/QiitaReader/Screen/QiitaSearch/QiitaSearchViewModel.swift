@@ -14,8 +14,8 @@ protocol QiitaSearchViewModelInput {
 }
 
 protocol QiitaSearchViewModelOutput {
-    var itemsPublished: Published<ItemList> { get }
-    var errorMessagePublished: Published<String?> { get }
+    var itemList: ItemList { get }
+    var errorMessage: String? { get }
 }
 
 protocol QiitaSearchViewModelProtocol: ObservableObject {
@@ -24,17 +24,15 @@ protocol QiitaSearchViewModelProtocol: ObservableObject {
 }
 
 class QiitaSearchViewModel: QiitaSearchViewModelProtocol, QiitaSearchViewModelInput, QiitaSearchViewModelOutput  {
-    // MARK: Input
     var input: QiitaSearchViewModelInput { get { self } set {} }
+    var output: QiitaSearchViewModelOutput { self }
+
+    // MARK: Input
     @Published var query: String = ""
 
     // MARK: Output
-    var output: QiitaSearchViewModelOutput { self }
-    var itemsPublished: Published<ItemList> { _itemList }
-    var errorMessagePublished: Published<String?> { _errorMessage }
-
-    @Published private var itemList: ItemList = ItemList(list: [])
-    @Published private var errorMessage: String?
+    @Published var itemList: ItemList = ItemList(list: [])
+    @Published var errorMessage: String?
 
     private let itemsRepository: ItemsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
