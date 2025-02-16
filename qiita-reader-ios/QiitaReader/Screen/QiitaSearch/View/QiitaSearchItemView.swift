@@ -8,31 +8,40 @@
 import SwiftUI
 
 struct QiitaSearchItemView: View {
+    let item: Item
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HeaderView()
-            TitleView()
-            FooterView()
+            HeaderView(userName: item.user.id, updatedAt: item.formattedUpdatedAtString, profileImageURL: item.user.profileImageUrl)
+            TitleView(title: item.title)
+            FooterView(likesCount: item.likesCount)
         }
         .padding()
     }
 }
 
 private struct HeaderView: View {
+    let userName: String
+    let updatedAt: String
+    let profileImageURL: URL?
+
     var body: some View {
         HStack(alignment: .top) {
-            Image(systemName: "person.crop.circle.fill")
-                .renderingMode(.template)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 36, height: 36)
-                .clipShape(Circle())
-                .foregroundStyle(.gray)
+            AsyncImage(url: profileImageURL) { image in
+                image
+                    .renderingMode(.template)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .clipShape(Circle())
+                    .frame(width: 36, height: 36)
+            } placeholder: {
+                ProgressView()
+            }
             VStack(alignment: .leading, spacing: 8) {
-                Text("@qiita-tester")
+                Text("@" + userName)
                     .font(.system(size: 14))
                     .lineLimit(1)
-                Text("2025年02月07日")
+                Text(updatedAt)
                     .font(.system(size: 14))
                     .foregroundStyle(.gray)
             }
@@ -42,19 +51,23 @@ private struct HeaderView: View {
 }
 
 private struct TitleView: View {
+    let title: String
+
     var body: some View {
-        Text("【Playwright】並列機能とシャーディングでテスト実行時間を大幅短縮！GitHub ActionsのCI設定実例付き")
+        Text(title)
             .font(.system(size: 20, weight: .semibold))
             .lineLimit(2)
     }
 }
 
 private struct FooterView: View {
+    let likesCount: Int
+
     var body: some View {
         HStack(alignment: .bottom) {
             VStack(alignment: .leading) {
                 TagCloudView {}
-                LikeView(likeCount: 146)
+                LikeView(likesCount: likesCount)
             }
             Spacer()
             Button(action: {
@@ -70,5 +83,6 @@ private struct FooterView: View {
 }
 
 #Preview {
-    QiitaSearchItemView()
+    let item = Item(likesCount: 120, tags: [], title: "Qiita Reader", updatedAtString: "2025-02-16T13:21:39+09:00", user: Item.User(id: "qiita-tester", profileImageUrlString: "https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/82835/profile-images/1722951712"))
+    QiitaSearchItemView(item: item)
 }
