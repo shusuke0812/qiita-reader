@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 protocol QiitaSearchViewModelInput {
-    func changeQuery(query: String)
+    var query: String { get set }
     func searchItems()
 }
 
@@ -19,18 +19,19 @@ protocol QiitaSearchViewModelOutput {
 }
 
 protocol QiitaSearchViewModelProtocol: ObservableObject {
-    var input: QiitaSearchViewModelInput { get }
+    var input: QiitaSearchViewModelInput { get set }
     var output: QiitaSearchViewModelOutput { get }
 }
 
 class QiitaSearchViewModel: QiitaSearchViewModelProtocol, QiitaSearchViewModelInput, QiitaSearchViewModelOutput  {
     // MARK: Input
-    var input: QiitaSearchViewModelInput { self }
-    var itemsPublished: Published<ItemList> { _itemList }
-    var errorMessagePublished: Published<String?> { _errorMessage }
+    var input: QiitaSearchViewModelInput { get { self } set {} }
+    @Published var query: String = ""
 
     // MARK: Output
     var output: QiitaSearchViewModelOutput { self }
+    var itemsPublished: Published<ItemList> { _itemList }
+    var errorMessagePublished: Published<String?> { _errorMessage }
 
     @Published private var itemList: ItemList = ItemList(list: [])
     @Published private var errorMessage: String?
@@ -38,14 +39,9 @@ class QiitaSearchViewModel: QiitaSearchViewModelProtocol, QiitaSearchViewModelIn
     private let itemsRepository: ItemsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
     private var page = 1
-    private var query = ""
 
     init(itemsRepository: ItemsRepositoryProtocol = ItemsRepository()) {
         self.itemsRepository = itemsRepository
-    }
-
-    func changeQuery(query: String) {
-        self.query = query
     }
 
     func searchItems() {
