@@ -14,6 +14,7 @@ struct QiitaSearchItemView: View {
             TitleView()
             FooterView()
         }
+        .padding()
     }
 }
 
