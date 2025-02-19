@@ -7,14 +7,21 @@
 
 import SwiftUI
 
+// Ref: https://medium.com/engineering-askapro/implementing-generic-tag-cloud-in-swiftui-c0877a19b800
+
 struct TagCloudView: View {
-    let onTapTag: () -> Void
+    let tags: [Item.Tag]
+    let onTapTag: (UUID) -> Void
 
     var body: some View {
-        TagButtonView(
-            tagName: "Supabase",
-            onTapTag: onTapTag
-        ) // TODO: タグの数を動的に変更して表示させる
+        TagStackLayout {
+            ForEach(tags, id: \.id) { tag in
+                TagButtonView(
+                    tagName: tag.name,
+                    onTapTag: { onTapTag(tag.id) }
+                )
+            }
+        }
     }
 }
 
@@ -36,6 +43,57 @@ private struct TagButtonView: View {
     }
 }
 
+private struct TagStackLayout: Layout {
+    private let spacing: CGFloat
+
+    init(spacing: CGFloat = 8) {
+        self.spacing = spacing
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let sizes = subviews.map { $0.sizeThatFits(proposal) }
+        let maxViewHeight = sizes.map { $0.height }.max() ?? 0
+
+        var currentRowWidth: CGFloat = 0
+        var totalHeight: CGFloat = 0
+        var totalWidth: CGFloat = 0
+
+        sizes.forEach { size in
+            if currentRowWidth + spacing + size.width > proposal.width ?? 0 {
+                totalHeight += spacing + maxViewHeight
+                currentRowWidth = size.width
+            } else {
+                currentRowWidth += spacing + size.width
+            }
+            totalWidth = max(totalWidth, currentRowWidth)
+        }
+        return CGSize(width: totalWidth, height: totalHeight)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let sizes = subviews.map { $0.sizeThatFits(proposal) }
+        let maxViewHeight = sizes.map { $0.height }.max() ?? 0
+
+        var point = CGPoint(x: bounds.minX, y: bounds.minY)
+        subviews.indices.forEach { index in
+            if point.x + sizes[index].width > bounds.maxX {
+                point.x = bounds.minX
+                point.y += maxViewHeight + spacing
+            }
+            subviews[index].place(at: point, proposal: .init(sizes[index]))
+            point.x += sizes[index].width + spacing
+
+        }
+    }
+}
+
 #Preview {
-    TagCloudView() {}
+    let tags = [
+        Item.Tag(name: "Supabase"),
+        Item.Tag(name: "Firebase"),
+        Item.Tag(name: "Apple Vision Pro"),
+        Item.Tag(name: "TypeScript"),
+        Item.Tag(name: "SwiftUI")
+    ]
+    TagCloudView(tags: tags) { _ in }
 }
