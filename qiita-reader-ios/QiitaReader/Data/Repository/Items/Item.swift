@@ -51,7 +51,12 @@ struct Item: Decodable, Identifiable {
         }
     }
 
-    struct Tag: Decodable {
+    struct Tag: Decodable, Identifiable {
+        let id: UUID = UUID()
         let name: String
+
+        enum CodingKeys: String, CodingKey {
+            case name
+        }
     }
 }
