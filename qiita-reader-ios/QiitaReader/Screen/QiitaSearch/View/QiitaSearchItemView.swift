@@ -9,12 +9,15 @@ import SwiftUI
 
 struct QiitaSearchItemView: View {
     let item: Item
+    let onSelectedTag: (UUID) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HeaderView(userName: item.user.id, updatedAt: item.formattedUpdatedAtString, profileImageURL: item.user.profileImageUrl)
+            HeaderView(userName: item.user.name, updatedAt: item.formattedUpdatedAtString, profileImageURL: item.user.profileImageUrl)
             TitleView(title: item.title)
-            FooterView(likesCount: item.likesCount)
+            FooterView(likesCount: item.likesCount, tags: item.tags) { tagId in
+                onSelectedTag(tagId)
+            }
         }
         .padding()
     }
@@ -27,18 +30,35 @@ private struct HeaderView: View {
 
     var body: some View {
         HStack(alignment: .top) {
-            AsyncImage(url: profileImageURL) { image in
-                image
-                    .renderingMode(.template)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .clipShape(Circle())
-                    .frame(width: 36, height: 36)
-            } placeholder: {
-                ProgressView()
+            AsyncImage(url: profileImageURL) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .renderingMode(.template)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .clipShape(Circle())
+                        .frame(width: 36, height: 36)
+                case .failure:
+                    Image(systemName: "person.circle.fill")
+                        .renderingMode(.template)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .clipShape(Circle())
+                        .frame(width: 36, height: 36)
+                case .empty:
+                    ProgressView()
+                @unknown default:
+                    Image(systemName: "person.circle.fill")
+                        .renderingMode(.template)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .clipShape(Circle())
+                        .frame(width: 36, height: 36)
+                }
             }
             VStack(alignment: .leading, spacing: 8) {
-                Text("@" + userName)
+                Text(userName)
                     .font(.system(size: 14))
                     .lineLimit(1)
                 Text(updatedAt)
@@ -62,11 +82,15 @@ private struct TitleView: View {
 
 private struct FooterView: View {
     let likesCount: Int
+    let tags: [Item.Tag]
+    let onSelectedTag: (UUID) -> Void
 
     var body: some View {
         HStack(alignment: .bottom) {
             VStack(alignment: .leading) {
-                TagCloudView {}
+                TagCloudView(tags: tags) { tagId in
+                    onSelectedTag(tagId)
+                }
                 LikeView(likesCount: likesCount)
             }
             Spacer()
@@ -83,6 +107,18 @@ private struct FooterView: View {
 }
 
 #Preview {
-    let item = Item(likesCount: 120, tags: [], title: "Qiita Reader", updatedAtString: "2025-02-16T13:21:39+09:00", user: Item.User(id: "qiita-tester", profileImageUrlString: "https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/82835/profile-images/1722951712"))
-    QiitaSearchItemView(item: item)
+    let item = Item(
+        likesCount: 120,
+        tags: [
+            Item.Tag(name: "Supabase"),
+            Item.Tag(name: "Firebase"),
+            Item.Tag(name: "Apple Vision Pro"),
+            Item.Tag(name: "TypeScript"),
+            Item.Tag(name: "SwiftUI")
+        ],
+        title: "Qiita Reader",
+        updatedAtString: "2025-02-16T13:21:39+09:00",
+        user: Item.User(id: "qiita-tester", profileImageUrlString: "https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/82835/profile-images/1722951712")
+    )
+    QiitaSearchItemView(item: item) { _ in }
 }
