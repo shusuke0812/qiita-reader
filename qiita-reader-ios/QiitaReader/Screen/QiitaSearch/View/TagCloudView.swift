@@ -15,13 +15,15 @@ struct TagCloudView: View {
 
     var body: some View {
         TagStackLayout {
-            ForEach(tags, id: \.id) { tag in
+            ForEach(tags) { tag in
                 TagButtonView(
                     tagName: tag.name,
                     onTapTag: { onTapTag(tag.id) }
                 )
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 0)
     }
 }
 
@@ -55,7 +57,7 @@ private struct TagStackLayout: Layout {
         let maxViewHeight = sizes.map { $0.height }.max() ?? 0
 
         var currentRowWidth: CGFloat = 0
-        var totalHeight: CGFloat = 0
+        var totalHeight: CGFloat = maxViewHeight
         var totalWidth: CGFloat = 0
 
         sizes.forEach { size in
@@ -82,7 +84,6 @@ private struct TagStackLayout: Layout {
             }
             subviews[index].place(at: point, proposal: .init(sizes[index]))
             point.x += sizes[index].width + spacing
-
         }
     }
 }
@@ -93,7 +94,7 @@ private struct TagStackLayout: Layout {
         Item.Tag(name: "Firebase"),
         Item.Tag(name: "Apple Vision Pro"),
         Item.Tag(name: "TypeScript"),
-        Item.Tag(name: "SwiftUI")
+        Item.Tag(name: "SwiftUI"),
     ]
     TagCloudView(tags: tags) { _ in }
 }
