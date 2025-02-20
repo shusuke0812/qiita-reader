@@ -49,6 +49,10 @@ struct Item: Decodable, Identifiable {
         var profileImageUrl: URL? {
             URL(string: profileImageUrlString)
         }
+
+        var name: String {
+            "@" + id
+        }
     }
 
     struct Tag: Decodable, Identifiable {
