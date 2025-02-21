@@ -59,14 +59,12 @@ private struct HeaderView: View {
 }
 
 private extension Image {
-    func profileImageModifier(size: CGFloat = 36, tintColor: Color = .gray) -> some View {
+    func profileImageModifier(size: CGFloat = 36) -> some View {
         self
-            .renderingMode(.template)
             .resizable()
-            .aspectRatio(contentMode: .fill)
+            .aspectRatio(contentMode: .fit)
             .clipShape(Circle())
             .frame(width: size, height: size)
-            .foregroundColor(tintColor)
     }
 }
 
@@ -118,7 +116,7 @@ private struct FooterView: View {
         ],
         title: "Qiita Reader",
         updatedAtString: "2025-02-16T13:21:39+09:00",
-        user: Item.User(id: "qiita-tester", profileImageUrlString: "https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/82835/profile-images/1722951712")
+        user: Item.User(id: "qiita-tester", profileImageUrlString: "https://example.com/icon.png")
     )
     QiitaSearchItemView(item: item) { _ in }
 }
