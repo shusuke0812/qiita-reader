@@ -13,6 +13,8 @@ struct QiitaSearchView<ViewModel: QiitaSearchViewModelProtocol>: View {
     var body: some View {
         NavigationStack {
             List(viewModel.output.itemList.list) { item in
+                QiitaSearchItemView(item: item) { tag in
+                }
             }
         }
         .searchable(text: $viewModel.input.query)
