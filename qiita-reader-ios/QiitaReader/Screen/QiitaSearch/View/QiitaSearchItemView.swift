@@ -34,27 +34,15 @@ private struct HeaderView: View {
                 switch phase {
                 case .success(let image):
                     image
-                        .renderingMode(.template)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .clipShape(Circle())
-                        .frame(width: 36, height: 36)
+                        .profileImageModifier()
                 case .failure:
                     Image(systemName: "person.circle.fill")
-                        .renderingMode(.template)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .clipShape(Circle())
-                        .frame(width: 36, height: 36)
+                        .profileImageModifier()
                 case .empty:
                     ProgressView()
                 @unknown default:
                     Image(systemName: "person.circle.fill")
-                        .renderingMode(.template)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .clipShape(Circle())
-                        .frame(width: 36, height: 36)
+                        .profileImageModifier()
                 }
             }
             VStack(alignment: .leading, spacing: 8) {
@@ -67,6 +55,18 @@ private struct HeaderView: View {
             }
             Spacer()
         }
+    }
+}
+
+private extension Image {
+    func profileImageModifier(size: CGFloat = 36, tintColor: Color = .gray) -> some View {
+        self
+            .renderingMode(.template)
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+            .clipShape(Circle())
+            .frame(width: size, height: size)
+            .foregroundColor(tintColor)
     }
 }
 
