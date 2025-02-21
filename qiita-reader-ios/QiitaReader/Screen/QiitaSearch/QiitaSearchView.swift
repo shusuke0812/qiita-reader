@@ -14,8 +14,11 @@ struct QiitaSearchView<ViewModel: QiitaSearchViewModelProtocol>: View {
         NavigationStack {
             List(viewModel.output.itemList.list) { item in
                 QiitaSearchItemView(item: item) { tag in
+                    print("debug: tapped: \(tag)")
                 }
+                .listRowInsets(EdgeInsets())
             }
+            .listStyle(PlainListStyle())
         }
         .searchable(text: $viewModel.input.query)
         .onSubmit(of: .search) {
