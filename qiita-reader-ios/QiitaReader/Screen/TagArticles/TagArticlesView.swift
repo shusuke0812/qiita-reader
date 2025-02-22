@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct TagArticlesView: View {
+struct TagArticlesView<ViewModel: TagArticlesViewModelProtocol>: View {
+    @StateObject var viewModel: ViewModel
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -24,5 +25,5 @@ struct TagArticlesView: View {
 }
 
 #Preview {
-    TagArticlesView()
+    TagArticlesView(viewModel: TagArticlsViewModel())
 }
