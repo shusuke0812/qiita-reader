@@ -9,7 +9,7 @@ import Foundation
 
 struct Item: Decodable, Identifiable {
     let likesCount: Int
-    let tags: [Tag]
+    let tags: [Self.Tag]
     let title: String
     let updatedAtString: String
     let urlString: String

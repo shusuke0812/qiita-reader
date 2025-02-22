@@ -1,0 +1,22 @@
+//
+//  Tag.swift
+//  QiitaReader
+//
+//  Created by Shusuke Ota on 2025/2/22.
+//
+
+import Foundation
+
+struct Tag {
+    let id: String
+    let iconUrlString: String
+    let followersCount: Int
+    let itemsCount: Int
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case iconUrlString = "icon_url"
+        case followersCount
+        case itemsCount
+    }
+}
