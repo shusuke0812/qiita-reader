@@ -9,5 +9,5 @@ import Foundation
 
 struct TagArticle {
     let tag: Tag
-    let itemList: ItemList
+    let itemList: TagItemList
 }
