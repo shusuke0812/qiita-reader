@@ -116,6 +116,7 @@ private struct FooterView: View {
         ],
         title: "Qiita Reader",
         updatedAtString: "2025-02-16T13:21:39+09:00",
+        urlString: "https://developer.apple.com/jp/",
         user: Item.User(id: "qiita-tester", profileImageUrlString: "https://example.com/icon.png")
     )
     QiitaSearchItemView(item: item) { _ in }

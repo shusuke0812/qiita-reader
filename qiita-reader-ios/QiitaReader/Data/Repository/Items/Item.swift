@@ -12,6 +12,7 @@ struct Item: Decodable, Identifiable {
     let tags: [Tag]
     let title: String
     let updatedAtString: String
+    let urlString: String
     let user: User
 
     enum CodingKeys: String, CodingKey {
@@ -19,6 +20,7 @@ struct Item: Decodable, Identifiable {
         case tags
         case title
         case updatedAtString = "updated_at"
+        case urlString = "url"
         case user
     }
 
