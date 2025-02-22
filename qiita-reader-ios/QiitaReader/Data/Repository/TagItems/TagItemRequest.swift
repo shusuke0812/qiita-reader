@@ -8,7 +8,7 @@
 import Foundation
 
 struct TagItemRequest: APIRequestProtocol {
-    typealias Response = TagItem
+    typealias Response = [TagItem]
 
     private let tagId: String
     private let page: Int
