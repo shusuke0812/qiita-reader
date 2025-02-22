@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Tag {
+struct Tag: Decodable {
     let id: String
     let iconUrlString: String
     let followersCount: Int
