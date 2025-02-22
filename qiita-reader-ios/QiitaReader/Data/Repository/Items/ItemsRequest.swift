@@ -12,7 +12,7 @@ struct ItemsRequest: APIRequestProtocol {
 
     private let page: Int
     private let query: String
-    private let perPage: String = "20"
+    private let perPage: Int = 20
 
     init(page: Int, query: String) {
         self.page = page
@@ -31,7 +31,7 @@ struct ItemsRequest: APIRequestProtocol {
     var parameters: [URLQueryItem]? {
         [
             URLQueryItem(name: "page", value: String(page)),
-            URLQueryItem(name: "per_page", value: perPage),
+            URLQueryItem(name: "per_page", value: String(perPage)),
             URLQueryItem(name: "query", value: query)
         ]
     }
