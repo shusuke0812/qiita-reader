@@ -42,6 +42,7 @@ private struct TagButtonView: View {
                 .background(Color.gray.opacity(0.1))
                 .clipShape(.rect(cornerRadius: 8))
         })
+        .buttonStyle(.plain)
     }
 }
 
