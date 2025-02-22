@@ -13,4 +13,9 @@ struct TagItemList {
     init(list: [TagItem]) {
         self.list = list
     }
+
+    func add(items: [Item]) -> Self {
+        let list = self.list + items
+        return TagItemList(list: list)
+    }
 }
