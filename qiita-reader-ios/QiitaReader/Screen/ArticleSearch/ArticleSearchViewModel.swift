@@ -1,5 +1,5 @@
 //
-//  QiitaSearchViewModel.swift
+//  ArticleSearchViewModel.swift
 //  QiitaReader
 //
 //  Created by Shusuke Ota on 2025/2/15.
@@ -8,24 +8,24 @@
 import Combine
 import Foundation
 
-protocol QiitaSearchViewModelInput {
+protocol ArticleSearchViewModelInput {
     var query: String { get set }
     func searchItems()
 }
 
-protocol QiitaSearchViewModelOutput {
+protocol ArticleSearchViewModelOutput {
     var itemList: ItemList { get }
     var errorMessage: String? { get }
 }
 
-protocol QiitaSearchViewModelProtocol: ObservableObject {
-    var input: QiitaSearchViewModelInput { get set }
-    var output: QiitaSearchViewModelOutput { get }
+protocol ArticleSearchViewModelProtocol: ObservableObject {
+    var input: ArticleSearchViewModelInput { get set }
+    var output: ArticleSearchViewModelOutput { get }
 }
 
-class QiitaSearchViewModel: QiitaSearchViewModelProtocol, QiitaSearchViewModelInput, QiitaSearchViewModelOutput  {
-    var input: QiitaSearchViewModelInput { get { self } set {} }
-    var output: QiitaSearchViewModelOutput { self }
+class ArticleSearchViewModel: ArticleSearchViewModelProtocol, ArticleSearchViewModelInput, ArticleSearchViewModelOutput  {
+    var input: ArticleSearchViewModelInput { get { self } set {} }
+    var output: ArticleSearchViewModelOutput { self }
 
     // MARK: Input
     @Published var query: String = ""

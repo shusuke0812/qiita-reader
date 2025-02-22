@@ -1,5 +1,5 @@
 //
-//  QiitaSearchView.swift
+//  ArticleSearchView.swift
 //  QiitaReader
 //
 //  Created by Shusuke Ota on 2025/2/9.
@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct QiitaSearchView<ViewModel: QiitaSearchViewModelProtocol>: View {
+struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
     @StateObject var viewModel: ViewModel
 
     var body: some View {
         NavigationStack {
             List(viewModel.output.itemList.list) { item in
-                QiitaSearchItemView(item: item) { tag in
+                ArticleSearchItemView(item: item) { tag in
                     print("debug: tapped: \(tag)")
                 }
                 .listRowInsets(EdgeInsets())
@@ -28,5 +28,5 @@ struct QiitaSearchView<ViewModel: QiitaSearchViewModelProtocol>: View {
 }
 
 #Preview {
-    QiitaSearchView(viewModel: QiitaSearchViewModel())
+    ArticleSearchView(viewModel: ArticleSearchViewModel())
 }

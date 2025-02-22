@@ -1,5 +1,5 @@
 //
-//  QiitaSearchItemView.swift
+//  ArticleSearchItemView.swift
 //  QiitaReader
 //
 //  Created by Shusuke Ota on 2025/2/9.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct QiitaSearchItemView: View {
+struct ArticleSearchItemView: View {
     let item: Item
     let onSelectedTag: (UUID) -> Void
 
@@ -119,5 +119,5 @@ private struct FooterView: View {
         urlString: "https://developer.apple.com/jp/",
         user: Item.User(id: "qiita-tester", profileImageUrlString: "https://example.com/icon.png")
     )
-    QiitaSearchItemView(item: item) { _ in }
+    ArticleSearchItemView(item: item) { _ in }
 }
