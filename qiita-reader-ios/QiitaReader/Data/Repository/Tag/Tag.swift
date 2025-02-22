@@ -19,4 +19,8 @@ struct Tag: Decodable {
         case followersCount
         case itemsCount
     }
+
+    var iconUrl: URL? {
+        URL(string: iconUrlString)
+    }
 }
