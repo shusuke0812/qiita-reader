@@ -13,7 +13,7 @@ protocol TagArticlesViewModelInput {
 }
 
 protocol TagArticlesViewModelOutput {
-    var itemList: ItemList { get }
+    var itemList: TagItemList { get }
     var tag: Tag { get }
     var errorMessage: String? { get }
 }
@@ -28,11 +28,32 @@ class TagArticlsViewModel: TagArticlesViewModelProtocol, TagArticlesViewModelInp
     var output: TagArticlesViewModelOutput { self }
 
     // MARK: Output
-    @Published var itemList: ItemList = ItemList(list: [])
+    @Published var itemList: TagItemList = TagItemList(list: [])
     @Published var tag: Tag = Tag(id: "", iconUrlString: "", followersCount: 0, itemsCount: 0)
     @Published var errorMessage: String?
 
-    func searchItems(tagId: String) {
+    private let loadTagArticlesUseCase: LoadTagArticlesUseCaseProtocol
+    private var cancellables: Set<AnyCancellable> = []
+    private var page = 1
 
+    init(loadTagArticlesUseCase: LoadTagArticlesUseCaseProtocol = LoadTagArticlesUseCase()) {
+        self.loadTagArticlesUseCase = loadTagArticlesUseCase
+    }
+
+    func searchItems(tagId: String) {
+        loadTagArticlesUseCase.invoke(tagId: tagId, page: page)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    self?.errorMessage = error.description
+                }
+            }, receiveValue: { [weak self] tagArticle in
+                self?.tag = tagArticle.tag
+                self?.itemList = tagArticle.itemList
+            })
+            .store(in: &cancellables)
     }
 }
