@@ -16,8 +16,8 @@ struct Tag: Decodable {
     enum CodingKeys: String, CodingKey {
         case id
         case iconUrlString = "icon_url"
-        case followersCount
-        case itemsCount
+        case followersCount = "followers_count"
+        case itemsCount = "items_count"
     }
 
     var iconUrl: URL? {
