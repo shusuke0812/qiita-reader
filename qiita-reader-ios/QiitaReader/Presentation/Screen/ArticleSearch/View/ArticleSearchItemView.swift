@@ -10,6 +10,7 @@ import SwiftUI
 struct ArticleSearchItemView: View {
     let item: Item
     let onSelectedTag: (String) -> Void
+    let onSelectedItem: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -18,6 +19,9 @@ struct ArticleSearchItemView: View {
             FooterView(likesCount: item.likesCount, tags: item.tags) { tagId in
                 onSelectedTag(tagId)
             }
+        }
+        .onTapGesture {
+            onSelectedItem()
         }
         .padding()
     }
@@ -119,5 +123,5 @@ private struct FooterView: View {
         urlString: "https://developer.apple.com/jp/",
         user: Item.User(id: "qiita-tester", profileImageUrlString: "https://example.com/icon.png")
     )
-    ArticleSearchItemView(item: item) { _ in }
+    ArticleSearchItemView(item: item, onSelectedTag: { _ in }, onSelectedItem: {})
 }

@@ -11,12 +11,11 @@ struct ArticleDetailView<ViewModel: ArticleDetailViewModelProtocol>: View {
     @StateObject var viewModel: ViewModel
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 2) {
             if viewModel.output.isLoading {
                 ProgressView()
-            } else {
-                WebView(isLoading: $viewModel.output.isLoading, articleUrl: viewModel.output.articleUrl)
             }
+            WebView(isLoading: $viewModel.output.isLoading, articleUrl: viewModel.output.articleUrl)
         }
     }
 }

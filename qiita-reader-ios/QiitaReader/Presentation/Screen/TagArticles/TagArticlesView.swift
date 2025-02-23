@@ -19,8 +19,12 @@ struct TagArticlesView<ViewModel: TagArticlesViewModelProtocol>: View {
                 }
                 Section {
                     ForEach(viewModel.output.itemList.list) { item in
-                        ArticleSearchItemView(item: item) { tag in
-                        }
+                        ArticleSearchItemView(
+                            item: item,
+                            onSelectedTag: { tagId in
+                            },
+                            onSelectedItem: {}
+                        )
                     }
                     .listRowInsets(EdgeInsets())
                 }

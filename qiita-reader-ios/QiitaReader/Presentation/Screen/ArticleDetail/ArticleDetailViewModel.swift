@@ -25,7 +25,7 @@ class ArticleDetailViewModel: ArticleDetailViewModelProtocol, ArticleDetailViewM
     var output: ArticleDetailViewModelOutput { get { self } set {} }
 
     // MARK: Output
-    @Published var isLoading: Bool = true
+    @Published var isLoading: Bool = false
     var articleUrl: URL {
         URL(string: articleUrlString)!
     }
