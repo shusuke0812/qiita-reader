@@ -31,7 +31,7 @@ class LoadTagArticlesUseCase: LoadTagArticlesUseCaseProtocol {
         if validateIsInitialLoad(tagId: tagId) {
             return initialLoad(tagId: tagId, page: page)
         }
-        return retry(page: page)
+        return reload(page: page)
     }
 
     private func initialLoad(tagId: String, page: Int) -> AnyPublisher<TagArticle, APIError> {
@@ -47,7 +47,7 @@ class LoadTagArticlesUseCase: LoadTagArticlesUseCaseProtocol {
         .eraseToAnyPublisher()
     }
 
-    private func retry(page: Int) -> AnyPublisher<TagArticle, APIError> {
+    private func reload(page: Int) -> AnyPublisher<TagArticle, APIError> {
         tagItemsRepository.getItems(page: page, tagId: self.tag.id)
             .map { itemList in
                 self.itemList = self.itemList.add(items: itemList.list)
