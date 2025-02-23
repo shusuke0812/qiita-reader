@@ -7,14 +7,20 @@
 
 import SwiftUI
 
-struct ArticleDetailView: View {
-    @State var isLoading = false
+struct ArticleDetailView<ViewModel: ArticleDetailViewModelProtocol>: View {
+    @StateObject var viewModel: ViewModel
 
     var body: some View {
-        //WebView(isLoading: $isLoading, articleUrl: URL(string: "https://developer.apple.com/jp/")!)
+        NavigationStack {
+            if viewModel.output.isLoading {
+                ProgressView()
+            } else {
+                WebView(isLoading: $viewModel.output.isLoading, articleUrl: viewModel.output.articleUrl)
+            }
+        }
     }
 }
 
 #Preview {
-    ArticleDetailView()
+    ArticleDetailView(viewModel: ArticleDetailViewModel(articleUrlString: "https://developer.apple.com/jp/"))
 }
