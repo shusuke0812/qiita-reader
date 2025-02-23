@@ -36,8 +36,12 @@ class TagArticlsViewModel: TagArticlesViewModelProtocol, TagArticlesViewModelInp
     private var cancellables: Set<AnyCancellable> = []
     private var page = 1
 
-    init(loadTagArticlesUseCase: LoadTagArticlesUseCaseProtocol = LoadTagArticlesUseCase()) {
+    init(
+        tagId: String,
+        loadTagArticlesUseCase: LoadTagArticlesUseCaseProtocol = LoadTagArticlesUseCase()
+    ) {
         self.loadTagArticlesUseCase = loadTagArticlesUseCase
+        self.searchItems(tagId: tagId)
     }
 
     func searchItems(tagId: String) {

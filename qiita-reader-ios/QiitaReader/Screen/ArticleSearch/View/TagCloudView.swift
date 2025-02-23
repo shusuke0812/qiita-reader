@@ -11,14 +11,14 @@ import SwiftUI
 
 struct TagCloudView: View {
     let tags: [Item.Tag]
-    let onTapTag: (UUID) -> Void
+    let onTapTag: (String) -> Void
 
     var body: some View {
         TagStackLayout {
             ForEach(tags) { tag in
                 TagButtonView(
                     tagName: tag.name,
-                    onTapTag: { onTapTag(tag.id) }
+                    onTapTag: { onTapTag(tag.name) }
                 )
             }
         }

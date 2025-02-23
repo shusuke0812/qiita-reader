@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ArticleSearchItemView: View {
     let item: Item
-    let onSelectedTag: (UUID) -> Void
+    let onSelectedTag: (String) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -81,7 +81,7 @@ private struct TitleView: View {
 private struct FooterView: View {
     let likesCount: Int
     let tags: [Item.Tag]
-    let onSelectedTag: (UUID) -> Void
+    let onSelectedTag: (String) -> Void
 
     var body: some View {
         HStack(alignment: .bottom) {

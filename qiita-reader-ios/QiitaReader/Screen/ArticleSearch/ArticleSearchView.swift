@@ -13,8 +13,8 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
     var body: some View {
         NavigationStack {
             List(viewModel.output.itemList.list) { item in
-                ArticleSearchItemView(item: item) { tag in
-                    print("debug: tapped: \(tag)")
+                ArticleSearchItemView(item: item) { tagId in
+                    viewModel.input.openTagArticles(tagId: tagId)
                 }
                 .listRowInsets(EdgeInsets())
             }
@@ -23,6 +23,9 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
         .searchable(text: $viewModel.input.query)
         .onSubmit(of: .search) {
             viewModel.input.searchItems()
+        }
+        .sheet(isPresented: $viewModel.output.isPresentedTagArticle) {
+            TagArticlesView(viewModel: TagArticlsViewModel(tagId: viewModel.output.selectedTagId))
         }
     }
 }

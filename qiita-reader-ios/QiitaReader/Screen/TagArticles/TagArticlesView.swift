@@ -37,5 +37,5 @@ struct TagArticlesView<ViewModel: TagArticlesViewModelProtocol>: View {
 }
 
 #Preview {
-    TagArticlesView(viewModel: TagArticlsViewModel())
+    TagArticlesView(viewModel: TagArticlsViewModel(tagId: "Swift"))
 }
