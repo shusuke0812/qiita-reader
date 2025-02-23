@@ -13,14 +13,17 @@ struct TagArticlesView<ViewModel: TagArticlesViewModelProtocol>: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .center, spacing: 8) {
-                TagAttributeView(tag: viewModel.output.tag)
-                List(viewModel.output.itemList.list) { item in
-                    ArticleSearchItemView(item: item) { tag in
+            List {
+                Section {
+                    TagAttributeView(tag: viewModel.output.tag)
+                }
+                Section {
+                    ForEach(viewModel.output.itemList.list) { item in
+                        ArticleSearchItemView(item: item) { tag in
+                        }
                     }
                     .listRowInsets(EdgeInsets())
                 }
-                .listStyle(PlainListStyle())
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
