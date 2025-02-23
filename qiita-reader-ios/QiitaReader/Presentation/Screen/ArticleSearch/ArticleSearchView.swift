@@ -11,15 +11,13 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
     @StateObject var viewModel: ViewModel
 
     var body: some View {
-        NavigationStack {
-            List(viewModel.output.itemList.list) { item in
-                ArticleSearchItemView(item: item) { tagId in
-                    viewModel.input.openTagArticles(tagId: tagId)
-                }
-                .listRowInsets(EdgeInsets())
+        List(viewModel.output.itemList.list) { item in
+            ArticleSearchItemView(item: item) { tagId in
+                viewModel.input.openTagArticles(tagId: tagId)
             }
-            .listStyle(PlainListStyle())
+            .listRowInsets(EdgeInsets())
         }
+        .listStyle(PlainListStyle())
         .searchable(text: $viewModel.input.query)
         .onSubmit(of: .search) {
             viewModel.input.searchItems()

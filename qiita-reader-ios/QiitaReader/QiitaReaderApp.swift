@@ -11,7 +11,9 @@ import SwiftUI
 struct QiitaReaderApp: App {
     var body: some Scene {
         WindowGroup {
-            ArticleSearchView(viewModel: ArticleSearchViewModel())
+            RootView {
+                ArticleSearchView(viewModel: ArticleSearchViewModel())
+            }
         }
     }
 }
