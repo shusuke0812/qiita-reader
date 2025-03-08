@@ -9,7 +9,7 @@
 
 import SwiftUI
 
-class Router: ObservableObject {
+class Router<Destination: Routable>: ObservableObject {
     enum Route: Hashable {
         case articleSearch
         case articleDetail(articleUrlString: String)
