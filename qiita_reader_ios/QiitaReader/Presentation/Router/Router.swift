@@ -5,7 +5,7 @@
 //  Created by Shusuke Ota on 2025/2/23.
 //
 
-// Ref: https://www.curiousalgorithm.com/post/router-pattern-for-swiftui-navigation
+// Ref: https://github.com/obvios/Routing?tab=readme-ov-file
 
 import SwiftUI
 
