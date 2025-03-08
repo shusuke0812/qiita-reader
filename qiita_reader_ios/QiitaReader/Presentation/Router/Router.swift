@@ -33,6 +33,8 @@ class Router<Destination: Routable>: ObservableObject {
         route.viewToDisplay(router: router)
     }
 
+    // MARK: - Screen transition
+
     func routeTo(_ route: Destination, via navigationType: NavigationType) {
         switch navigationType {
         case .push:
