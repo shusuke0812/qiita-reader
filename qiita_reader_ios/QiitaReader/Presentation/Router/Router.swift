@@ -13,6 +13,7 @@ class Router<Destination: Routable>: ObservableObject {
     @Published var path: NavigationPath = NavigationPath()
     @Published var presentingModal: Destination?
     @Published var presentingFullScreenModal: Destination?
+    @Published var presentingHalfModal: Destination?
     @Published var isPresented: Binding<Destination?>
 
     init(isPresented: Binding<Destination?>) {
@@ -49,6 +50,13 @@ class Router<Destination: Routable>: ObservableObject {
                     set: { self.presentingFullScreenModal = $0 }
                 )
             )
+        case .halfModal:
+            return Router(
+                isPresented: Binding(
+                    get: { self.presentingHalfModal },
+                    set: { self.presentingHalfModal = $0 }
+                )
+            )
         }
     }
 
@@ -62,6 +70,8 @@ class Router<Destination: Routable>: ObservableObject {
             presentModal(route)
         case .fullScreenModal:
             presentFullScreenModal(route)
+        case .halfModal:
+            presentHalfModal(route)
         }
     }
 
@@ -89,5 +99,9 @@ class Router<Destination: Routable>: ObservableObject {
 
     private func presentFullScreenModal(_ route: Destination) {
         self.presentingFullScreenModal = route
+    }
+
+    private func presentHalfModal(_ route: Destination) {
+        self.presentingHalfModal = route
     }
 }

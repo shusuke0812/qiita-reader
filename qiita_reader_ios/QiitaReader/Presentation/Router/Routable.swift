@@ -12,6 +12,7 @@ enum NavigationType {
     case push
     case modal
     case fullScreenModal
+    case halfModal
 }
 
 protocol Routable: Hashable, Identifiable {
