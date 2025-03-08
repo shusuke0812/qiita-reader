@@ -12,12 +12,10 @@ enum NavigationType {
     case push
     case modal
     case fullScreenModal
-    case halfModal
 }
 
 protocol Routable: Hashable, Identifiable {
     associatedtype ViewType: View
-    var navigationType: NavigationType { get }
     func viewToDisplay(router: Router<Self>) -> ViewType
 }
 
@@ -26,5 +24,34 @@ extension Routable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+}
+
+// MARK: - Route
+
+enum QiitaRoute: Routable {
+    case root
+    case articleDetail(articleUrlString: String)
+    case tagArticles(tagId: String)
+
+    @ViewBuilder
+    func viewToDisplay(router: Router<QiitaRoute>) -> some View {
+        switch self {
+        case .root:
+            ArticleSearchView<ArticleSearchViewModel>(
+                router: router,
+                viewModel: ArticleSearchViewModel()
+            )
+        case .articleDetail(let urlString):
+            ArticleDetailView<ArticleDetailViewModel>(
+                router: router,
+                viewModel: ArticleDetailViewModel(articleUrlString: urlString)
+            )
+        case .tagArticles(let tagId):
+            TagArticlesView<TagArticlsViewModel>(
+                router: router,
+                viewModel: TagArticlsViewModel(tagId: tagId)
+            )
+        }
     }
 }

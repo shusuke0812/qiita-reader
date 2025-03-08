@@ -9,10 +9,12 @@ import SwiftUI
 
 @main
 struct QiitaReaderApp: App {
+    @StateObject var router: Router<QiitaRoute> = .init(isPresented: .constant(.none))
+
     var body: some Scene {
         WindowGroup {
-            RootView {
-                ArticleSearchView(viewModel: ArticleSearchViewModel())
+            RootingView(router) { _ in
+                ArticleSearchView<ArticleSearchViewModel>(viewModel: ArticleSearchViewModel())
             }
         }
     }

@@ -17,16 +17,20 @@ class Router<Destination: Routable>: ObservableObject {
     }
 
     @Published var path: NavigationPath = NavigationPath()
+    @Published var presentingModal: Destination?
+    @Published var presentingFullScreenModal: Destination?
+    @Published var isPresented: Binding<Destination?>
 
-    @ViewBuilder func view(for route: Route) -> some View {
-        switch route {
-        case .articleSearch:
-            ArticleSearchView(viewModel: ArticleSearchViewModel())
-        case .articleDetail(let articleUrlString):
-            ArticleDetailView(viewModel: ArticleDetailViewModel(articleUrlString: articleUrlString))
-        case .tagArticles(let tagId):
-            TagArticlesView(viewModel: TagArticlsViewModel(tagId: tagId))
-        }
+    init(isPresented: Binding<Destination?>) {
+        self.isPresented = isPresented
+    }
+
+    @ViewBuilder func start(_ route: Destination) -> some View {
+        route.viewToDisplay(router: self)
+    }
+
+    @ViewBuilder func view(for route: Destination, using router: Router<Destination>) -> some View {
+        route.viewToDisplay(router: router)
     }
 
     func pushTo(_ appRoute: Route) {
@@ -39,5 +43,26 @@ class Router<Destination: Routable>: ObservableObject {
 
     func popToRoot() {
         path.removeLast(path.count)
+    }
+
+    private func router(routeType: NavigationType) -> Router {
+        switch routeType {
+        case .push:
+            return self
+        case .modal:
+            return Router(
+                isPresented: Binding(
+                    get: { self.presentingModal },
+                    set: { self.presentingModal = $0 }
+                )
+            )
+        case .fullScreenModal:
+            return Router(
+                isPresented: Binding(
+                    get: { self.presentingModal },
+                    set: { self.presentingModal = $0 }
+                )
+            )
+        }
     }
 }

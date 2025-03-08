@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
-    @EnvironmentObject var router: Router
+    @StateObject var router: Router<QiitaRoute> = .init(isPresented: .constant(.none))
     @StateObject var viewModel: ViewModel
 
     var body: some View {

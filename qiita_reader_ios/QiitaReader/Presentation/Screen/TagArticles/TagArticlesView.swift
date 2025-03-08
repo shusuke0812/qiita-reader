@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct TagArticlesView<ViewModel: TagArticlesViewModelProtocol>: View {
+    @StateObject var router: Router<QiitaRoute> = .init(isPresented: .constant(.none))
     @StateObject var viewModel: ViewModel
-    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
@@ -32,7 +32,7 @@ struct TagArticlesView<ViewModel: TagArticlesViewModelProtocol>: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        dismiss()
+                        //dismiss()
                     }, label: {
                         Image(systemName: "xmark.circle")
                             .foregroundStyle(.gray)
