@@ -14,6 +14,7 @@ protocol ArticleSearchViewModelInput {
 }
 
 protocol ArticleSearchViewModelOutput {
+    var isLoading: Bool { get set }
     var itemList: ItemList { get }
     var errorMessage: String? { get }
 }
@@ -31,6 +32,7 @@ class ArticleSearchViewModel: ArticleSearchViewModelProtocol, ArticleSearchViewM
     @Published var query: String = ""
 
     // MARK: Output
+    @Published var isLoading: Bool = false
     @Published var itemList: ItemList = ItemList(list: [])
     @Published var errorMessage: String?
 
@@ -43,6 +45,7 @@ class ArticleSearchViewModel: ArticleSearchViewModelProtocol, ArticleSearchViewM
     }
 
     func searchItems() {
+        isLoading = true
         itemsRepository.getItems(page: page, query: query)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
@@ -52,6 +55,7 @@ class ArticleSearchViewModel: ArticleSearchViewModelProtocol, ArticleSearchViewM
                 case .failure(let error):
                     self?.errorMessage = error.description
                 }
+                self?.isLoading = false
             }, receiveValue: { [weak self] itemList in
                 self?.itemList = itemList
             })

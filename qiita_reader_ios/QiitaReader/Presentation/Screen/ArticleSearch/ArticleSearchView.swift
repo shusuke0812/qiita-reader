@@ -12,22 +12,27 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
     @StateObject var viewModel: ViewModel
 
     var body: some View {
-        List(viewModel.output.itemList.list) { item in
-            ArticleSearchItemView(
-                item: item,
-                onSelectedTag: { tagId in
-                    router.routeTo(.tagArticles(tagId: tagId), via: .modal)
-                },
-                onSelectedItem: {
-                    router.routeTo(.articleDetail(articleUrlString: item.urlString), via: .push)
-                }
-            )
-            .listRowInsets(EdgeInsets())
-        }
-        .listStyle(PlainListStyle())
-        .searchable(text: $viewModel.input.query)
-        .onSubmit(of: .search) {
-            viewModel.input.searchItems()
+        VStack {
+            if viewModel.output.isLoading {
+                ProgressView().padding()
+            }
+            List(viewModel.output.itemList.list) { item in
+                ArticleSearchItemView(
+                    item: item,
+                    onSelectedTag: { tagId in
+                        router.routeTo(.tagArticles(tagId: tagId), via: .modal)
+                    },
+                    onSelectedItem: {
+                        router.routeTo(.articleDetail(articleUrlString: item.urlString), via: .push)
+                    }
+                )
+                .listRowInsets(EdgeInsets())
+            }
+            .listStyle(PlainListStyle())
+            .searchable(text: $viewModel.input.query)
+            .onSubmit(of: .search) {
+                viewModel.input.searchItems()
+            }
         }
     }
 }
