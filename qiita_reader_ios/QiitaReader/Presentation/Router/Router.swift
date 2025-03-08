@@ -43,8 +43,8 @@ class Router<Destination: Routable>: ObservableObject {
         case .fullScreenModal:
             return Router(
                 isPresented: Binding(
-                    get: { self.presentingModal },
-                    set: { self.presentingModal = $0 }
+                    get: { self.presentingFullScreenModal },
+                    set: { self.presentingFullScreenModal = $0 }
                 )
             )
         }

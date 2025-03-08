@@ -29,5 +29,10 @@ struct RoutingView<Content: View, Destination: Routable>: View where Destination
                 childRouter.start(route)
             }
         }
+        .fullScreenCover(item: $router.presentingFullScreenModal) { route in
+            RoutingView(router.factory(routeType: .fullScreenModal)) { childRouter in
+                childRouter.start(route)
+            }
+        }
     }
 }
