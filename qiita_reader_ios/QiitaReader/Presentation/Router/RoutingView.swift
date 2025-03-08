@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RootingView<Content: View, Destination: Routable>: View {
+struct RoutingView<Content: View, Destination: Routable>: View {
     @ObservedObject var router: Router<Destination>
 
     private let content: (Router<Destination>) -> Content

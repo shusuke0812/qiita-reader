@@ -13,7 +13,7 @@ struct QiitaReaderApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootingView(router) { _ in
+            RoutingView(router) { _ in
                 router.start(.root)
             }
         }
