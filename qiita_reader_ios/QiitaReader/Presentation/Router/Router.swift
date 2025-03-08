@@ -10,12 +10,6 @@
 import SwiftUI
 
 class Router<Destination: Routable>: ObservableObject {
-    enum Route: Hashable {
-        case articleSearch
-        case articleDetail(articleUrlString: String)
-        case tagArticles(tagId: String)
-    }
-
     @Published var path: NavigationPath = NavigationPath()
     @Published var presentingModal: Destination?
     @Published var presentingFullScreenModal: Destination?
