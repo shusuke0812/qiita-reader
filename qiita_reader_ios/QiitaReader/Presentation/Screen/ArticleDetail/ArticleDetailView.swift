@@ -14,7 +14,7 @@ struct ArticleDetailView<ViewModel: ArticleDetailViewModelProtocol>: View {
     var body: some View {
         VStack(spacing: 2) {
             if viewModel.output.isLoading {
-                ProgressView()
+                ProgressView().padding()
             }
             WebView(isLoading: $viewModel.output.isLoading, articleUrl: viewModel.output.articleUrl)
         }
