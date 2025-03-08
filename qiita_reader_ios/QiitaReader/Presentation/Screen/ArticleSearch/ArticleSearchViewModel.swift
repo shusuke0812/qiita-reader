@@ -11,14 +11,11 @@ import Foundation
 protocol ArticleSearchViewModelInput {
     var query: String { get set }
     func searchItems()
-    func openTagArticles(tagId: String)
 }
 
 protocol ArticleSearchViewModelOutput {
-    var isPresentedTagArticle: Bool { get set }
     var itemList: ItemList { get }
     var errorMessage: String? { get }
-    var selectedTagId: String { get }
 }
 
 protocol ArticleSearchViewModelProtocol: ObservableObject {
@@ -36,15 +33,10 @@ class ArticleSearchViewModel: ArticleSearchViewModelProtocol, ArticleSearchViewM
     // MARK: Output
     @Published var itemList: ItemList = ItemList(list: [])
     @Published var errorMessage: String?
-    @Published var isPresentedTagArticle: Bool = false
-    var selectedTagId: String {
-        _selectedTagId
-    }
 
     private let itemsRepository: ItemsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
     private var page = 1
-    private var _selectedTagId = ""
 
     init(itemsRepository: ItemsRepositoryProtocol = ItemsRepository()) {
         self.itemsRepository = itemsRepository
@@ -64,10 +56,5 @@ class ArticleSearchViewModel: ArticleSearchViewModelProtocol, ArticleSearchViewM
                 self?.itemList = itemList
             })
             .store(in: &cancellables)
-    }
-
-    func openTagArticles(tagId: String) {
-        _selectedTagId = tagId
-        isPresentedTagArticle = true
     }
 }

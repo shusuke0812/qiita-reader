@@ -19,12 +19,35 @@ class Router<Destination: Routable>: ObservableObject {
         self.isPresented = isPresented
     }
 
-    @ViewBuilder func start(_ route: Destination) -> some View {
+    @ViewBuilder func start(_ route: Destination) -> Destination.ViewType {
         route.viewToDisplay(router: self)
     }
 
-    @ViewBuilder func view(for route: Destination, using router: Router<Destination>) -> some View {
+    @ViewBuilder func view(for route: Destination, using router: Router<Destination>) -> Destination.ViewType {
         route.viewToDisplay(router: router)
+    }
+
+    // MARK: - Factory
+
+    func factory(routeType: NavigationType) -> Router {
+        switch routeType {
+        case .push:
+            return self
+        case .modal:
+            return Router(
+                isPresented: Binding(
+                    get: { self.presentingModal },
+                    set: { self.presentingModal = $0 }
+                )
+            )
+        case .fullScreenModal:
+            return Router(
+                isPresented: Binding(
+                    get: { self.presentingModal },
+                    set: { self.presentingModal = $0 }
+                )
+            )
+        }
     }
 
     // MARK: - Screen transition
@@ -48,6 +71,10 @@ class Router<Destination: Routable>: ObservableObject {
         path.removeLast(path.count)
     }
 
+    func dismiss() {
+        isPresented.wrappedValue = nil
+    }
+
     // MARK: - Private
 
     private func pushTo(_ route: Destination) {
@@ -60,26 +87,5 @@ class Router<Destination: Routable>: ObservableObject {
 
     private func presentFullScreenModal(_ route: Destination) {
         self.presentingFullScreenModal = route
-    }
-
-    private func router(routeType: NavigationType) -> Router {
-        switch routeType {
-        case .push:
-            return self
-        case .modal:
-            return Router(
-                isPresented: Binding(
-                    get: { self.presentingModal },
-                    set: { self.presentingModal = $0 }
-                )
-            )
-        case .fullScreenModal:
-            return Router(
-                isPresented: Binding(
-                    get: { self.presentingModal },
-                    set: { self.presentingModal = $0 }
-                )
-            )
-        }
     }
 }

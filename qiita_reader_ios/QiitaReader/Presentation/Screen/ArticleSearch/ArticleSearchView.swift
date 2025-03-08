@@ -16,7 +16,7 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
             ArticleSearchItemView(
                 item: item,
                 onSelectedTag: { tagId in
-                    viewModel.input.openTagArticles(tagId: tagId)
+                    router.routeTo(.tagArticles(tagId: tagId), via: .modal)
                 },
                 onSelectedItem: {
                     router.routeTo(.articleDetail(articleUrlString: item.urlString), via: .push)
@@ -28,9 +28,6 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
         .searchable(text: $viewModel.input.query)
         .onSubmit(of: .search) {
             viewModel.input.searchItems()
-        }
-        .sheet(isPresented: $viewModel.output.isPresentedTagArticle) {
-            TagArticlesView(viewModel: TagArticlsViewModel(tagId: viewModel.output.selectedTagId))
         }
     }
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RoutingView<Content: View, Destination: Routable>: View {
+struct RoutingView<Content: View, Destination: Routable>: View where Destination.ViewType == Content {
     @ObservedObject var router: Router<Destination>
 
     private let content: (Router<Destination>) -> Content
@@ -23,6 +23,11 @@ struct RoutingView<Content: View, Destination: Routable>: View {
                 .navigationDestination(for: Destination.self) { route in
                     router.start(route)
                 }
+        }
+        .sheet(item: $router.presentingModal) { route in
+            RoutingView(router.factory(routeType: .modal)) { childRouter in
+                childRouter.start(route)
+            }
         }
     }
 }

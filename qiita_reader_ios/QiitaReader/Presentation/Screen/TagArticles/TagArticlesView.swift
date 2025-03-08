@@ -32,7 +32,7 @@ struct TagArticlesView<ViewModel: TagArticlesViewModelProtocol>: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        //dismiss()
+                        router.dismiss()
                     }, label: {
                         Image(systemName: "xmark.circle")
                             .foregroundStyle(.gray)
