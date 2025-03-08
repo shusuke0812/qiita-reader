@@ -33,8 +33,15 @@ class Router<Destination: Routable>: ObservableObject {
         route.viewToDisplay(router: router)
     }
 
-    func pushTo(_ appRoute: Route) {
-        path.append(appRoute)
+    func routeTo(_ route: Destination, via navigationType: NavigationType) {
+        switch navigationType {
+        case .push:
+            pushTo(route)
+        case .modal:
+            presentModal(route)
+        case .fullScreenModal:
+            presentFullScreenModal(route)
+        }
     }
 
     func pop() {
@@ -43,6 +50,20 @@ class Router<Destination: Routable>: ObservableObject {
 
     func popToRoot() {
         path.removeLast(path.count)
+    }
+
+    // MARK: - Private
+
+    private func pushTo(_ route: Destination) {
+        path.append(route)
+    }
+
+    private func presentModal(_ route: Destination) {
+        self.presentingModal = route
+    }
+
+    private func presentFullScreenModal(_ route: Destination) {
+        self.presentingFullScreenModal = route
     }
 
     private func router(routeType: NavigationType) -> Router {
