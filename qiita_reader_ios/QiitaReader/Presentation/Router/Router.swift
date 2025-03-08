@@ -23,6 +23,8 @@ class Router<Destination: Routable>: ObservableObject {
         route.viewToDisplay(router: self)
     }
 
+    /// - Parameters:
+    ///   - router: Child Router
     @ViewBuilder func view(for route: Destination, using router: Router<Destination>) -> Destination.ViewType {
         route.viewToDisplay(router: router)
     }
