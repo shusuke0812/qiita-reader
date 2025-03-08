@@ -14,7 +14,7 @@ struct QiitaReaderApp: App {
     var body: some Scene {
         WindowGroup {
             RootingView(router) { _ in
-                ArticleSearchView<ArticleSearchViewModel>(viewModel: ArticleSearchViewModel())
+                router.start(.root)
             }
         }
     }
