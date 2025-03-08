@@ -19,7 +19,7 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
                     viewModel.input.openTagArticles(tagId: tagId)
                 },
                 onSelectedItem: {
-                    router.pushTo(.articleDetail(articleUrlString: item.urlString))
+                    router.routeTo(.articleDetail(articleUrlString: item.urlString), via: .push)
                 }
             )
             .listRowInsets(EdgeInsets())
