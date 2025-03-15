@@ -45,6 +45,11 @@
 			path = QiitaReaderUITests;
 			sourceTree = "<group>";
 		};
+		9CAE73DC2D85797800F418B8 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +80,7 @@
 		9C61B2E32D585E5D0081E239 = {
 			isa = PBXGroup;
 			children = (
+				9CAE73DC2D85797800F418B8 /* Shared */,
 				9C61B2EE2D585E5D0081E239 /* QiitaReader */,
 				9C61B2FF2D585E5E0081E239 /* QiitaReaderTests */,
 				9C61B3092D585E5E0081E239 /* QiitaReaderUITests */,
@@ -109,6 +115,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				9C61B2EE2D585E5D0081E239 /* QiitaReader */,
+				9CAE73DC2D85797800F418B8 /* Shared */,
 			);
 			name = QiitaReader;
 			packageProductDependencies = (
