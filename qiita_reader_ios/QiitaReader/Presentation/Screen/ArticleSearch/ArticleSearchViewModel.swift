@@ -14,7 +14,7 @@ protocol ArticleSearchViewModelInput {
 }
 
 protocol ArticleSearchViewModelOutput {
-    var viewState: ViewState<ItemList, APIError> { get set }
+    var viewState: ViewState<ItemList, ArticleSearchError> { get set }
 }
 
 protocol ArticleSearchViewModelProtocol: ObservableObject {
@@ -30,7 +30,7 @@ class ArticleSearchViewModel: ArticleSearchViewModelProtocol, ArticleSearchViewM
     @Published var query: String = ""
 
     // MARK: Output
-    @Published var viewState: ViewState<ItemList, APIError>
+    @Published var viewState: ViewState<ItemList, ArticleSearchError>
 
     private let itemsRepository: ItemsRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = []
@@ -50,9 +50,13 @@ class ArticleSearchViewModel: ArticleSearchViewModelProtocol, ArticleSearchViewM
                 case .finished:
                     break
                 case .failure(let error):
-                    self?.viewState = .failure(error)
+                    self?.viewState = .failure(ArticleSearchError.apiError(error))
                 }
             }, receiveValue: { [weak self] itemList in
+                if itemList.list.isEmpty {
+                    self?.viewState = .failure(ArticleSearchError.notFoundArticls)
+                    return
+                }
                 self?.viewState = .success(itemList)
             })
             .store(in: &cancellables)
