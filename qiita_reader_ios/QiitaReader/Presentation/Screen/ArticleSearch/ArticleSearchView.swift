@@ -30,6 +30,7 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
             }
             .listStyle(PlainListStyle())
             .searchable(text: $viewModel.input.query)
+            .autocorrectionDisabled()
             .onSubmit(of: .search) {
                 viewModel.input.searchItems()
             }
