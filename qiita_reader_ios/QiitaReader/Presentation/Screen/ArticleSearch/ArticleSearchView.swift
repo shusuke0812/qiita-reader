@@ -14,26 +14,38 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
     var body: some View {
         VStack {
             if viewModel.output.isLoading {
-                ProgressView().padding()
+                loadingView
             }
-            List(viewModel.output.itemList.list) { item in
-                ArticleSearchItemView(
-                    item: item,
-                    onSelectedTag: { tagId in
-                        router.routeTo(.tagArticles(tagId: tagId), via: .modal)
-                    },
-                    onSelectedItem: {
-                        router.routeTo(.articleDetail(articleUrlString: item.urlString), via: .push)
-                    }
-                )
-                .listRowInsets(EdgeInsets())
-            }
-            .listStyle(PlainListStyle())
-            .searchable(text: $viewModel.input.query)
-            .autocorrectionDisabled()
-            .onSubmit(of: .search) {
-                viewModel.input.searchItems()
-            }
+            articleListView
+        }
+    }
+
+    // MARK: - Content Views
+
+    @ViewBuilder
+    private var loadingView: some View {
+        ProgressView().padding()
+    }
+
+    @ViewBuilder
+    private var articleListView: some View {
+        List(viewModel.output.itemList.list) { item in
+            ArticleSearchItemView(
+                item: item,
+                onSelectedTag: { tagId in
+                    router.routeTo(.tagArticles(tagId: tagId), via: .modal)
+                },
+                onSelectedItem: {
+                    router.routeTo(.articleDetail(articleUrlString: item.urlString), via: .push)
+                }
+            )
+            .listRowInsets(EdgeInsets())
+        }
+        .listStyle(PlainListStyle())
+        .searchable(text: $viewModel.input.query)
+        .autocorrectionDisabled()
+        .onSubmit(of: .search) {
+            viewModel.input.searchItems()
         }
     }
 }
