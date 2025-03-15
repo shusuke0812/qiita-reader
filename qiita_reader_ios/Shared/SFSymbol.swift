@@ -22,4 +22,7 @@ enum SFSymbol {
 
     /// 􀁠 xmark circle
     static let xmarkCircle = "xmark.circle"
+
+    /// 􀣳 lasso badge sparkes
+    static let lassoBadgeSparkes = "lasso.badge.sparkles"
 }

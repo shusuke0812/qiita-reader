@@ -16,11 +16,26 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
             if viewModel.output.isLoading {
                 loadingView
             }
-            articleListView
+            //articleListView
+            standbyView
+        }
+        .searchable(text: $viewModel.input.query)
+        .autocorrectionDisabled()
+        .onSubmit(of: .search) {
+            viewModel.input.searchItems()
         }
     }
 
     // MARK: - Content Views
+
+    @ViewBuilder
+    private var standbyView: some View {
+        ContentUnavailableView(
+            "さあ、はじめましょう",
+            systemImage: SFSymbol.lassoBadgeSparkes,
+            description: Text("キーワードを入力してQiitaの記事を検索できます")
+        )
+    }
 
     @ViewBuilder
     private var loadingView: some View {
@@ -42,11 +57,6 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
             .listRowInsets(EdgeInsets())
         }
         .listStyle(PlainListStyle())
-        .searchable(text: $viewModel.input.query)
-        .autocorrectionDisabled()
-        .onSubmit(of: .search) {
-            viewModel.input.searchItems()
-        }
     }
 }
 
