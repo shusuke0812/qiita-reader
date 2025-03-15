@@ -13,11 +13,16 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
 
     var body: some View {
         VStack {
-            if viewModel.output.isLoading {
+            switch viewModel.output.viewState {
+            case .stadby:
+                standbyView
+            case .loading:
                 loadingView
+            case .success(let itemList):
+                articleListView(itemList: itemList)
+            case .failure:
+                EmptyView()
             }
-            //articleListView
-            standbyView
         }
         .searchable(text: $viewModel.input.query)
         .autocorrectionDisabled()
@@ -40,11 +45,12 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
     @ViewBuilder
     private var loadingView: some View {
         ProgressView().padding()
+        Spacer()
     }
 
     @ViewBuilder
-    private var articleListView: some View {
-        List(viewModel.output.itemList.list) { item in
+    private func articleListView(itemList: ItemList) -> some View {
+        List(itemList.list) { item in
             ArticleSearchItemView(
                 item: item,
                 onSelectedTag: { tagId in
