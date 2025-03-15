@@ -25,4 +25,7 @@ enum SFSymbol {
 
     /// 􀣳 lasso badge sparkes
     static let lassoBadgeSparkes = "lasso.badge.sparkles"
+
+    /// 􁀯 exclamationmark warninglight fill
+    static let exclamationmarkWarninglightFill = "exclamationmark.warninglight.fill"
 }

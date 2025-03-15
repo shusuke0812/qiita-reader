@@ -20,8 +20,8 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
                 loadingView
             case .success(let itemList):
                 articleListView(itemList: itemList)
-            case .failure:
-                EmptyView()
+            case .failure(let error):
+                errorView(message: error.description)
             }
         }
         .searchable(text: $viewModel.input.query)
@@ -63,6 +63,15 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
             .listRowInsets(EdgeInsets())
         }
         .listStyle(PlainListStyle())
+    }
+
+    @ViewBuilder
+    private func errorView(message: String) -> some View {
+        ContentUnavailableView(
+            "エラー",
+            systemImage: SFSymbol.exclamationmarkWarninglightFill,
+            description: Text(message)
+        )
     }
 }
 
