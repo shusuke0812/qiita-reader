@@ -36,7 +36,7 @@ struct TagArticlesView<ViewModel: TagArticlesViewModelProtocol>: View {
                 Button(action: {
                     router.dismiss()
                 }, label: {
-                    Image(systemName: "xmark.circle")
+                    Image(systemName: SFSymbol.xmarkCircle)
                         .foregroundStyle(.gray)
                 })
             }

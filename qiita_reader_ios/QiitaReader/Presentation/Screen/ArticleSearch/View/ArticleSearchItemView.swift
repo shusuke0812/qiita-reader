@@ -40,12 +40,12 @@ private struct HeaderView: View {
                     image
                         .profileImageModifier()
                 case .failure:
-                    Image(systemName: "person.circle.fill")
+                    Image(systemName: SFSymbol.personCircleFill)
                         .profileImageModifier()
                 case .empty:
                     ProgressView()
                 @unknown default:
-                    Image(systemName: "person.circle.fill")
+                    Image(systemName: SFSymbol.personCircleFill)
                         .profileImageModifier()
                 }
             }
@@ -99,7 +99,7 @@ private struct FooterView: View {
             Button(action: {
                 // TODO: タップアクション
             }, label: {
-                Image(systemName: "bookmark")
+                Image(systemName: SFSymbol.bookmark)
                     .resizable()
                     .frame(width: 18, height: 24)
                     .foregroundStyle(.gray)

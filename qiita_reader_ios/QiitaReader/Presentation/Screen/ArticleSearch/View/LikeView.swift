@@ -12,7 +12,7 @@ struct LikeView: View {
 
     var body: some View {
         HStack {
-            Image(systemName: "heart")
+            Image(systemName: SFSymbol.heart)
                 .frame(width: 20, height: 20)
                 .foregroundStyle(.gray)
             Text("\(likesCount)")

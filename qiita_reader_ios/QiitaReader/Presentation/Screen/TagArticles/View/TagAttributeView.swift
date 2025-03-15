@@ -30,12 +30,12 @@ private struct HeaderView: View {
                     image
                         .tagIconImageModifier()
                 case .failure:
-                    Image(systemName: "questionmark.app.dashed")
+                    Image(systemName: SFSymbol.questionMarkDashed)
                         .tagIconImageModifier()
                 case .empty:
                     ProgressView()
                 @unknown default:
-                    Image(systemName: "questionmark.app.dashed")
+                    Image(systemName: SFSymbol.questionMarkDashed)
                         .tagIconImageModifier()
                 }
             }
