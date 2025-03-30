@@ -26,8 +26,3 @@ extension Publisher where Output == AuthSessionCallback.Output, Failure == AuthS
             }.eraseToAnyPublisher()
     }
 }
-
-enum AuthError: Error {
-    case canceledLogin
-    case other(ASWebAuthenticationSessionError)
-}
