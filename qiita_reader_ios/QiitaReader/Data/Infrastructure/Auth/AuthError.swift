@@ -11,4 +11,5 @@ import Foundation
 enum AuthError: Error {
     case canceledLogin
     case other(ASWebAuthenticationSessionError)
+    case unknown(Error)
 }
