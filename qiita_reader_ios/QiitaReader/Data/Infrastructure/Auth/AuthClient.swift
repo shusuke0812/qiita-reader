@@ -9,13 +9,24 @@ import AuthenticationServices
 import Combine
 import Foundation
 
+typealias AuthSessionCallback = AnyPublisher<URL?, Error>
+
 protocol AuthClientProtocol {
-    func start<T: AuthRequestProtocol>(_ request: T) -> AnyPublisher<URL?, Error>
+    func start<T: AuthRequestProtocol>(_ request: T) -> AnyPublisher<URL?, AuthError>
 }
 
 class AuthClient: AuthClientProtocol {
-    func start<T: AuthRequestProtocol>(_ request: T) -> AnyPublisher<URL?, Error> {
+    private let retriesLeft: Int
+
+    init(retriesLeft: Int = 3) {
+        self.retriesLeft = retriesLeft
+    }
+
+    func start<T: AuthRequestProtocol>(_ request: T) -> AnyPublisher<URL?, AuthError> {
         return session(request)
+            .validateError()
+            .retry(retriesLeft)
+            .eraseToAnyPublisher()
     }
 
     private func session<T: AuthRequestProtocol>(_ request: T) -> AnyPublisher<URL?, Error> {
