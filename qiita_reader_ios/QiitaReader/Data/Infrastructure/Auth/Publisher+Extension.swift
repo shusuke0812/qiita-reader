@@ -11,18 +11,19 @@ import AuthenticationServices
 
 
 extension Publisher where Output == AuthSessionCallback.Output, Failure == AuthSessionCallback.Failure {
-    func validateError() -> AuthSessionCallback {
+    func validateError() -> AnyPublisher<URL?, AuthError> {
         return self
-            .tryMap { output in
-                if let error = output as? ASWebAuthenticationSessionError {
+            .mapError { error in
+                if let error = error as? ASWebAuthenticationSessionError {
                     switch error.code {
                     case .canceledLogin:
-                        throw AuthError.canceledLogin
+                        return AuthError.canceledLogin
                     default:
-                        throw AuthError.other(error)
+                        return AuthError.other(error)
                     }
                 }
-                return output
-            }.eraseToAnyPublisher()
+                return AuthError.unknown(error)
+            }
+            .eraseToAnyPublisher()
     }
 }
