@@ -13,8 +13,11 @@ struct QiitaReaderApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RoutingView(router) { _ in
-                router.start(.root)
+            ZStack {
+                RoutingView(router) { _ in
+                    router.start(.root)
+                }
+                DebugFloatingButton()
             }
         }
     }
