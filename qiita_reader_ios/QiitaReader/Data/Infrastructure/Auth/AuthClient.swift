@@ -15,7 +15,7 @@ protocol AuthClientProtocol {
     func start<T: AuthRequestProtocol>(_ request: T) -> AnyPublisher<URL?, AuthError>
 }
 
-class AuthClient: AuthClientProtocol {
+class AuthClient: NSObject, AuthClientProtocol {
     private let retriesLeft: Int
 
     init(retriesLeft: Int = 3) {
@@ -38,9 +38,16 @@ class AuthClient: AuthClientProtocol {
                 }
                 promise(.success(url))
             }
+            session.presentationContextProvider = self
             session.prefersEphemeralWebBrowserSession = true
             session.start()
         }
         .eraseToAnyPublisher()
+    }
+}
+
+extension AuthClient: ASWebAuthenticationPresentationContextProviding {
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        UIWindow()
     }
 }
