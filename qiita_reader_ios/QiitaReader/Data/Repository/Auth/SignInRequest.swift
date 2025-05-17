@@ -1,5 +1,5 @@
 //
-//  LoginRequest.swift
+//  SignInRequest.swift
 //  QiitaReader
 //
 //  Created by Shusuke Ota on 2025/5/17.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LoginRequest: AuthRequestProtocol {
+struct SignInRequest: AuthRequestProtocol {
     typealias Response = String
     
     var baseUrl: String {
