@@ -8,7 +8,7 @@
 import Foundation
 
 struct SignInRequest: AuthRequestProtocol {
-    typealias Response = String
+    typealias Response = SignIn
     
     var baseUrl: String {
         EndPoint.qiita.urlString
