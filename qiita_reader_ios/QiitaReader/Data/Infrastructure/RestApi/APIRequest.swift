@@ -33,6 +33,11 @@ extension APIRequestProtocol {
         var urlRequest = URLRequest(url: url)
         urlRequest.url = components?.url
         urlRequest.httpMethod = method.rawValue
+        if let header = header {
+            for (key, value) in header {
+                urlRequest.addValue(value, forHTTPHeaderField: key)
+            }
+        }
 
         return urlRequest
     }
