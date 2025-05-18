@@ -13,5 +13,6 @@ enum Env {
         static let clientId = Bundle.main.object(forInfoDictionaryKey: "ENV_QIITA_CLIENT_ID") as? String ?? ""
         static let clientSecret = Bundle.main.object(forInfoDictionaryKey: "ENV_QIITA_CLIENT_SECRET") as? String ?? ""
         static let scope = "read_qiita write_qiita"
+        static let accessTokenStorageKey = Bundle.main.object(forInfoDictionaryKey: "ENV_ACCESS_TOKEN_STORAGE_KEY") as? String ?? ""
     }
 }

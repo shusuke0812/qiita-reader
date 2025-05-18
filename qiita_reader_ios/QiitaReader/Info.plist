@@ -15,5 +15,7 @@
 	<string>$(QIITA_CLIENT_ID)</string>
 	<key>ENV_QIITA_CLIENT_SECRET</key>
 	<string>$(QIITA_CLIENT_SECRET)</string>
+	<key>ENV_ACCESS_TOKEN_STORAGE_KEY</key>
+	<string>$(ACCESS_TOKEN_STORAGE_KEY)</string>
 </dict>
 </plist>
