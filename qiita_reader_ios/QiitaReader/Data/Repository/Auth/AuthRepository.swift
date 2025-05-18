@@ -11,7 +11,9 @@ import Foundation
 protocol AuthRepositoryProtocol {
     func authorize() -> AnyPublisher<Authorize, AuthError>
     func generateAccessToken(authorizedCode: String) -> AnyPublisher<AuthToken, APIError>
+    func setAccessToken(_ value: String)
     func getAccessToken() -> String?
+    func deleteAccessToken()
 }
 
 class AuthRepository: AuthRepositoryProtocol {
