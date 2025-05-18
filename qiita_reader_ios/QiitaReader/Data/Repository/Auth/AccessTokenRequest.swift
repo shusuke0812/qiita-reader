@@ -10,6 +10,12 @@ import Foundation
 struct AccessTokenRequest: APIRequestProtocol {
     typealias Response = AuthToken
 
+    private let authorizedCode: String
+
+    init(authorizedCode: String) {
+        self.authorizedCode = authorizedCode
+    }
+
     var baseUrl: String {
         EndPoint.qiita.urlString
     }
@@ -24,7 +30,7 @@ struct AccessTokenRequest: APIRequestProtocol {
         [
             URLQueryItem(name: "client_id", value: Env.Qiita.clientId),
             URLQueryItem(name: "client_secret", value: Env.Qiita.clientSecret),
-            URLQueryItem(name: "scope", value: Env.Qiita.scope)
+            URLQueryItem(name: "code", value: authorizedCode)
         ]
     }
 
