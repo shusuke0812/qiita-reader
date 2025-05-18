@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// [API doc](https://qiita.com/api/v2/docs#get-apiv2tagstag_id)
 struct TagRequest: APIRequestProtocol {
     typealias Response = Tag
 

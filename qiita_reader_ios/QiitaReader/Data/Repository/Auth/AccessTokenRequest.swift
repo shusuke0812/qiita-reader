@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// [API doc](https://qiita.com/api/v2/docs#post-apiv2access_tokens)
 struct AccessTokenRequest: APIRequestProtocol {
     typealias Response = AuthToken
 

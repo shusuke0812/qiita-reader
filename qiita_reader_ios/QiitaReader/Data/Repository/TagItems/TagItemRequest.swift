@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// [API doc](https://qiita.com/api/v2/docs#get-apiv2tagstag_iditems)
 struct TagItemRequest: APIRequestProtocol {
     typealias Response = [TagItem]
 
