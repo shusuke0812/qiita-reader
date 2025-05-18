@@ -10,7 +10,8 @@ import Foundation
 
 protocol AuthRepositoryProtocol {
     func authorize() -> AnyPublisher<Authorize, AuthError>
-    func getAccessToken(authorizedCode: String) -> AnyPublisher<AuthToken, APIError>
+    func generateAccessToken(authorizedCode: String) -> AnyPublisher<AuthToken, APIError>
+    func getAccessToken() -> String?
 }
 
 class AuthRepository: AuthRepositoryProtocol {
@@ -36,10 +37,25 @@ class AuthRepository: AuthRepositoryProtocol {
             .eraseToAnyPublisher()
     }
 
-    func getAccessToken(authorizedCode: String) -> AnyPublisher<AuthToken, APIError> {
+    func generateAccessToken(authorizedCode: String) -> AnyPublisher<AuthToken, APIError> {
         let request = AccessTokenRequest(authorizedCode: authorizedCode)
         return apiClient
             .start(request)
             .eraseToAnyPublisher()
+    }
+
+    func setAccessToken(_ value: String) {
+        let key = Env.Qiita.accessTokenStorageKey
+        SecureStorageClient.setData(key: key, value: value)
+    }
+
+    func getAccessToken() -> String? {
+        let key = Env.Qiita.accessTokenStorageKey
+        return SecureStorageClient.getStringData(key: key)
+    }
+
+    func deleteAccessToken() {
+        let key = Env.Qiita.accessTokenStorageKey
+        SecureStorageClient.deleteDta(key: key)
     }
 }
