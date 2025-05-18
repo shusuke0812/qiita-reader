@@ -30,7 +30,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		9CE64B632D86C1BD009CEA55 /* Exceptions for "QiitaReader" folder in "QiitaReader" target */ = {
+		9CC549922DDA1C0E006CCAB0 /* Exceptions for "QiitaReader" folder in "QiitaReader" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -43,7 +43,7 @@
 		9C61B2EE2D585E5D0081E239 /* QiitaReader */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				9CE64B632D86C1BD009CEA55 /* Exceptions for "QiitaReader" folder in "QiitaReader" target */,
+				9CC549922DDA1C0E006CCAB0 /* Exceptions for "QiitaReader" folder in "QiitaReader" target */,
 			);
 			path = QiitaReader;
 			sourceTree = "<group>";
@@ -421,7 +421,7 @@
 				DEVELOPMENT_TEAM = 2XL9QYTD77;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = QiitaReader/Info.plist;
+				INFOPLIST_FILE = $PROJECT_DIR/QiitaReader/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -454,7 +454,7 @@
 				DEVELOPMENT_TEAM = 2XL9QYTD77;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = QiitaReader/Info.plist;
+				INFOPLIST_FILE = $PROJECT_DIR/QiitaReader/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

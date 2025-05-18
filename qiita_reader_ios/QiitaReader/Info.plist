@@ -2,20 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>qiitareader</string>
-			</array>
-		</dict>
-	</array>
-	<key>ENV_QIITA_CLIENT_ID</key>
-	<string>$(QIITA_CLIENT_ID)</string>
-	<key>ENV_QIITA_CLIENT_SECRET</key>
-	<string>$(QIITA_CLIENT_SECRET)</string>
-	<key>ENV_ACCESS_TOKEN_STORAGE_KEY</key>
-	<string>$(ACCESS_TOKEN_STORAGE_KEY)</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>qiitareader</string>
+            </array>
+        </dict>
+    </array>
+    <key>ENV_QIITA_CLIENT_ID</key>
+    <string>$(QIITA_CLIENT_ID)</string>
+    <key>ENV_QIITA_CLIENT_SECRET</key>
+    <string>$(QIITA_CLIENT_SECRET)</string>
+    <key>ENV_ACCESS_TOKEN_STORAGE_KEY</key>
+    <string>$(ACCESS_TOKEN_STORAGE_KEY)</string>
 </dict>
 </plist>
