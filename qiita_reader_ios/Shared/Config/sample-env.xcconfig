@@ -1,0 +1,13 @@
+//
+//  sample-env.xcconfig
+//  QiitaReader
+//
+//  Created by Shusuke Ota on 2025/5/18.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+QIITA_CLIENT_ID =
+QIITA_CLIENT_SECRET =
+ACCESS_TOKEN_STORAGE_KEY =
