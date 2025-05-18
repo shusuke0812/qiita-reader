@@ -1,5 +1,5 @@
 //
-//  SignInRequest.swift
+//  AuthorizeRequest.swift
 //  QiitaReader
 //
 //  Created by Shusuke Ota on 2025/5/17.
@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct SignInRequest: AuthRequestProtocol {
-    typealias Response = SignIn
-    
+struct AuthorizeRequest: AuthRequestProtocol {
+    typealias Response = Authorize
+
     var baseUrl: String {
         EndPoint.qiita.urlString
     }

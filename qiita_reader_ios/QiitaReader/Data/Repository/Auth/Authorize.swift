@@ -1,5 +1,5 @@
 //
-//  SignIn.swift
+//  Authorize.swift
 //  QiitaReader
 //
 //  Created by Shusuke Ota on 2025/5/17.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SignIn: Decodable {
+struct Authorize: Decodable {
     let url: URL?
 
     var code: String? {
