@@ -13,11 +13,33 @@ protocol SignInUseCaseProtocol {
 }
 
 class SignInUseCase: SignInUseCaseProtocol {
-    init() {}
+    private let authRepository: AuthRepositoryProtocol
+
+    init(authRepository: AuthRepositoryProtocol = AuthRepository()) {
+        self.authRepository = authRepository
+    }
 
     func signIn() -> AnyPublisher<Void, SignInError> {
-        Just(())
-            .setFailureType(to: SignInError.self)
+        return authRepository.authorize()
+            .mapError { SignInError.failedToAuthenticate($0) }
+            .flatMap { authorize -> AnyPublisher<String, SignInError> in
+                if let code = authorize.code {
+                    return Just(code)
+                        .setFailureType(to: SignInError.self)
+                        .eraseToAnyPublisher()
+                } else {
+                    return Fail<String, SignInError>(error: SignInError.notFoundAuthorizedCode)
+                        .eraseToAnyPublisher()
+                }
+            }
+            .flatMap { code in
+                self.authRepository.generateAccessToken(authorizedCode: code)
+                    .mapError { SignInError.failedToGetAccessToken($0) }
+            }
+            .handleEvents(receiveOutput: { authToken in
+                self.authRepository.setAccessToken(authToken.accessToken)
+            })
+            .map { _ in () }
             .eraseToAnyPublisher()
     }
 }
