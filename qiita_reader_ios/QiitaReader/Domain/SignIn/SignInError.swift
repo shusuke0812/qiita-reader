@@ -10,6 +10,6 @@ import Foundation
 enum SignInError: Error {
     case cancel
     case failedToAuthenticate(Error)
-    case failedToConvertCode
+    case notFoundAuthorizedCode
     case failedToGetAccessToken(Error)
 }
