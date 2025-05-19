@@ -15,7 +15,7 @@ struct SecureStorageClient {
         setKeyChain(key: key, data: data)
     }
 
-    static func deleteDta(key: String) {
+    static func deleteData(key: String) {
         SecItemDelete([
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: Bundle.main.bundleIdentifier ?? "",
@@ -35,7 +35,7 @@ struct SecureStorageClient {
     }
 
     private static func setKeyChain(key: String, data: Data) {
-        deleteDta(key: key)
+        deleteData(key: key)
         SecItemAdd([
             kSecClass: kSecClassGenericPassword,
             kSecValueData: data,
