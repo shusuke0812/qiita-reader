@@ -58,6 +58,6 @@ class AuthRepository: AuthRepositoryProtocol {
 
     func deleteAccessToken() {
         let key = Env.Qiita.accessTokenStorageKey
-        SecureStorageClient.deleteDta(key: key)
+        SecureStorageClient.deleteData(key: key)
     }
 }
