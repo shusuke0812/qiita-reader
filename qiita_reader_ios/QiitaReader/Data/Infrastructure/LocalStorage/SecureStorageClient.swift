@@ -48,7 +48,7 @@ struct SecureStorageClient {
         var query = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: Bundle.main.bundleIdentifier ?? "",
-            kSecAttrServer: key,
+            kSecAttrService: key,
             kSecReturnAttributes: true,
             kSecReturnData: true
         ] as CFDictionary
