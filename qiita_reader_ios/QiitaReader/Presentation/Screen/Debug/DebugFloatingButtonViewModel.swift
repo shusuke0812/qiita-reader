@@ -33,5 +33,10 @@ class DebugFloatingButtonViewModel: DebugFloatingButtonViewModelProtocol, DebugF
 
     func call() {
         signinUseCase.signIn()
+            .sink(receiveCompletion: { completion in
+                print(completion)
+            }, receiveValue: { _ in
+            })
+            .store(in: &cancellables)
     }
 }
