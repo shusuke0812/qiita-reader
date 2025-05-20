@@ -17,7 +17,10 @@ struct QiitaReaderApp: App {
                 RoutingView(router) { _ in
                     router.start(.root)
                 }
-                DebugFloatingButton()
+                // TODO: 端末をシェイクしてデバッグビューを表示させるようにする（React Native Expoをイメージ）
+                DebugFloatingButton<DebugFloatingButtonViewModel>(
+                    viewModel: DebugFloatingButtonViewModel()
+                )
             }
         }
     }

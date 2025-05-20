@@ -7,14 +7,16 @@
 
 import SwiftUI
 
-struct DebugFloatingButton: View {
+struct DebugFloatingButton<ViewModel: DebugFloatingButtonViewModelProtocol>: View {
+    @StateObject var viewModel: ViewModel
+
     var body: some View {
         VStack {
             Spacer()
             HStack {
                 Spacer()
                 Button(action: {
-
+                    viewModel.input.call()
                 }) {
                     Image(systemName: "apple.terminal")
                         .foregroundStyle(.white)
