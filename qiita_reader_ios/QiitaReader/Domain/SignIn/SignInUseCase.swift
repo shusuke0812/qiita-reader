@@ -21,7 +21,14 @@ class SignInUseCase: SignInUseCaseProtocol {
 
     func signIn() -> AnyPublisher<Void, SignInError> {
         return authRepository.authorize()
-            .mapError { SignInError.failedToAuthenticate($0) }
+            .mapError { error in
+                switch error {
+                case .canceledLogin:
+                    return SignInError.cancel
+                default:
+                    return SignInError.failedToAuthenticate(error)
+                }
+            }
             .flatMap { authorize -> AnyPublisher<String, SignInError> in
                 if let code = authorize.code {
                     return Just(code)
