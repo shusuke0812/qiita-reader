@@ -23,9 +23,15 @@ class DebugFloatingButtonViewModel: DebugFloatingButtonViewModelProtocol, DebugF
     var input: DebugFloatingButtonViewModelInput { get { self } set {} }
     var output: DebugFloatingButtonViewModelOutput { get { self } }
 
-    init() {
+    private let signinUseCase: SignInUseCaseProtocol
+
+    init(signinUseCase: SignInUseCaseProtocol = SignInUseCase()) {
+        self.signinUseCase = signinUseCase
     }
 
+    private var cancellables: Set<AnyCancellable> = []
+
     func call() {
+        signinUseCase.signIn()
     }
 }
