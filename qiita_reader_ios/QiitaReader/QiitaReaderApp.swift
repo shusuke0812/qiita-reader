@@ -18,9 +18,9 @@ struct QiitaReaderApp: App {
                     router.start(.root)
                 }
                 // TODO: 端末をシェイクしてデバッグビューを表示させるようにする（React Native Expoをイメージ）
-                DebugFloatingButton<DebugFloatingButtonViewModel>(
-                    viewModel: DebugFloatingButtonViewModel()
-                )
+//                DebugFloatingButton<DebugFloatingButtonViewModel>(
+//                    viewModel: DebugFloatingButtonViewModel()
+//                )
             }
         }
     }
