@@ -47,7 +47,7 @@ struct ValidateUserCredentialUseCaseTests {
         #expect(useCase.isValid == false)
     }
 
-    /// 無効なアクセストークン（空）
+    /// 無効なアクセストークン（空文字）
     @Test func test_isValid_true_whenAccessTokenIsEmpty() {
         mockAuthRepository.accessToken = ""
 
