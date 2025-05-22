@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 protocol StockArticleUseCaseProtocol {
-    func invoke(itemId: Int) -> AnyPublisher<Void, SignInError>
+    func invoke(itemId: String) -> AnyPublisher<Void, SignInError>
 }
 
 class StockArticleUseCase: StockArticleUseCaseProtocol {
@@ -25,7 +25,7 @@ class StockArticleUseCase: StockArticleUseCaseProtocol {
     }
     // TODO: 未ログインの場合はログイン画面を表示. ログイン済みかつストック済みである場合はストック削除メソッドを呼ぶ
     // TODO: エラー型をStockErrorに修正する
-    func invoke(itemId: Int) -> AnyPublisher<Void, SignInError> {
+    func invoke(itemId: String) -> AnyPublisher<Void, SignInError> {
         if validateUserCredentialUseCase.isValid {
             return Just<Void>(())
                 .setFailureType(to: SignInError.self)
