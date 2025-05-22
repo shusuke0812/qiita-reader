@@ -28,11 +28,7 @@ struct AccessTokenRequest: APIRequestProtocol {
     var method: HTTPMethod = .post
 
     var parameters: [URLQueryItem]? {
-        [
-            URLQueryItem(name: "client_id", value: Env.Qiita.clientId),
-            URLQueryItem(name: "client_secret", value: Env.Qiita.clientSecret),
-            URLQueryItem(name: "code", value: authorizedCode)
-        ]
+        nil
     }
 
     var header: [String : String]? {
@@ -40,6 +36,10 @@ struct AccessTokenRequest: APIRequestProtocol {
     }
 
     var body: HTTPBody? {
-        nil
+        [
+            "client_id": Env.Qiita.clientId,
+            "client_secret": Env.Qiita.clientSecret,
+            "code": authorizedCode
+        ]
     }
 }
