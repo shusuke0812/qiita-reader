@@ -11,6 +11,7 @@ import Foundation
 protocol ArticleSearchViewModelInput {
     var query: String { get set }
     func searchItems()
+    func stockItem(_ item: Item)
 }
 
 protocol ArticleSearchViewModelOutput {
@@ -33,11 +34,16 @@ class ArticleSearchViewModel: ArticleSearchViewModelProtocol, ArticleSearchViewM
     @Published var viewState: ViewState<ItemList, ArticleSearchError>
 
     private let itemsRepository: ItemsRepositoryProtocol
+    private let stockArticleUseCase: StockArticleUseCaseProtocol
     private var cancellables: Set<AnyCancellable> = []
     private var page = 1
 
-    init(itemsRepository: ItemsRepositoryProtocol = ItemsRepository()) {
+    init(
+        itemsRepository: ItemsRepositoryProtocol = ItemsRepository(),
+        stockArticleUseCase: StockArticleUseCaseProtocol = StockArticleUseCase()
+    ) {
         self.itemsRepository = itemsRepository
+        self.stockArticleUseCase = stockArticleUseCase
         self.viewState = .stadby
     }
 
@@ -58,6 +64,15 @@ class ArticleSearchViewModel: ArticleSearchViewModelProtocol, ArticleSearchViewM
                     return
                 }
                 self?.viewState = .success(itemList)
+            })
+            .store(in: &cancellables)
+    }
+
+    func stockItem(_ item: Item) {
+        stockArticleUseCase
+            .invoke(itemId: item.id)
+            .sink(receiveCompletion: { completion in
+            }, receiveValue: { _ in
             })
             .store(in: &cancellables)
     }
