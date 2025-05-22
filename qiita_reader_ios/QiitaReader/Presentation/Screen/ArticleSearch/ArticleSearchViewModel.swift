@@ -11,7 +11,7 @@ import Foundation
 protocol ArticleSearchViewModelInput {
     var query: String { get set }
     func searchItems()
-    func stockItem(_ item: Item)
+    func stockItem(_ id: String)
 }
 
 protocol ArticleSearchViewModelOutput {
@@ -68,9 +68,9 @@ class ArticleSearchViewModel: ArticleSearchViewModelProtocol, ArticleSearchViewM
             .store(in: &cancellables)
     }
 
-    func stockItem(_ item: Item) {
+    func stockItem(_ id: String) {
         stockArticleUseCase
-            .invoke(itemId: item.id)
+            .invoke(itemId: id)
             .sink(receiveCompletion: { completion in
             }, receiveValue: { _ in
             })
