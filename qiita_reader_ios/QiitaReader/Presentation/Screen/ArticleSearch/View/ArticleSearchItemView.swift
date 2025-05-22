@@ -11,17 +11,27 @@ struct ArticleSearchItemView: View {
     let item: Item
     let onSelectedTag: (String) -> Void
     let onSelectedItem: () -> Void
+    let onStockItem: (UUID) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HeaderView(userName: item.user.name, updatedAt: item.formattedUpdatedAtString, profileImageURL: item.user.profileImageUrl)
-            TitleView(title: item.title)
-            FooterView(likesCount: item.likesCount, tags: item.tags) { tagId in
-                onSelectedTag(tagId)
+            Group {
+                HeaderView(userName: item.user.name, updatedAt: item.formattedUpdatedAtString, profileImageURL: item.user.profileImageUrl)
+                TitleView(title: item.title)
             }
-        }
-        .onTapGesture {
-            onSelectedItem()
+            .onTapGesture {
+                onSelectedItem()
+            }
+            FooterView(
+                likesCount: item.likesCount,
+                tags: item.tags,
+                onSelectedTag: { tagId in
+                    onSelectedTag(tagId)
+                },
+                onStock: {
+                    onStockItem(item.id)
+                }
+            )
         }
         .padding()
     }
@@ -86,6 +96,7 @@ private struct FooterView: View {
     let likesCount: Int
     let tags: [Item.Tag]
     let onSelectedTag: (String) -> Void
+    let onStock: () -> Void
 
     var body: some View {
         HStack(alignment: .bottom) {
@@ -97,13 +108,14 @@ private struct FooterView: View {
             }
             Spacer()
             Button(action: {
-                // TODO: タップアクション
+                onStock()
             }, label: {
                 Image(systemName: SFSymbol.bookmark)
                     .resizable()
                     .frame(width: 18, height: 24)
                     .foregroundStyle(.gray)
             })
+            .buttonStyle(.plain) // NOTE: List内にButtonを配置するとセルのFooterをタップした時にButtonのアクションが発火してしまう. スタイルを設定すると発火しないようになる.
         }
     }
 }
@@ -123,5 +135,5 @@ private struct FooterView: View {
         urlString: "https://developer.apple.com/jp/",
         user: Item.User(id: "qiita-tester", profileImageUrlString: "https://example.com/icon.png")
     )
-    ArticleSearchItemView(item: item, onSelectedTag: { _ in }, onSelectedItem: {})
+    ArticleSearchItemView(item: item, onSelectedTag: { _ in }, onSelectedItem: {}, onStockItem: { _ in })
 }

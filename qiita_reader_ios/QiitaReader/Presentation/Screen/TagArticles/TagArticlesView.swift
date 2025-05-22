@@ -25,6 +25,8 @@ struct TagArticlesView<ViewModel: TagArticlesViewModelProtocol>: View {
                         },
                         onSelectedItem: {
                             router.routeTo(.articleDetail(articleUrlString: item.urlString), via: .push)
+                        },
+                        onStockItem: { tagId in
                         }
                     )
                 }
