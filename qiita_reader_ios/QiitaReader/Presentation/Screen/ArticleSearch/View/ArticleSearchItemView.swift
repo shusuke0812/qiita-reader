@@ -11,7 +11,7 @@ struct ArticleSearchItemView: View {
     let item: Item
     let onSelectedTag: (String) -> Void
     let onSelectedItem: () -> Void
-    let onStockItem: (UUID) -> Void
+    let onStockItem: (String) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -122,6 +122,7 @@ private struct FooterView: View {
 
 #Preview {
     let item = Item(
+        id: "c686397e4a0f4f11683d",
         likesCount: 120,
         tags: [
             Item.Tag(name: "Supabase"),
