@@ -39,7 +39,7 @@ struct TagItemRequest: APIRequestProtocol {
     var header: [String : String]? {
         nil
     }
-    var body: Data? {
+    var body: HTTPBody? {
         nil
     }
 }

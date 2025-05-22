@@ -39,7 +39,7 @@ struct AccessTokenRequest: APIRequestProtocol {
         ["Content-Type": "application/json"]
     }
 
-    var body: Data? {
+    var body: HTTPBody? {
         nil
     }
 }
