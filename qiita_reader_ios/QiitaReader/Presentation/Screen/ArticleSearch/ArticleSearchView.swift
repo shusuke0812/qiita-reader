@@ -60,7 +60,7 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
                     router.routeTo(.articleDetail(articleUrlString: item.urlString), via: .push)
                 },
                 onStockItem: { tagId in
-                    print("tagId=\(tagId)")
+                    viewModel.input.stockItem(tagId)
                 }
             )
             .listRowInsets(EdgeInsets())
