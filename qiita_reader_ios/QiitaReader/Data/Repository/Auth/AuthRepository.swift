@@ -19,14 +19,17 @@ protocol AuthRepositoryProtocol {
 class AuthRepository: AuthRepositoryProtocol {
     private let authClient: AuthClientProtocol
     private let apiClient: APIClientProtocol
+    private let secureStorageClient: SecureStorageClientProtocol
     private var cancellables: Set<AnyCancellable> = []
 
     init(
         authClient: AuthClientProtocol = AuthClient(),
-        apiClient: APIClientProtocol = APIClient()
+        apiClient: APIClientProtocol = APIClient(),
+        secureStorageClient: SecureStorageClientProtocol = SecureStorageClient()
     ) {
         self.authClient = authClient
         self.apiClient = apiClient
+        self.secureStorageClient = secureStorageClient
     }
 
     func authorize() -> AnyPublisher<Authorize, AuthError> {
@@ -49,7 +52,7 @@ class AuthRepository: AuthRepositoryProtocol {
     func setAccessToken(_ value: String) -> AnyPublisher<Void, Error> {
         let key = Env.Qiita.accessTokenStorageKey
         return Result {
-            try SecureStorageClient.setData(key: key, value: value)
+            try secureStorageClient.setData(key: key, value: value)
         }
         .publisher
         .eraseToAnyPublisher()
@@ -57,13 +60,13 @@ class AuthRepository: AuthRepositoryProtocol {
 
     func getAccessToken() -> String? {
         let key = Env.Qiita.accessTokenStorageKey
-        return SecureStorageClient.getStringData(key: key)
+        return secureStorageClient.getStringData(key: key)
     }
 
     func deleteAccessToken() -> AnyPublisher<Void, Error> {
         let key = Env.Qiita.accessTokenStorageKey
         return Result {
-            try SecureStorageClient.deleteData(key: key)
+            try secureStorageClient.deleteData(key: key)
         }
         .publisher
         .eraseToAnyPublisher()

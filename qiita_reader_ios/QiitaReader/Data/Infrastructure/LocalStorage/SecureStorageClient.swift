@@ -9,13 +9,19 @@
 
 import Foundation
 
-struct SecureStorageClient {
-    static func setData(key: String, value: String) throws {
+protocol SecureStorageClientProtocol {
+    func setData(key: String, value: String) throws
+    func deleteData(key: String) throws
+    func getStringData(key: String) -> String?
+}
+
+class SecureStorageClient: SecureStorageClientProtocol {
+    func setData(key: String, value: String) throws {
         guard let data = value.data(using: .utf8) else { return }
         try setKeyChain(key: key, data: data)
     }
 
-    static func deleteData(key: String) throws {
+    func deleteData(key: String) throws {
         let status = SecItemDelete([
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: Bundle.main.bundleIdentifier ?? "",
@@ -26,7 +32,7 @@ struct SecureStorageClient {
         }
     }
 
-    static func getStringData(key: String) -> String? {
+    func getStringData(key: String) -> String? {
         do {
             guard let data = try getKeyChain(key: key) else {
                 return nil
@@ -37,7 +43,7 @@ struct SecureStorageClient {
         }
     }
 
-    private static func setKeyChain(key: String, data: Data) throws {
+    private func setKeyChain(key: String, data: Data) throws {
         try deleteData(key: key)
         let status = SecItemAdd([
             kSecClass: kSecClassGenericPassword,
@@ -50,7 +56,7 @@ struct SecureStorageClient {
         }
     }
 
-    private static func getKeyChain(key: String) throws -> Data? {
+    private func getKeyChain(key: String) throws -> Data? {
         let query = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: Bundle.main.bundleIdentifier ?? "",
