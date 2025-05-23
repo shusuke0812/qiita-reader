@@ -43,10 +43,10 @@ class SignInUseCase: SignInUseCaseProtocol {
                 self.authRepository.generateAccessToken(authorizedCode: code)
                     .mapError { SignInError.failedToGetAccessToken($0) }
             }
-            .handleEvents(receiveOutput: { authToken in
+            .flatMap { authToken in
                 self.authRepository.setAccessToken(authToken.accessToken)
-            })
-            .map { _ in () }
+                    .mapError { SignInError.failedToSaveAccessToken($0) }
+            }
             .eraseToAnyPublisher()
     }
 }

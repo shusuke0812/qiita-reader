@@ -12,4 +12,5 @@ enum SignInError: Error {
     case failedToAuthenticate(Error)
     case notFoundAuthorizedCode
     case failedToGetAccessToken(Error)
+    case failedToSaveAccessToken(Error)
 }
