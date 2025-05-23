@@ -26,7 +26,7 @@ class MockAuthRepository: AuthRepositoryProtocol {
             .eraseToAnyPublisher()
     }
     
-    func setAccessToken(_ value: String) {
+    func setAccessToken(_ value: String) -> AnyPublisher<Void, Error> {
         fatalError("Need not to test this method.")
     }
     
@@ -34,7 +34,7 @@ class MockAuthRepository: AuthRepositoryProtocol {
         return accessToken
     }
     
-    func deleteAccessToken() {
+    func deleteAccessToken() -> AnyPublisher<Void, Error> {
         fatalError("Need not to test this method.")
     }
 }
