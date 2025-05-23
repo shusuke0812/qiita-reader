@@ -8,6 +8,8 @@
 import Foundation
 
 enum SecureStorageError: Error {
+    case failedToSet(status: OSStatus)
+    case failedToDelete(status: OSStatus)
     case noData
     case unhandledError(status: OSStatus)
     case unexpectedData

@@ -10,17 +10,20 @@
 import Foundation
 
 struct SecureStorageClient {
-    static func setData(key: String, value: String) {
+    static func setData(key: String, value: String) throws {
         guard let data = value.data(using: .utf8) else { return }
-        setKeyChain(key: key, data: data)
+        try setKeyChain(key: key, data: data)
     }
 
-    static func deleteData(key: String) {
-        SecItemDelete([
+    static func deleteData(key: String) throws {
+        let status = SecItemDelete([
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: Bundle.main.bundleIdentifier ?? "",
             kSecAttrService: key
         ] as CFDictionary)
+        guard status == errSecSuccess else {
+            throw SecureStorageError.failedToDelete(status: status)
+        }
     }
 
     static func getStringData(key: String) -> String? {
@@ -34,14 +37,17 @@ struct SecureStorageClient {
         }
     }
 
-    private static func setKeyChain(key: String, data: Data) {
-        deleteData(key: key)
-        SecItemAdd([
+    private static func setKeyChain(key: String, data: Data) throws {
+        try deleteData(key: key)
+        let status = SecItemAdd([
             kSecClass: kSecClassGenericPassword,
             kSecValueData: data,
             kSecAttrAccount: Bundle.main.bundleIdentifier ?? "",
             kSecAttrService: key
         ] as CFDictionary, nil)
+        guard status == errSecSuccess else {
+            throw SecureStorageError.failedToSet(status: status)
+        }
     }
 
     private static func getKeyChain(key: String) throws -> Data? {
