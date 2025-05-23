@@ -51,7 +51,7 @@ struct SecureStorageClient {
     }
 
     private static func getKeyChain(key: String) throws -> Data? {
-        var query = [
+        let query = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: Bundle.main.bundleIdentifier ?? "",
             kSecAttrService: key,
