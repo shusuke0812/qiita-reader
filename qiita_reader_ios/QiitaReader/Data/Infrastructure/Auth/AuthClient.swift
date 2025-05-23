@@ -18,7 +18,7 @@ protocol AuthClientProtocol {
 class AuthClient: NSObject, AuthClientProtocol {
     private let retriesLeft: Int
 
-    init(retriesLeft: Int = 3) {
+    init(retriesLeft: Int = 0) {
         self.retriesLeft = retriesLeft
     }
 
