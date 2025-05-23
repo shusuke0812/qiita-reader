@@ -21,8 +21,5 @@ class SignOutUseCase: SignOutUseCaseProtocol {
 
     func signOut() -> AnyPublisher<Void, Error> {
         authRepository.deleteAccessToken()
-        return Just<Void>(())
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
     }
 }
