@@ -13,10 +13,13 @@ class MockSecureStorageClient: SecureStorageClientProtocol {
     var error: SecureStorageError?
 
     func setData(key: String, value: String) throws {
+        guard let savedStringValue = savedStringValue, !savedStringValue.isEmpty else {
+            throw SecureStorageError.emptyToken
+        }
         if let error = error {
             throw error
         }
-        savedStringValue = value
+        self.savedStringValue = value
     }
 
     func deleteData(key: String) throws {
