@@ -40,11 +40,18 @@ class AuthRepositoryTests {
     @Test func test_setAccessToken_false_whenDuplicateToken() async {
         let expectedAccessToken = "ea5d0a593b2655e9568f144fb1826342292f5c6b"
         secureStorageClient.error = SecureStorageError.failedToSet(status: errSecDuplicateItem)
+        var completionError: SecureStorageError?
 
         await confirmation("fail") { expectation in
             authRepository
                 .setAccessToken(expectedAccessToken)
-                .sink(receiveCompletion: { _ in
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        completionError = error as? SecureStorageError
+                    }
                     expectation()
                 }, receiveValue: { _ in
                 })
@@ -52,15 +59,23 @@ class AuthRepositoryTests {
         }
 
         #expect(secureStorageClient.savedStringValue == nil)
+        #expect(completionError == SecureStorageError.failedToSet(status: errSecDuplicateItem))
     }
 
     @Test func test_setAccessToken_false_whenEmptyToken() async {
         let expectedAccessToken = ""
+        var completionError: SecureStorageError?
 
         await confirmation("fail") { expectation in
             authRepository
                 .setAccessToken(expectedAccessToken)
-                .sink(receiveCompletion: { _ in
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        completionError = error as? SecureStorageError
+                    }
                     expectation()
                 }, receiveValue: { _ in
                 })
@@ -68,5 +83,6 @@ class AuthRepositoryTests {
         }
 
         #expect(secureStorageClient.savedStringValue == nil)
+        #expect(completionError == SecureStorageError.emptyToken)
     }
 }
