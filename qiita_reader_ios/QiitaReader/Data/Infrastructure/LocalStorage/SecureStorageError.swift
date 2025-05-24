@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum SecureStorageError: Error {
+enum SecureStorageError: Error, Equatable {
     case emptyToken
     case failedToSet(status: OSStatus)
     case failedToDelete(status: OSStatus)
