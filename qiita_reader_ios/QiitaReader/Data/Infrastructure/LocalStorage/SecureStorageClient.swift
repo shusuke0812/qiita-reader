@@ -17,7 +17,7 @@ protocol SecureStorageClientProtocol {
 
 class SecureStorageClient: SecureStorageClientProtocol {
     func setData(key: String, value: String) throws {
-        guard let data = value.data(using: .utf8) else {
+        guard let data = value.data(using: .utf8), !data.isEmpty else {
             throw SecureStorageError.emptyToken
         }
         try setKeyChain(key: key, data: data)
