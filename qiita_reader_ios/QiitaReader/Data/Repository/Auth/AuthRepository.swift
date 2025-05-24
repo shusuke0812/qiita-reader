@@ -20,7 +20,6 @@ class AuthRepository: AuthRepositoryProtocol {
     private let authClient: AuthClientProtocol
     private let apiClient: APIClientProtocol
     private let secureStorageClient: SecureStorageClientProtocol
-    private var cancellables: Set<AnyCancellable> = []
 
     init(
         authClient: AuthClientProtocol = AuthClient(),
