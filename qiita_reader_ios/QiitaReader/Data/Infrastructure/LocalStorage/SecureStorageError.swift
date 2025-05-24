@@ -12,6 +12,7 @@ enum SecureStorageError: Error, Equatable {
     case failedToSet(status: OSStatus)
     case failedToDelete(status: OSStatus)
     case noData
+    case parseError
     case unhandledError(status: OSStatus)
     case unexpectedData
 }
