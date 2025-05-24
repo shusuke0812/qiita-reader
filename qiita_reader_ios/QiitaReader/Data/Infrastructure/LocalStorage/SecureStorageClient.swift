@@ -29,7 +29,7 @@ class SecureStorageClient: SecureStorageClientProtocol {
             kSecAttrAccount: Bundle.main.bundleIdentifier ?? "",
             kSecAttrService: key
         ] as CFDictionary)
-        guard status == errSecSuccess else {
+        guard status == errSecSuccess || status == errSecItemNotFound else {
             throw SecureStorageError.failedToDelete(status: status)
         }
     }
