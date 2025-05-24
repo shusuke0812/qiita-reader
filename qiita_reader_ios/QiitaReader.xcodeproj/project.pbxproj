@@ -29,9 +29,22 @@
 		9C61B3062D585E5E0081E239 /* QiitaReaderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QiitaReaderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9CC549922DDA1C0E006CCAB0 /* Exceptions for "QiitaReader" folder in "QiitaReader" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9C61B2EB2D585E5D0081E239 /* QiitaReader */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9C61B2EE2D585E5D0081E239 /* QiitaReader */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9CC549922DDA1C0E006CCAB0 /* Exceptions for "QiitaReader" folder in "QiitaReader" target */,
+			);
 			path = QiitaReader;
 			sourceTree = "<group>";
 		};
@@ -397,6 +410,8 @@
 		};
 		9C61B3112D585E5E0081E239 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 9CAE73DC2D85797800F418B8 /* Shared */;
+			baseConfigurationReferenceRelativePath = "Config/prod-env.xcconfig";
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -406,6 +421,7 @@
 				DEVELOPMENT_TEAM = 2XL9QYTD77;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = $PROJECT_DIR/QiitaReader/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -427,6 +443,8 @@
 		};
 		9C61B3122D585E5E0081E239 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 9CAE73DC2D85797800F418B8 /* Shared */;
+			baseConfigurationReferenceRelativePath = "Config/prod-env.xcconfig";
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -436,6 +454,7 @@
 				DEVELOPMENT_TEAM = 2XL9QYTD77;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = $PROJECT_DIR/QiitaReader/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -463,7 +482,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2XL9QYTD77;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.shusuke.ota.QiitaReaderTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -482,7 +501,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2XL9QYTD77;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.shusuke.ota.QiitaReaderTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

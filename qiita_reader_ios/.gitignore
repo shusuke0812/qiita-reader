@@ -1,0 +1,2 @@
+Shared/Config/*.xcconfig
+!Shared/Config/sample-env.xcconfig

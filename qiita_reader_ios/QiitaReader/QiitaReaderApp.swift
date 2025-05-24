@@ -13,8 +13,14 @@ struct QiitaReaderApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RoutingView(router) { _ in
-                router.start(.root)
+            ZStack {
+                RoutingView(router) { _ in
+                    router.start(.root)
+                }
+                // TODO: 端末をシェイクしてデバッグビューを表示させるようにする（React Native Expoをイメージ）
+//                DebugFloatingButton<DebugFloatingButtonViewModel>(
+//                    viewModel: DebugFloatingButtonViewModel()
+//                )
             }
         }
     }

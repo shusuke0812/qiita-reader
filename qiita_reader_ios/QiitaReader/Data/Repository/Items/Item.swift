@@ -8,6 +8,7 @@
 import Foundation
 
 struct Item: Decodable, Identifiable {
+    let id: String
     let likesCount: Int
     let tags: [Self.Tag]
     let title: String
@@ -16,6 +17,7 @@ struct Item: Decodable, Identifiable {
     let user: User
 
     enum CodingKeys: String, CodingKey {
+        case id
         case likesCount = "likes_count"
         case tags
         case title
@@ -36,8 +38,6 @@ struct Item: Decodable, Identifiable {
         }
         return "-"
     }
-
-    let id: UUID = UUID()
 
     struct User: Decodable {
         let id: String

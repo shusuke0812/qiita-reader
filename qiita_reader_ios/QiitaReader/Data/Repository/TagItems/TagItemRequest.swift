@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// [API doc](https://qiita.com/api/v2/docs#get-apiv2tagstag_iditems)
 struct TagItemRequest: APIRequestProtocol {
     typealias Response = [TagItem]
 
@@ -38,7 +39,7 @@ struct TagItemRequest: APIRequestProtocol {
     var header: [String : String]? {
         nil
     }
-    var body: Data? {
+    var body: HTTPBody? {
         nil
     }
 }

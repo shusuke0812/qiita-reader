@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// [API doc](https://qiita.com/api/v2/docs#get-apiv2tagstag_id)
 struct TagRequest: APIRequestProtocol {
     typealias Response = Tag
 
@@ -33,7 +34,7 @@ struct TagRequest: APIRequestProtocol {
     var header: [String : String]? {
         nil
     }
-    var body: Data? {
+    var body: HTTPBody? {
         nil
     }
 }
