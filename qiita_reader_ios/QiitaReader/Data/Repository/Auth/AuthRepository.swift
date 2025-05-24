@@ -60,7 +60,11 @@ class AuthRepository: AuthRepositoryProtocol {
 
     func getAccessToken() -> String? {
         let key = Env.Qiita.accessTokenStorageKey
-        return secureStorageClient.getStringData(key: key)
+        do {
+            return try secureStorageClient.getStringData(key: key)
+        } catch {
+            return nil
+        }
     }
 
     func deleteAccessToken() -> AnyPublisher<Void, Error> {

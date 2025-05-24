@@ -12,7 +12,7 @@ import Foundation
 protocol SecureStorageClientProtocol {
     func setData(key: String, value: String) throws
     func deleteData(key: String) throws
-    func getStringData(key: String) -> String?
+    func getStringData(key: String) throws -> String
 }
 
 class SecureStorageClient: SecureStorageClientProtocol {
@@ -34,15 +34,14 @@ class SecureStorageClient: SecureStorageClientProtocol {
         }
     }
 
-    func getStringData(key: String) -> String? {
-        do {
-            guard let data = try getKeyChain(key: key) else {
-                return nil
-            }
-            return String(data: data, encoding: .utf8)
-        } catch {
-            return nil
+    func getStringData(key: String) throws -> String {
+        guard let data = try getKeyChain(key: key) else {
+            throw SecureStorageError.noData
         }
+        guard let stringValue = String(data: data, encoding: .utf8) else {
+            throw SecureStorageError.parseError
+        }
+        return stringValue
     }
 
     private func setKeyChain(key: String, data: Data) throws {
