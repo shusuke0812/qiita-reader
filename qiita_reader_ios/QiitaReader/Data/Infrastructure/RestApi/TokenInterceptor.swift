@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 protocol InterceptorProtocol {
-    func intercept(request: URLRequest) -> AnyPublisher<URLRequest, Error>
+    func intercept(request: URLRequest) -> URLRequest
 }
 
 class TokenInterceptor: InterceptorProtocol {
@@ -19,12 +19,9 @@ class TokenInterceptor: InterceptorProtocol {
         self.token = token
     }
 
-    func intercept(request: URLRequest) -> AnyPublisher<URLRequest, Error> {
+    func intercept(request: URLRequest) -> URLRequest {
         var newRequest = request
         newRequest.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-
-        return Just(newRequest)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
+        return newRequest
     }
 }
