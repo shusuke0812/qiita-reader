@@ -8,11 +8,11 @@
 import Combine
 import Foundation
 
-protocol InterceptorProtocol {
+protocol RequestInterceptorProtocol {
     func intercept(request: URLRequest) -> URLRequest
 }
 
-class TokenInterceptor: InterceptorProtocol {
+class TokenInterceptor: RequestInterceptorProtocol {
     private let token: String
 
     init(token: String) {
