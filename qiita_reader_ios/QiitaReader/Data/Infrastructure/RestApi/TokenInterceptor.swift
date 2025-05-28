@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 protocol RequestInterceptorProtocol {
-    func intercept(request: URLRequest) -> URLRequest
+    func intercept(request: URLRequest) throws -> URLRequest
 }
 
 class TokenInterceptor: RequestInterceptorProtocol {
@@ -19,7 +19,10 @@ class TokenInterceptor: RequestInterceptorProtocol {
         self.token = token
     }
 
-    func intercept(request: URLRequest) -> URLRequest {
+    func intercept(request: URLRequest) throws -> URLRequest {
+        if token.isEmpty {
+            throw APIError.lackOfAccessToken
+        }
         var newRequest = request
         newRequest.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return newRequest
