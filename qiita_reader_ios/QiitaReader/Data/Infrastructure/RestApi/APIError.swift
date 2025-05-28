@@ -8,6 +8,7 @@
 import Foundation
 
 enum APIError: Error {
+    case lackOfAccessToken
     case networkError(Error)
     case invalidRequest(dataString: String?, statusCode: Int)
     case responseParseError(Error)
@@ -16,6 +17,8 @@ enum APIError: Error {
 
     var description: String {
         switch self {
+        case .lackOfAccessToken:
+            return "アクセストークンが見つかりませんでした"
         case .networkError:
             return "ネットワークに接続できませんでした"
         case .invalidRequest:
