@@ -29,17 +29,23 @@ final class APIClient: APIClientProtocol {
     }
 
     func start<T: APIRequestProtocol>(_ request: T) -> AnyPublisher<T.Response, APIError> {
-        return session
-            .dataTaskPublisher(for: request.buildUrlRequest())
-            .validateNetworkConnectivity()
-            .validateError()
-            .handleError()
-            .retry(retriesLeft)
-            .map { $0.data }
-            .decode(type: T.Response.self, decoder: jsonDecoder)
-            .mapError { error -> APIError in
-                return APIError.responseParseError(error)
-            }
-            .eraseToAnyPublisher()
+        do {
+            let urlRequest = try request.buildUrlRequest()
+            return session
+                .dataTaskPublisher(for: urlRequest)
+                .validateNetworkConnectivity()
+                .validateError()
+                .handleError()
+                .retry(retriesLeft)
+                .map { $0.data }
+                .decode(type: T.Response.self, decoder: jsonDecoder)
+                .mapError { error -> APIError in
+                    return APIError.responseParseError(error)
+                }
+                .eraseToAnyPublisher()
+        } catch {
+            return Fail(error: error as! APIError)
+                .eraseToAnyPublisher()
+        }
     }
 }
