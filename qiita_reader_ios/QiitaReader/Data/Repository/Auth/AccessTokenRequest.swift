@@ -42,4 +42,8 @@ struct AccessTokenRequest: APIRequestProtocol {
             "code": authorizedCode
         ]
     }
+
+    var interceptors: [RequestInterceptorProtocol] {
+        []
+    }
 }
