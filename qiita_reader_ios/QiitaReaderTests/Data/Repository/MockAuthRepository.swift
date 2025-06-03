@@ -23,8 +23,4 @@ class MockAuthRepository: AuthRepositoryProtocol {
             .setFailureType(to: APIError.self)
             .eraseToAnyPublisher()
     }
-
-    func unauthorize() -> AnyPublisher<Void, any Error> {
-        fatalError("Need not to test this method.")
-    }
 }

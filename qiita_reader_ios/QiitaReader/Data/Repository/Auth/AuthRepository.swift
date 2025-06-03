@@ -11,7 +11,6 @@ import Foundation
 protocol AuthRepositoryProtocol {
     func authorize() -> AnyPublisher<Authorize, AuthError>
     func generateAccessToken(authorizedCode: String) -> AnyPublisher<AuthToken, APIError>
-    func unauthorize() -> AnyPublisher<Void, Error>
 }
 
 class AuthRepository: AuthRepositoryProtocol {
@@ -41,12 +40,6 @@ class AuthRepository: AuthRepositoryProtocol {
         let request = AccessTokenRequest(authorizedCode: authorizedCode)
         return apiClient
             .start(request)
-            .flatMap { authToken in
-            }
             .eraseToAnyPublisher()
-    }
-
-    func unauthorize() -> AnyPublisher<Void, Error> {
-
     }
 }
