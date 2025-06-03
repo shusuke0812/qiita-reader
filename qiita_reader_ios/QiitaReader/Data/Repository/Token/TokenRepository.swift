@@ -1,5 +1,5 @@
 //
-//  TokenService.swift
+//  TokenRepository.swift
 //  QiitaReader
 //
 //  Created by Shusuke Ota on 2025/6/3.
@@ -8,13 +8,13 @@
 import Combine
 import Foundation
 
-protocol TokenServiceProtocol {
+protocol TokenRepositoryProtocol {
     func setAccessToken(_ value: String) -> AnyPublisher<Void, Error>
     func getAccessToken() -> String?
     func deleteAccessToken() -> AnyPublisher<Void, Error>
 }
 
-class TokenService: TokenServiceProtocol {
+class TokenRepository: TokenRepositoryProtocol {
     private let secureStorageClient: SecureStorageClientProtocol
 
     init(secureStorageClient: SecureStorageClientProtocol = SecureStorageClient()) {
