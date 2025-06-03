@@ -28,7 +28,7 @@ class MockSecureStorageClient: SecureStorageClientProtocol {
         }
     }
 
-    func getStringData(key: String) -> String? {
-        savedStringValue
+    func getStringData(key: String) throws -> String {
+        savedStringValue ?? "nil"
     }
 }
