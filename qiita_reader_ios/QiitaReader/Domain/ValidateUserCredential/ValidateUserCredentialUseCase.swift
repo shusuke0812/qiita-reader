@@ -12,14 +12,14 @@ protocol ValidateUserCredentialUseCaseProtocol {
 }
 
 class ValidateUserCredentialUseCase: ValidateUserCredentialUseCaseProtocol {
-    private let authRepository: AuthRepositoryProtocol
+    private let tokenRepository: TokenRepositoryProtocol
 
-    init(authRepository: AuthRepositoryProtocol = AuthRepository()) {
-        self.authRepository = authRepository
+    init(tokenRepository: TokenRepositoryProtocol = TokenRepository()) {
+        self.tokenRepository = tokenRepository
     }
 
     var isValid: Bool {
-        if let at = authRepository.getAccessToken() {
+        if let at = tokenRepository.getAccessToken() {
             return isValid40DigitHexString(at)
         }
         return false
