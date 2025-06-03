@@ -9,57 +9,57 @@ import Testing
 @testable import QiitaReader
 
 struct ValidateUserCredentialUseCaseTests {
-    private let mockAuthRepository: MockAuthRepository
+    private let mockTokenRepository: MockTokenRepository
 
     init() {
-        self.mockAuthRepository = MockAuthRepository()
+        self.mockTokenRepository = MockTokenRepository()
     }
 
     /// 有効な40桁のアクセストークン
     @Test func test_isValid_true_whenValidAccessToken() {
-        mockAuthRepository.accessToken = "ea5d0a593b2655e9568f144fb1826342292f5c6b"
+        mockTokenRepository.accessToken = "ea5d0a593b2655e9568f144fb1826342292f5c6b"
 
-        let useCase = ValidateUserCredentialUseCase(authRepository: mockAuthRepository)
+        let useCase = ValidateUserCredentialUseCase(tokenRepository: mockTokenRepository)
         #expect(useCase.isValid == true)
     }
 
     /// 無効なアクセストークン（長さ超過）
     @Test func test_isValid_false_whenLongLengthAccessToken() {
-        mockAuthRepository.accessToken = "ea5d0a593b2655e9568f144fb1826342292f5c6b6b6b"
+        mockTokenRepository.accessToken = "ea5d0a593b2655e9568f144fb1826342292f5c6b6b6b"
 
-        let useCase = ValidateUserCredentialUseCase(authRepository: mockAuthRepository)
+        let useCase = ValidateUserCredentialUseCase(tokenRepository: mockTokenRepository)
         #expect(useCase.isValid == false)
     }
 
     /// 無効なアクセストークン（長さ不足）
     @Test func test_isValid_false_whenShortLengthAccessToken() {
-        mockAuthRepository.accessToken = "ea5d0a593b2655e9568f144fb1826342292f"
+        mockTokenRepository.accessToken = "ea5d0a593b2655e9568f144fb1826342292f"
 
-        let useCase = ValidateUserCredentialUseCase(authRepository: mockAuthRepository)
+        let useCase = ValidateUserCredentialUseCase(tokenRepository: mockTokenRepository)
         #expect(useCase.isValid == false)
     }
 
     /// 無効なアクセストークン（nil）
     @Test func test_isValid_false_whenAccessTokenIsNil() {
-        mockAuthRepository.accessToken = nil
+        mockTokenRepository.accessToken = nil
 
-        let useCase = ValidateUserCredentialUseCase(authRepository: mockAuthRepository)
+        let useCase = ValidateUserCredentialUseCase(tokenRepository: mockTokenRepository)
         #expect(useCase.isValid == false)
     }
 
     /// 無効なアクセストークン（空文字）
     @Test func test_isValid_false_whenAccessTokenIsEmpty() {
-        mockAuthRepository.accessToken = ""
+        mockTokenRepository.accessToken = ""
 
-        let useCase = ValidateUserCredentialUseCase(authRepository: mockAuthRepository)
+        let useCase = ValidateUserCredentialUseCase(tokenRepository: mockTokenRepository)
         #expect(useCase.isValid == false)
     }
 
     /// 無効なアクセストークン（大文字のアルファベットを含む）
     @Test func test_isValid_false_whenAccessTokenContainsUpperCases() {
-        mockAuthRepository.accessToken = "EA5D0A593B2655E9568F144FB1826342292F5C6B"
+        mockTokenRepository.accessToken = "EA5D0A593B2655E9568F144FB1826342292F5C6B"
 
-        let useCase = ValidateUserCredentialUseCase(authRepository: mockAuthRepository)
+        let useCase = ValidateUserCredentialUseCase(tokenRepository: mockTokenRepository)
         #expect(useCase.isValid == false)
     }
 }
