@@ -9,7 +9,7 @@ import Foundation
 
 /// [API doc](https://qiita.com/api/v2/docs#put-apiv2itemsitem_idstock)
 struct StockRequest: APIRequestProtocol {
-    typealias Response = Void // TODO: NotContent型を追加し設定する
+    typealias Response = NoContent
 
     private let itemId: String
 
