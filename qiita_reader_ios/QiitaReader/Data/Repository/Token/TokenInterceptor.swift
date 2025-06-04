@@ -13,14 +13,14 @@ protocol RequestInterceptorProtocol {
 }
 
 class TokenInterceptor: RequestInterceptorProtocol {
-    private let token: String
+    private let tokenRepository: TokenRepositoryProtocol
 
-    init(token: String) {
-        self.token = token
+    init(tokenRepository: TokenRepositoryProtocol = TokenRepository()) {
+        self.tokenRepository = tokenRepository
     }
 
     func intercept(request: URLRequest) throws -> URLRequest {
-        if token.isEmpty {
+        guard let token = tokenRepository.getAccessToken(), !token.isEmpty else {
             throw APIError.lackOfAccessToken
         }
         var newRequest = request
