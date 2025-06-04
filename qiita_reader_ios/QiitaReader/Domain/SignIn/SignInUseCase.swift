@@ -14,9 +14,14 @@ protocol SignInUseCaseProtocol {
 
 class SignInUseCase: SignInUseCaseProtocol {
     private let authRepository: AuthRepositoryProtocol
+    private let tokenRepository: TokenRepositoryProtocol
 
-    init(authRepository: AuthRepositoryProtocol = AuthRepository()) {
+    init(
+        authRepository: AuthRepositoryProtocol = AuthRepository(),
+        tokenRepository: TokenRepositoryProtocol = TokenRepository()
+    ) {
         self.authRepository = authRepository
+        self.tokenRepository = tokenRepository
     }
 
     func signIn() -> AnyPublisher<Void, SignInError> {
@@ -44,7 +49,7 @@ class SignInUseCase: SignInUseCaseProtocol {
                     .mapError { SignInError.failedToGetAccessToken($0) }
             }
             .flatMap { authToken in
-                self.authRepository.setAccessToken(authToken.accessToken)
+                self.tokenRepository.setAccessToken(authToken.accessToken)
                     .mapError { SignInError.failedToSaveAccessToken($0) }
             }
             .eraseToAnyPublisher()

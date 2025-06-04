@@ -10,22 +10,22 @@ import Foundation
 import Testing
 @testable import QiitaReader
 
-class AuthRepositoryTests {
-    private let authRepository: AuthRepositoryProtocol
+class TokenRepositoryTests {
+    private let tokenRepository: TokenRepositoryProtocol
     private var secureStorageClient: MockSecureStorageClient
 
     private var cancellables: Set<AnyCancellable> = []
 
     init() {
         self.secureStorageClient = MockSecureStorageClient()
-        self.authRepository = AuthRepository(secureStorageClient: secureStorageClient)
+        self.tokenRepository = TokenRepository(secureStorageClient: secureStorageClient)
     }
 
     @Test func test_setAccessToken_true() async {
         let expectedAccessToken = "ea5d0a593b2655e9568f144fb1826342292f5c6b"
 
         await confirmation("success") { expectation in
-            authRepository
+            tokenRepository
                 .setAccessToken(expectedAccessToken)
                 .sink(receiveCompletion: { _ in
                     expectation()
@@ -43,7 +43,7 @@ class AuthRepositoryTests {
         var completionError: SecureStorageError?
 
         await confirmation("fail") { expectation in
-            authRepository
+            tokenRepository
                 .setAccessToken(expectedAccessToken)
                 .sink(receiveCompletion: { completion in
                     switch completion {
@@ -67,7 +67,7 @@ class AuthRepositoryTests {
         var completionError: SecureStorageError?
 
         await confirmation("fail") { expectation in
-            authRepository
+            tokenRepository
                 .setAccessToken(expectedAccessToken)
                 .sink(receiveCompletion: { completion in
                     switch completion {

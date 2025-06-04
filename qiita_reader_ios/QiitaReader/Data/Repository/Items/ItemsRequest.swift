@@ -42,4 +42,7 @@ struct ItemsRequest: APIRequestProtocol {
     var body: HTTPBody? {
         nil
     }
+    var interceptors: [RequestInterceptorProtocol] {
+        []
+    }
 }

@@ -10,8 +10,6 @@ import Foundation
 @testable import QiitaReader
 
 class MockAuthRepository: AuthRepositoryProtocol {
-    var accessToken: String?
-
     func authorize() -> AnyPublisher<Authorize, AuthError> {
         let authorize = Authorize(url: URL(string: "appsheme://xxx-callback?code=fefef5f067171f247fb415e38cb0631797b82f41"))
         return Just(authorize)
@@ -24,17 +22,5 @@ class MockAuthRepository: AuthRepositoryProtocol {
         return Just(authToken)
             .setFailureType(to: APIError.self)
             .eraseToAnyPublisher()
-    }
-    
-    func setAccessToken(_ value: String) -> AnyPublisher<Void, Error> {
-        fatalError("Need not to test this method.")
-    }
-    
-    func getAccessToken() -> String? {
-        return accessToken
-    }
-    
-    func deleteAccessToken() -> AnyPublisher<Void, Error> {
-        fatalError("Need not to test this method.")
     }
 }

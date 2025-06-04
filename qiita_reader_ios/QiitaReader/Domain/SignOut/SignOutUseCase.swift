@@ -13,13 +13,13 @@ protocol SignOutUseCaseProtocol {
 }
 
 class SignOutUseCase: SignOutUseCaseProtocol {
-    private let authRepository: AuthRepositoryProtocol
+    private let tokenRepository: TokenRepositoryProtocol
 
-    init(authRepository: AuthRepositoryProtocol = AuthRepository()) {
-        self.authRepository = authRepository
+    init(tokenRepository: TokenRepositoryProtocol = TokenRepository()) {
+        self.tokenRepository = tokenRepository
     }
 
     func signOut() -> AnyPublisher<Void, Error> {
-        authRepository.deleteAccessToken()
+        tokenRepository.deleteAccessToken()
     }
 }

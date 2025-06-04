@@ -42,4 +42,7 @@ struct TagItemRequest: APIRequestProtocol {
     var body: HTTPBody? {
         nil
     }
+    var interceptors: [RequestInterceptorProtocol] {
+        []
+    }
 }

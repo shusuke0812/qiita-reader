@@ -18,10 +18,11 @@ protocol APIRequestProtocol {
     var parameters: [URLQueryItem]? { get }
     var header: [String: String]? { get }
     var body: HTTPBody? { get }
+    var interceptors: [RequestInterceptorProtocol] { get }
 }
 
 extension APIRequestProtocol {
-    func buildUrlRequest() -> URLRequest {
+    func buildUrlRequest() throws -> URLRequest {
         let url = URL(string: baseUrl.appending(path))!
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
         var httpBody: Data?
@@ -49,6 +50,10 @@ extension APIRequestProtocol {
             for (key, value) in header {
                 urlRequest.addValue(value, forHTTPHeaderField: key)
             }
+        }
+
+        urlRequest = try interceptors.reduce(urlRequest) { nextRequest, interceptor in
+            try interceptor.intercept(request: nextRequest)
         }
 
         return urlRequest
