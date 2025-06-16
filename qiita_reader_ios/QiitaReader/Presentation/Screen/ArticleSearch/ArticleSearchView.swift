@@ -14,7 +14,7 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
     var body: some View {
         VStack {
             switch viewModel.output.viewState {
-            case .stadby:
+            case .standby:
                 standbyView
             case .loading:
                 loadingView

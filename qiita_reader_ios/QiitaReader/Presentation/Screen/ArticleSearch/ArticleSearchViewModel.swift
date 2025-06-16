@@ -44,7 +44,7 @@ class ArticleSearchViewModel: ArticleSearchViewModelProtocol, ArticleSearchViewM
     ) {
         self.itemsRepository = itemsRepository
         self.stockArticleUseCase = stockArticleUseCase
-        self.viewState = .stadby
+        self.viewState = .standby
     }
 
     func searchItems() {
