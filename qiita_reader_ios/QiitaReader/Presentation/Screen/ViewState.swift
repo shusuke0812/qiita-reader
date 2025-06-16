@@ -8,7 +8,7 @@
 import Foundation
 
 enum ViewState<Success, Failure: Error> {
-    case stadby
+    case standby
     case loading
     case success(Success)
     case failure(Failure)
