@@ -29,7 +29,7 @@ class AuthClient: NSObject, AuthClientProtocol {
             .eraseToAnyPublisher()
     }
 
-    private func session<T: AuthRequestProtocol>(_ request: T) -> AnyPublisher<URL?, Error> {
+    private func session<T: AuthRequestProtocol>(_ request: T) -> AuthSessionCallback {
         return Future<URL?, Error> { promise in
             let session = ASWebAuthenticationSession(url: request.buildUrl()!, callbackURLScheme: request.callbackUrlScheme) { url, error in
                 if let error = error {
