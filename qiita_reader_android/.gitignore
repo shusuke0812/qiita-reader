@@ -136,4 +136,7 @@ fabric.properties
 
 !/gradle/wrapper/gradle-wrapper.jar
 
+### Env file ###
+env.properties
+
 # End of https://www.toptal.com/developers/gitignore/api/androidstudio
