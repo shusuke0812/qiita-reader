@@ -31,6 +31,22 @@ android {
             )
         }
     }
+
+    flavorDimensions += "version"
+    productFlavors {
+        val prodName =
+        create("prod") {
+            dimension = "version"
+            buildConfigField("String", "FLAVOR", "\"prod\"")
+        }
+
+        create("staging") {
+            dimension = "version"
+            buildConfigField("String", "FLAVOR", "\"staging\"")
+            applicationIdSuffix = ".stg"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -40,6 +56,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
