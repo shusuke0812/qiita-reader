@@ -1,4 +1,4 @@
-package com.shusuke.qiitareader.ui.theme
+package com.shusuke.qiitareader.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
