@@ -88,9 +88,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.retrofit)
-    implementation(libs.converter.moshi)
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
+    implementation(libs.retrofit.kotlin.serialization)
 }
 
 secrets {
