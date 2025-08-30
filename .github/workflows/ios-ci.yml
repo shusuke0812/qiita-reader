@@ -21,7 +21,7 @@ env:
 
 jobs:
   build:
-    runs-on: macOS-latest
+    runs-on: macos-15-arm64
     steps:
       # チェックアウト
       - uses: actions/checkout@v4
