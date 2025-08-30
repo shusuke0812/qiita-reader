@@ -45,6 +45,9 @@ private fun ArticleSearchScreenImpl(
     }
 }
 
+@Composable
+private fun StandByView() {}
+
 @Preview(widthDp = 360, heightDp = 753)
 @Composable
 private fun ArticleSearchScreenPreview() {
