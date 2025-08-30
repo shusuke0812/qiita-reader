@@ -32,8 +32,10 @@ jobs:
       
       # ビルド
       - name: Xcode build
-        run: xcodebuild
-          -sdk iphonesimulator
-          -configuration Debug
-          -scheme QiitaReader
-          build
+        working-directory: ./qiita-reader-ios
+        run: |
+          xcodebuild \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            -scheme QiitaReader \
+            build
