@@ -1,0 +1,39 @@
+name: iOS-CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths-ignore:
+      - qiita_reader_android/
+      - qiita_reader_reactnative/
+      - README.md
+  pull_request:
+    paths-ignore:
+      - qiita_reader_android/
+      - qiita_reader_reactnative/
+      - README.md
+  workflow_dispatch:
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode.app
+
+jobs:
+  build:
+    runs-on: macOS-latest
+    steps:
+      # チェックアウト
+      - uses: actions/checkout@v4
+
+      # Xcodeバージョンの出力
+      - name: Show Xcode version
+        run: xcodebuild -version
+      
+      # ビルド
+      - name: Xcode build
+        run: xcodebuild
+          -sdk iphonesimulator
+          -configuration Debug
+          -scheme QiitaReader
+          build
