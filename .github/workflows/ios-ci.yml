@@ -4,12 +4,13 @@ on:
   push:
     branches:
       - main
-      - develop
     paths-ignore:
       - qiita_reader_android/
       - qiita_reader_reactnative/
       - README.md
   pull_request:
+    branches:
+        - main
     paths-ignore:
       - qiita_reader_android/
       - qiita_reader_reactnative/
