@@ -78,7 +78,7 @@ jobs:
           xchtmlreport -r ${{ env.UNIT_TEST_RESULT_FILE_NAME }}.xcresult -o TestReports
 
       # artifactとしてテスト結果をアップロード
-      - name: Upload JSON result
+      - name: Upload TestReports as artifact
         uses: actions/upload-artifact@v4
         with:
           name: UnitTestReports
@@ -92,7 +92,7 @@ jobs:
           xcparse logs ${{ env.UNIT_TEST_RESULT_FILE_NAME }}.xcresult TestArtifacts/Logs
           xcparse screenshots ${{ env.UNIT_TEST_RESULT_FILE_NAME }}.xcresult TestArtifacts/Screenshots
 
-      - name: Upload raw test artifacts
+      - name: Upload raw test reports as artifact
         uses: actions/upload-artifact@v4
         with:
           name: RawTestArtifacts
