@@ -20,6 +20,7 @@ on:
 env:
   DEVELOPER_DIR: /Applications/Xcode.app
   IOS_PROJECT_DIR: qiita_reader_ios
+  UNIT_TEST_RESULT_FILE_NAME: UnitTestResults
 
 jobs:
   build:
@@ -65,7 +66,7 @@ jobs:
             -sdk iphonesimulator \
             -configuration Debug \
             -scheme QiitaReaderTests \
-            -resultBundlePath UnitTestResults \
+            -resultBundlePath ${{ env.UNIT_TEST_RESULT_FILE_NAME }} \
             -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.6' \
             test
 
@@ -74,7 +75,7 @@ jobs:
         working-directory: ${{ env.IOS_PROJECT_DIR }}
         run: |
           mkdir -p TestReports
-          xchtmlreport -r UnitTestResults.xcresult -o TestReports
+          xchtmlreport -r ${{ env.UNIT_TEST_RESULT_FILE_NAME }}.xcresult -o TestReports
 
       # artifactとしてテスト結果をアップロード
       - name: Upload JSON result
@@ -88,8 +89,8 @@ jobs:
         run: |
           mkdir -p TestArtifacts/Logs
           mkdir -p TestArtifacts/Screenshots
-          xcparse logs TestResults.xcresult TestArtifacts/Logs
-          xcparse screenshots TestResults.xcresult TestArtifacts/Screenshots
+          xcparse logs ${{ env.UNIT_TEST_RESULT_FILE_NAME }}.xcresult TestArtifacts/Logs
+          xcparse screenshots ${{ env.UNIT_TEST_RESULT_FILE_NAME }}.xcresult TestArtifacts/Screenshots
 
       - name: Upload raw test artifacts
         uses: actions/upload-artifact@v4
