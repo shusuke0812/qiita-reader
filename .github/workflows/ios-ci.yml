@@ -59,7 +59,7 @@ jobs:
 
       - name: Install tools (xcparse, xchtmlreport)
         run: |
-          brew install xcparse
+          brew install chargepoint/xcparse/xcparse
           gem install xchtmlreport
 
       # テスト
