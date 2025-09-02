@@ -18,6 +18,7 @@ on:
 
 env:
   DEVELOPER_DIR: /Applications/Xcode.app
+  IOS_PROJECT_DIR: qiita_reader_ios
 
 jobs:
   build:
@@ -32,7 +33,7 @@ jobs:
       
       # ビルド
       - name: Xcode build
-        working-directory: qiita_reader_ios
+        working-directory: ${{ env.IOS_PROJECT_DIR }}
         run: |
           xcodebuild \
             -sdk iphonesimulator \
@@ -51,7 +52,7 @@ jobs:
       
       # テスト
       - name: Test
-        working-directory: qiita_reader_ios
+        working-directory: ${{ env.IOS_PROJECT_DIR }}
         run: |
           xcodebuild \
             -sdk iphonesimulator \
@@ -63,6 +64,7 @@ jobs:
 
       # テスト結果をjsonとして保存
       - name: Dump xcresult as JSON
+        working-directory: ${{ env.IOS_PROJECT_DIR }}
         run: |
           xcrun xcresulttool get --path UnitTestResults.xcresult --format json --legacy > unit-test-result.json
           cat unit-test-result.json
@@ -72,4 +74,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: xcresult-json
-          path: unit-test-result.json
+          path: ${{ env.IOS_PROJECT_DIR }}/unit-test-result.json
