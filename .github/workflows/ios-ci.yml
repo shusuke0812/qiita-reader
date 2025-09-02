@@ -74,7 +74,7 @@ jobs:
         working-directory: ${{ env.IOS_PROJECT_DIR }}
         run: |
           mkdir -p TestReports
-          xchtmlreport -r TestResults.xcresult -o TestReports
+          xchtmlreport -r UnitTestResults.xcresult -o TestReports
 
       # artifactとしてテスト結果をアップロード
       - name: Upload JSON result
