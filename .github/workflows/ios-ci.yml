@@ -95,4 +95,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: RawTestArtifacts
-          path: TestArtifacts
+          path: ${{ env.IOS_PROJECT_DIR }}/TestArtifacts
