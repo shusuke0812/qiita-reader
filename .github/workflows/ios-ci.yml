@@ -51,6 +51,7 @@ jobs:
       
       # テスト
       - name: Test
+        working-directory: qiita_reader_ios
         run: |
           xcodebuild \
             -sdk iphonesimulator \
