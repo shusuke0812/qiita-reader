@@ -11,12 +11,12 @@ enum ArticleSearchError: Error {
     case notFoundArticls
     case apiError(APIError)
 
-    var description: String {
+    var descriptionLocalizedKey: String {
         switch self {
         case .notFoundArticls:
-            return "記事が見つかりませんでした"
+            return "article_search_error_notfound"
         case .apiError(let error):
-            return error.description
+            return error.descriptionLocalizedKey
         }
     }
 }
