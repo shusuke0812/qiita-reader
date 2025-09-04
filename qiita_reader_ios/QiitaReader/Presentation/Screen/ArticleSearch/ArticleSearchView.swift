@@ -21,7 +21,7 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
             case .success(let itemList):
                 articleListView(itemList: itemList)
             case .failure(let error):
-                errorView(message: error.description)
+                errorView(message: LocalizedStringKey(error.descriptionLocalizedKey))
             }
         }
         .searchable(text: $viewModel.input.query)
@@ -36,9 +36,9 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
     @ViewBuilder
     private var standbyView: some View {
         ContentUnavailableView(
-            "さあ、はじめましょう",
+            LocalizedStringKey("article_search_stanby_title"),
             systemImage: SFSymbol.lassoBadgeSparkes,
-            description: Text("キーワードを入力してQiitaの記事を検索できます")
+            description: Text(LocalizedStringKey("article_search_stanby_subtitle"))
         )
     }
 
@@ -69,9 +69,9 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
     }
 
     @ViewBuilder
-    private func errorView(message: String) -> some View {
+    private func errorView(message: LocalizedStringKey) -> some View {
         ContentUnavailableView(
-            "エラー",
+            LocalizedStringKey("common_error"),
             systemImage: SFSymbol.exclamationmarkWarninglightFill,
             description: Text(message)
         )

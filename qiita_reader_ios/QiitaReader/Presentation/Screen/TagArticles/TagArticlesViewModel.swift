@@ -52,7 +52,7 @@ class TagArticlsViewModel: TagArticlesViewModelProtocol, TagArticlesViewModelInp
                 case .finished:
                     break
                 case .failure(let error):
-                    self?.errorMessage = error.description
+                    self?.errorMessage = error.descriptionLocalizedKey
                 }
             }, receiveValue: { [weak self] tagArticle in
                 self?.tag = tagArticle.tag

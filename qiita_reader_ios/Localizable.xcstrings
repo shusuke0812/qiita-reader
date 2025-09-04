@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%lld" : {
+
+    },
     "article_search_error_notfound" : {
       "extractionState" : "manual",
       "localizations" : {

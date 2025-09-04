@@ -63,7 +63,7 @@ private struct FooterView: View {
             VStack(alignment: .center, spacing: 8) {
                 Text("\(itemsCount)")
                     .foregroundStyle(.secondary)
-                Text("記事")
+                Text(LocalizedStringKey("tag_artices_article"))
                     .foregroundStyle(.secondary)
             }
             .frame(width: 150)
@@ -72,7 +72,7 @@ private struct FooterView: View {
             VStack(alignment: .center, spacing: 8) {
                 Text("\(followersCount)")
                     .foregroundStyle(.secondary)
-                Text("フォロワー")
+                Text(LocalizedStringKey("tag_artices_follower"))
                     .foregroundStyle(.secondary)
             }
             .frame(width: 150)
