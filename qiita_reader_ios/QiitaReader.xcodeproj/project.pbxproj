@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9C1482012E690DE800C711B3 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9C1482002E690DE800C711B3 /* Localizable.xcstrings */; };
+		9C1482022E690DE800C711B3 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9C1482002E690DE800C711B3 /* Localizable.xcstrings */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		9C61B2FD2D585E5E0081E239 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9C1482002E690DE800C711B3 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		9C61B2EC2D585E5D0081E239 /* QiitaReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QiitaReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C61B2FC2D585E5E0081E239 /* QiitaReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QiitaReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C61B3062D585E5E0081E239 /* QiitaReaderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QiitaReaderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -93,6 +99,7 @@
 		9C61B2E32D585E5D0081E239 = {
 			isa = PBXGroup;
 			children = (
+				9C1482002E690DE800C711B3 /* Localizable.xcstrings */,
 				9CAE73DC2D85797800F418B8 /* Shared */,
 				9C61B2EE2D585E5D0081E239 /* QiitaReader */,
 				9C61B2FF2D585E5E0081E239 /* QiitaReaderTests */,
@@ -212,6 +219,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ja,
 			);
 			mainGroup = 9C61B2E32D585E5D0081E239;
 			minimizedProjectReferenceProxies = 1;
@@ -232,6 +240,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C1482012E690DE800C711B3 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +255,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C1482022E690DE800C711B3 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,6 +358,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -404,6 +415,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -519,6 +531,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2XL9QYTD77;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.shusuke.ota.QiitaReaderUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -536,6 +549,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2XL9QYTD77;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.shusuke.ota.QiitaReaderUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -15,20 +15,20 @@ enum APIError: Error {
     case serverError(dataString: String?, statusCode: Int)
     case unknown
 
-    var description: String {
+    var descriptionLocalizedKey: String {
         switch self {
         case .lackOfAccessToken:
-            return "アクセストークンが見つかりませんでした"
+            return "common_api_error_lack_of_accesstoken"
         case .networkError:
-            return "ネットワークに接続できませんでした"
+            return "common_api_error_network"
         case .invalidRequest:
-            return "不正なリクエスト"
+            return "common_api_error_invalid_request"
         case .responseParseError:
-            return "取得したデータの変換に失敗"
+            return "common_api_error_response_parse"
         case .serverError:
-            return "サーバーエラー"
+            return "common_api_error_server"
         case .unknown:
-            return "不明なエラー"
+            return "common_api_error_unknown"
         }
     }
 }
