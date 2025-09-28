@@ -11,7 +11,7 @@ protocol ScreenObjectable {
     associatedtype A11y
     var app: XCUIApplication { get }
     var exists: Bool { get }
-    var pageTitle: XCUIElement { get }
+    var screen: XCUIElement { get }
 }
 
 extension ScreenObjectable {
@@ -20,7 +20,7 @@ extension ScreenObjectable {
     }
 
     var exists: Bool {
-        elementsExist([pageTitle], timeout: 5)
+        elementsExist([screen], timeout: 5)
     }
 
     func elementsExist(_ elements: [XCUIElement], timeout: Double) -> Bool {

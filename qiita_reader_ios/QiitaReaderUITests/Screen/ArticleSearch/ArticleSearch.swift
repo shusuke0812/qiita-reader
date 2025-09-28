@@ -11,6 +11,7 @@ import SwiftUI
 
 class ArticleSearch: ScreenObjectable {
     enum A11y {
+        static let screenKey = "article_search_view"
         static let standbyViewId = "article_search_standby_view"
         static let errorViewId = "error_view"
         static let standbyTitleKey = "article_search_stanby_title"
@@ -18,8 +19,8 @@ class ArticleSearch: ScreenObjectable {
     }
 
     // MARK: UIElement
-    var screenTitle: XCUIElement? {
-        nil
+    var screen: XCUIElement {
+        app.otherElements[A11y.screenKey]
     }
 
     func getStandbyTitleText() -> String? {
