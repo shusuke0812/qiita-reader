@@ -29,6 +29,7 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
         .onSubmit(of: .search) {
             viewModel.input.searchItems()
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("article_search_view")
     }
 
@@ -41,8 +42,6 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
             systemImage: SFSymbol.lassoBadgeSparkes,
             description: Text(LocalizedStringKey("article_search_stanby_subtitle"))
         )
-        .accessibilityIdentifier("article_search_standby_view")
-        .accessibilityLabel("article_search_stanby_title")
     }
 
     @ViewBuilder
@@ -78,8 +77,6 @@ struct ArticleSearchView<ViewModel: ArticleSearchViewModelProtocol>: View {
             systemImage: SFSymbol.exclamationmarkWarninglightFill,
             description: Text(message)
         )
-        .accessibilityIdentifier("article_search_error_view")
-        .accessibilityLabel("common_error")
     }
 }
 
