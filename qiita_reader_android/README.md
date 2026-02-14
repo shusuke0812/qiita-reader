@@ -30,7 +30,7 @@ Domain / Presentation からは **Repository のインターフェース（Proto
 - **Repository**  
   UseCase から呼ばれる窓口。  
   - API の呼び出し、レスポンスのモデル（Entity）への変換  
-  - 通信エラー・HTTP エラーの捕捉と、アプリ用の `ApiError` へのマッピング  
+  - 通信エラー・HTTP エラーの捕捉と、拡張関数 `Throwable.toApiError()`（`ApiErrorExtensions.kt`）による `ApiError` へのマッピング  
   - 必要ならキャッシュや DB とのやりとりもここで行う（現状は API のみ）
 - **Infrastructure**  
   実際の通信手段（Retrofit、OkHttp、シリアライズなど）の設定と、API クライアントの提供。  
@@ -48,7 +48,8 @@ data/
 │       └── (ItemsRepositoryProtocol は同一ファイルで interface として定義)
 └── infrastructure/                # 通信・永続化の具体的な手段
     ├── api/
-    │   └── ApiError.kt            # 通信・HTTP エラーを表す型（Presentation の ArticleSearchError でラップ可能）
+    │   ├── ApiError.kt            # 通信・HTTP エラーを表す型（Presentation の ArticleSearchError でラップ可能）
+    │   └── ApiErrorExtensions.kt   # Throwable.toApiError()（他 Repository でも利用可能）
     └── qiitaapi/
         ├── QiitaApiService.kt     # Retrofit の interface（GET /items など）
         └── QiitaApiClient.kt      # Retrofit の組み立て・BASE_URL・Json 設定
@@ -74,7 +75,7 @@ data/
 - **Repository**  
   `runCatching` で API 呼び出しを囲み、  
   - 成功: `Result.success(ItemList)`  
-  - 失敗: `IOException` → `ApiError.NetworkError`、`HttpException` の status に応じて `InvalidRequest` / `ServerError` などにマッピングし、`Result.failure(apiError)` で返す。
+  - 失敗: 例外を `Throwable.toApiError()`（`ApiErrorExtensions.kt`）で `ApiError` に変換し、`Result.failure(apiError)` で返す。`toApiError()` は他 Repository でも利用する。
 - **Domain / Presentation**  
   `Result` を受け取り、成功時はデータを流し、失敗時は `ApiError`（またはそれをラップした UI 用エラー）でメッセージ表示やリトライを決める。
 
@@ -82,5 +83,6 @@ data/
 
 - `ItemsRepositoryProtocol` を interface にしているので、UseCase や ViewModel のテストでは **モックの Repository** を注入できる。
 - 同様に、`QiitaApiService` を別実装（モックやスタブ）に差し替えることで、Repository 単体のテストやオフライン動作の検証がしやすい。
+- `ItemsRepository` の単体テストは `ItemsRepositoryTest.kt` で、MockK で `QiitaApiService` をモックし、成功・IOException・HttpException（4xx/5xx）・その他例外の各パターンを検証している。
 
 ---

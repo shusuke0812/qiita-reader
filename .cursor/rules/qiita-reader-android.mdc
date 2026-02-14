@@ -1,0 +1,14 @@
+---
+description: qiita_reader_android の設計方針・構成（README に準拠）
+globs: qiita_reader_android/**/*
+alwaysApply: false
+---
+
+# Qiita Reader Android
+
+qiita_reader_android を編集するときは、**`qiita_reader_android/README.md` を読み、その設計に従うこと。** 設計の正本は README のみとする。
+
+このルールを参照して回答した場合は、回答の**最初**に次の2行を必ず出力すること。
+
+- 参照ルール: `.cursor/rules/qiita-reader-android.mdc`
+- 参照ドキュメント: `qiita_reader_android/README.md`
