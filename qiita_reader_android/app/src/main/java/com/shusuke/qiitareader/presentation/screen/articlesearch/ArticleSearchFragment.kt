@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.shusuke.qiitareader.presentation.UiState
+import com.shusuke.qiitareader.presentation.screen.articlesearch.compose.ArticleSearchScreen
 import com.shusuke.qiitareader.presentation.theme.QiitaReaderTheme
 
 class ArticleSearchFragment : Fragment() {

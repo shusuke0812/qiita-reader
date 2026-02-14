@@ -1,4 +1,4 @@
-package com.shusuke.qiitareader.presentation.screen.articlesearch
+package com.shusuke.qiitareader.presentation.screen.articlesearch.compose
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +28,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import com.shusuke.qiitareader.data.repository.items.Item
 import com.shusuke.qiitareader.data.repository.items.ItemList
 import com.shusuke.qiitareader.presentation.UiState
+import com.shusuke.qiitareader.presentation.screen.articlesearch.ArticleSearchError
 import com.shusuke.qiitareader.presentation.theme.QiitaReaderTheme
 
 /**

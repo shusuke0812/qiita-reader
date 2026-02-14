@@ -8,6 +8,7 @@ import com.shusuke.qiitareader.data.repository.items.ItemsRepository
 import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCase
 import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCaseProtocol
 import com.shusuke.qiitareader.presentation.UiState
+import com.shusuke.qiitareader.presentation.screen.articlesearch.ArticleSearchError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -1,4 +1,4 @@
-package com.shusuke.qiitareader.presentation.screen.articlesearch
+package com.shusuke.qiitareader.presentation.screen.articlesearch.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
