@@ -10,7 +10,9 @@ Qiita の記事検索・閲覧を行う Android アプリ。
 - **Presentation**:
   - 画面（Fragment）・UI（Compose）・ViewModel。ユーザー入力と表示のみを担当する。
 - **Domain**:
-  - UseCase。Repositoryや他のUseCaseを組み合わせたアプリ固有の機能を担当。
+  - UseCase。Repository や他 UseCase を組み合わせたアプリ固有の機能を担当。
+  - **一覧・監視は Flow**：記事一覧などは Repository が `Flow<Result<T>>` を返し、UseCase はその Flow をそのまま返す。ViewModel が collect して UI State に載せる。
+  - **一発の操作は suspend + Result**：ストック・ログインなどは Repository / UseCase が `suspend fun ...(): Result<T>` で返す。
 - **Data**: 
   - Infrastructure。API・DB・設定などへのアプリ外のデータにアクセスする機能を担当する。
   - Repository。Infrastructureを使い、アプリ内で使うデータの永続化を担当する。
@@ -29,8 +31,8 @@ Domain / Presentation からは **Repository のインターフェース（Proto
 
 - **Repository**  
   UseCase から呼ばれる窓口。  
-  - API の呼び出し、レスポンスのモデル（Entity）への変換  
-  - 通信エラー・HTTP エラーの捕捉と、拡張関数 `Throwable.toApiError()`（`ApiErrorExtensions.kt`）による `ApiError` へのマッピング  
+  - 一覧系は `getItemsFlow` のように **Flow** を返す。API の呼び出し、レスポンスのモデル（Entity）への変換、成功時は `Result.success` を emit、失敗時は `Throwable.toApiError()`（`ApiErrorExtensions.kt`）で `ApiError` にマッピングして `Result.failure` を emit。  
+  - 一発の操作は suspend + Result を返す（現状は一覧系のみ実装）。  
   - 必要ならキャッシュや DB とのやりとりもここで行う（現状は API のみ）
 - **Infrastructure**  
   実際の通信手段（Retrofit、OkHttp、シリアライズなど）の設定と、API クライアントの提供。  
@@ -60,22 +62,22 @@ data/
   `@SerialName` で Snake_case とマッピングし、表示用の導出値（例: `formattedUpdatedAtString`）は Data 層のモデルに持たせている（Presentation で重複させない）。
 - **ApiError**  
   ネットワーク障害、4xx/5xx、パース失敗などを sealed class で表現。  
-  Repository は `Result<ItemList>` を返し、失敗時は `Result.failure(ApiError)` とする。  
+  一覧系は Repository が `Flow<Result<ItemList>>` を返し、失敗時は `Result.failure(ApiError)` を emit する。  
   Presentation 側では必要に応じて `ArticleSearchError` などに変換する。
 
 ### スレッド・非同期
 
-- Repository の `getItems` は **suspend 関数**。  
-  呼び出し側（UseCase / ViewModel）は Coroutine で呼ぶ。
-- **IO スレッド**で API を実行するため、Repository 内で `withContext(Dispatchers.IO)` を使用。  
+- 一覧系は Repository の `getItemsFlow` が **Flow** を返す。  
+  UseCase はその Flow をそのまま返し、ViewModel が collect する。
+- **IO スレッド**で API を実行するため、Flow 内で `withContext(Dispatchers.IO)` を使用。  
   メインスレッドでブロックしない。
 
 ### エラーの扱い
 
 - **Repository**  
-  `runCatching` で API 呼び出しを囲み、  
-  - 成功: `Result.success(ItemList)`  
-  - 失敗: 例外を `Throwable.toApiError()`（`ApiErrorExtensions.kt`）で `ApiError` に変換し、`Result.failure(apiError)` で返す。`toApiError()` は他 Repository でも利用する。
+  `getItemsFlow` 内で `runCatching` で API 呼び出しを囲み、  
+  - 成功: `Result.success(ItemList)` を emit  
+  - 失敗: 例外を `Throwable.toApiError()`（`ApiErrorExtensions.kt`）で `ApiError` に変換し、`Result.failure(apiError)` を emit。`toApiError()` は他 Repository でも利用する。
 - **Domain / Presentation**  
   `Result` を受け取り、成功時はデータを流し、失敗時は `ApiError`（またはそれをラップした UI 用エラー）でメッセージ表示やリトライを決める。
 

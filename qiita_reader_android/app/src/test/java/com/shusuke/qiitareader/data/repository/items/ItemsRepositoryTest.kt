@@ -5,6 +5,7 @@ import com.shusuke.qiitareader.data.infrastructure.qiitaapi.QiitaApiService
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -28,7 +29,7 @@ class ItemsRepositoryTest {
             api.getItems(page = 1, perPage = 20, query = "Kotlin")
         } returns expectedItems
 
-        val result = repository.getItems(page = 1, query = "Kotlin")
+        val result = repository.getItemsFlow(page = 1, query = "Kotlin").first()
 
         assertTrue(result.isSuccess)
         assertEquals(2, result.getOrNull()?.list?.size)
@@ -43,7 +44,7 @@ class ItemsRepositoryTest {
         runTest {
         coEvery { api.getItems(page = 1, perPage = 20, query = "query") } returns emptyList()
 
-        val result = repository.getItems(page = 1, query = "query")
+        val result = repository.getItemsFlow(page = 1, query = "query").first()
 
         assertTrue(result.isSuccess)
         assertTrue(result.getOrNull()?.list?.isEmpty() == true)
@@ -56,7 +57,7 @@ class ItemsRepositoryTest {
         val ioException = IOException("Connection timeout")
         coEvery { api.getItems(page = 1, perPage = 20, query = "q") } throws ioException
 
-        val result = repository.getItems(page = 1, query = "q")
+        val result = repository.getItemsFlow(page = 1, query = "q").first()
 
         assertTrue(result.isFailure)
         val error = result.exceptionOrNull()
@@ -73,7 +74,7 @@ class ItemsRepositoryTest {
         coEvery { httpException.message } returns "Not Found"
         coEvery { api.getItems(page = 1, perPage = 20, query = "q") } throws httpException
 
-        val result = repository.getItems(page = 1, query = "q")
+        val result = repository.getItemsFlow(page = 1, query = "q").first()
 
         assertTrue(result.isFailure)
         val error = result.exceptionOrNull()
@@ -90,7 +91,7 @@ class ItemsRepositoryTest {
         coEvery { httpException.message } returns "Service Unavailable"
         coEvery { api.getItems(page = 1, perPage = 20, query = "q") } throws httpException
 
-        val result = repository.getItems(page = 1, query = "q")
+        val result = repository.getItemsFlow(page = 1, query = "q").first()
 
         assertTrue(result.isFailure)
         val error = result.exceptionOrNull()
@@ -104,7 +105,7 @@ class ItemsRepositoryTest {
         runTest {
         coEvery { api.getItems(page = 1, perPage = 20, query = "q") } throws RuntimeException("unexpected")
 
-        val result = repository.getItems(page = 1, query = "q")
+        val result = repository.getItemsFlow(page = 1, query = "q").first()
 
         assertTrue(result.isFailure)
         val error = result.exceptionOrNull()
