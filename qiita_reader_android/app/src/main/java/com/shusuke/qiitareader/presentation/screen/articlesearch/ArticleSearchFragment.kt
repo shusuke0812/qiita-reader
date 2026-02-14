@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.shusuke.qiitareader.presentation.UiState
+import com.shusuke.qiitareader.presentation.theme.QiitaReaderTheme
 
 class ArticleSearchFragment : Fragment() {
 
@@ -22,17 +23,19 @@ class ArticleSearchFragment : Fragment() {
     ): View? {
         return ComposeView(requireContext()).apply {
             setContent {
-                val query by viewModel.query.collectAsState(initial = "")
-                val viewState by viewModel.viewState.collectAsState(initial = UiState.Standby)
-                ArticleSearchScreen(
-                    query = query,
-                    onQueryChange = viewModel::updateQuery,
-                    viewState = viewState,
-                    onSearch = viewModel::searchItems,
-                    onTagClick = { _ -> /* TODO: タグ記事画面へ */ },
-                    onItemClick = { _ -> /* TODO: 記事詳細へ */ },
-                    onStockClick = { _ -> /* TODO: ストック */ }
-                )
+                QiitaReaderTheme {
+                    val query by viewModel.query.collectAsState(initial = "")
+                    val viewState by viewModel.viewState.collectAsState(initial = UiState.Standby)
+                    ArticleSearchScreen(
+                        query = query,
+                        onQueryChange = viewModel::updateQuery,
+                        viewState = viewState,
+                        onSearch = viewModel::searchItems,
+                        onTagClick = { _ -> /* TODO: タグ記事画面へ */ },
+                        onItemClick = { _ -> /* TODO: 記事詳細へ */ },
+                        onStockClick = { _ -> /* TODO: ストック */ }
+                    )
+                }
             }
         }
     }
