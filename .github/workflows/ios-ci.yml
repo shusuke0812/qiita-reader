@@ -4,17 +4,13 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - qiita_reader_android/
-      - qiita_reader_reactnative/
-      - README.md
+    paths:
+      - qiita_reader_ios/**
   pull_request:
     branches:
-        - main
-    paths-ignore:
-      - qiita_reader_android/
-      - qiita_reader_reactnative/
-      - README.md
+      - main
+    paths:
+      - qiita_reader_ios/**
   workflow_dispatch:
 
 env:
