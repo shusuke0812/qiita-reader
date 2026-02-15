@@ -19,8 +19,8 @@ object QiitaApiClient {
     }
 
     private val okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(30, TimeUnit.SECONDS) // TCP 3-way ハンドシェイクに失敗
+        .readTimeout(30, TimeUnit.SECONDS) // ハンドシェイク後、サーバーからのレスポンスデータ待ち
         .apply {
             if (BuildConfig.DEBUG) {
                 addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) })
