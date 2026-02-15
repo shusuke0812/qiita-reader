@@ -34,7 +34,7 @@ class ArticleSearchViewModel(
             searchArticlesUseCase.invoke(page = page, query = query).collect { result ->
                 result.fold(
                     onSuccess = { itemList -> updateStateOnSearchSuccess(itemList) },
-                    onFailure = { e -> handleSearchFailure(e) }
+                    onFailure = { e -> handleSearchFailure(e, query) }
                 )
             }
         }
@@ -53,7 +53,7 @@ class ArticleSearchViewModel(
         }
     }
 
-    private fun handleSearchFailure(e: Throwable) {
+    private fun handleSearchFailure(e: Throwable, query: String) {
         val apiError = (e as? CustomApiError) ?: CustomApiError.Unknown
         _uiState.update {
             it.copy(
@@ -71,7 +71,7 @@ class ArticleSearchViewModel(
             breadcrumbContext = BreadcrumbContext(
                 message = "記事検索",
                 category = "operation",
-                data = mapOf("query" to _uiState.value.query)
+                data = mapOf("query" to query)
             )
         )
     }
