@@ -27,8 +27,8 @@ sealed class CustomApiError : Throwable {
 
     data object LackOfAccessToken : CustomApiError()
     data class NetworkError(override val cause: Throwable) : CustomApiError(cause)
-    data class InvalidRequest(val dataString: String?, val statusCode: Int) : CustomApiError()
+    data class InvalidRequest(val dataString: String?, val statusCode: Int, override val cause: Throwable? = null) : CustomApiError(cause)
     data class ResponseParseError(override val cause: Throwable) : CustomApiError(cause)
-    data class ServerError(val dataString: String?, val statusCode: Int) : CustomApiError()
+    data class ServerError(val dataString: String?, val statusCode: Int, override val cause: Throwable? = null) : CustomApiError(cause)
     data object Unknown : CustomApiError()
 }

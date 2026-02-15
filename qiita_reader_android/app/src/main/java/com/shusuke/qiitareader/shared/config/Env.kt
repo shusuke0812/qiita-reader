@@ -38,5 +38,11 @@ object Env {
                 Flavor.PROD -> BuildConfig.ACCESS_TOKEN_STORAGE_KEY
                 Flavor.STAGING -> BuildConfig.STG_ACCESS_TOKEN_STORAGE_KEY
             }
+
+        val sentryDns: String
+            get() = when(flavor) {
+                Flavor.PROD -> BuildConfig.SENTRY_DNS
+                Flavor.STAGING -> BuildConfig.STG_SENTRY_DNS
+            }
     }
 }
