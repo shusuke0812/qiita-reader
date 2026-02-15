@@ -3,6 +3,9 @@ package com.shusuke.qiitareader.presentation.screen.articlesearch
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shusuke.qiitareader.data.infrastructure.api.CustomApiError
+import com.shusuke.qiitareader.data.repository.items.ItemList
+import com.shusuke.qiitareader.domain.reporterror.BreadcrumbContext
+import com.shusuke.qiitareader.domain.reporterror.ReportErrorUseCase
 import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +14,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ArticleSearchViewModel(
-    private val searchArticlesUseCase: SearchArticlesUseCase
+    private val searchArticlesUseCase: SearchArticlesUseCase,
+    private val reportErrorUseCase: ReportErrorUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ArticleSearchUiState())
@@ -24,35 +28,51 @@ class ArticleSearchViewModel(
     }
 
     fun searchItems() {
+        val query = _uiState.value.query
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            searchArticlesUseCase.invoke(page = page, query = _uiState.value.query).collect { result ->
+            searchArticlesUseCase.invoke(page = page, query = query).collect { result ->
                 result.fold(
-                    onSuccess = { itemList ->
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                content = if (itemList.list.isEmpty()) {
-                                    ArticleSearchUiState.ArticleSearchContent.Failure(ArticleSearchError.NotFoundArticles)
-                                } else {
-                                    ArticleSearchUiState.ArticleSearchContent.Success(itemList)
-                                }
-                            )
-                        }
-                    },
-                    onFailure = { e ->
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                content = ArticleSearchUiState.ArticleSearchContent.Failure(
-                                    (e as? CustomApiError)?.let { ArticleSearchError.FromApi(it) }
-                                        ?: ArticleSearchError.FromApi(CustomApiError.Unknown)
-                                )
-                            )
-                        }
-                    }
+                    onSuccess = { itemList -> updateStateOnSearchSuccess(itemList) },
+                    onFailure = { e -> handleSearchFailure(e) }
                 )
             }
         }
+    }
+
+    private fun updateStateOnSearchSuccess(itemList: ItemList) {
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                content = if (itemList.list.isEmpty()) {
+                    ArticleSearchUiState.ArticleSearchContent.Failure(ArticleSearchError.NotFoundArticles)
+                } else {
+                    ArticleSearchUiState.ArticleSearchContent.Success(itemList)
+                }
+            )
+        }
+    }
+
+    private fun handleSearchFailure(e: Throwable) {
+        val apiError = (e as? CustomApiError) ?: CustomApiError.Unknown
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                content = ArticleSearchUiState.ArticleSearchContent.Failure(
+                    ArticleSearchError.FromApi(apiError)
+                )
+            )
+        }
+        reportErrorUseCase.invoke(
+            customApiError = apiError,
+            screen = this::class.simpleName!!.removeSuffix("ViewModel"),
+            operation = ::searchItems.name,
+            userId = null,
+            breadcrumbContext = BreadcrumbContext(
+                message = "記事検索",
+                category = "operation",
+                data = mapOf("query" to _uiState.value.query)
+            )
+        )
     }
 }

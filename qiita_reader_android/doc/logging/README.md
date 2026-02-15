@@ -5,11 +5,16 @@
 
 ---
 
-## 実装状況（初期化まで完了）
+## 実装状況（初期化・エラーログ送信（記事検索）まで完了）
 
 - **SDK**: `sentry-android` と `sentry-compose` を `libs.versions.toml` および `app/build.gradle.kts` で追加。Sentry Gradle プラグイン（`io.sentry.android.gradle`）を適用。
 - **DSN の設定**: `env.defaults.properties` に `SENTRY_DNS`（prod）・`STG_SENTRY_DNS`（staging）を定義。実際の値は `env.properties` に記述し、secrets プラグイン経由で `BuildConfig` に渡す。アプリからは `Env.Qiita.sentryDns` で参照。
 - **手動初期化**: `AndroidManifest.xml` で `SentryInitProvider` を `tools:node="remove"` によりマージ結果から削除し、[Sentry の手動初期化](https://docs.sentry.io/platforms/android/configuration/manual-init/)に従う。`QiitaReaderApplication#onCreate` で `Env.Qiita.sentryDns` が空でない場合のみ `SentryAndroid.init()` を呼ぶ。DSN が未設定のときは Sentry は有効にせず、クラッシュしない。
+- **SentryClient（Infrastructure）**: `data/infrastructure/sentry/SentryClient.kt` を追加。Sentry SDK をラップし、**API エラー送信**は `captureApiError(customApiError, screen, operation, userId, extra)`、**操作ログ**は `addBreadcrumb(message, category, data)` で記録する。`captureApiError` は送信前に `Sentry.withScope` でタグ（screen, operation）・User（userId）・extra を付与。ブレッドクラムは次に送信するエラーイベントに自動で付与される。
+- **ErrorReportRepository（Data）**: `data/repository/errorreport/ErrorReportRepository.kt` に interface と ErrorReportRepositoryImpl を追加。`reportApiError(customApiError, screen, operation, userId, extra)` と `addBreadcrumb(message, category, data)` を定義し、実装は SentryClient を呼ぶ。`extra` は省略可能。
+- **BreadcrumbContext（Domain）**: `domain/reporterror/BreadcrumbContext.kt` を追加。報告時に付けるブレッドクラム用のデータ（message, category?, data?）。ViewModel が ReportErrorUseCase に渡す。
+- **ReportErrorUseCase（Domain）**: `domain/reporterror/ReportErrorUseCase.kt` を追加。`invoke(..., breadcrumbContext: BreadcrumbContext? = null)` で、breadcrumbContext があれば先に ErrorReportRepository.addBreadcrumb してから reportApiError する。Koin で factory 登録。
+- **記事検索のエラー送信**: `ArticleSearchViewModel` は ReportErrorUseCase のみ依存。エラー時（handleSearchFailure）で `reportErrorUseCase.invoke(apiError, screen, operation, userId, breadcrumbContext = BreadcrumbContext("記事検索", "operation", mapOf("query" to query)))` を 1 回呼ぶ。UseCase 内でブレッドクラム付与→エラー送信の順で実行されるため、Sentry の Breadcrumbs で「どのキーワードでエラーになったか」を確認できる。検索開始時のブレッドクラム呼び出しは不要。現状は未ログインのため userId は null。
 
 ---
 
@@ -65,15 +70,16 @@
 
 ### 呼び出しの流れ（例: 記事検索でエラー時）
 
-1. **ViewModel**（例: `ArticleSearchViewModel.searchItems()` の collect 内 `onFailure`）  
+1. **ViewModel**（例: `ArticleSearchViewModel.handleSearchFailure`）  
    → エラーを受け取り、UI State を Failure に更新。  
-   → 同時に「エラー報告用の UseCase」を呼ぶ（例: `reportErrorUseCase.invoke(error)`）。
+   → 同時に「エラー報告用の UseCase」を 1 回だけ呼ぶ（例: `reportErrorUseCase.invoke(apiError, screen, operation, userId, breadcrumbContext = BreadcrumbContext(...))`）。
 2. **UseCase**（例: ReportErrorUseCase）  
-   → Repository のアップロードメソッドを呼ぶ（例: `errorReportRepository.reportApiError(customApiError)`）。
+   → breadcrumbContext があれば先に `errorReportRepository.addBreadcrumb(...)` を呼ぶ。  
+   → 続けて `errorReportRepository.reportApiError(...)` を呼ぶ。
 3. **Repository 実装**（例: ErrorReportRepositoryImpl）  
-   → **SentryClient** を呼ぶ（例: `sentryClient.captureApiError(customApiError)`）。
+   → **SentryClient** の addBreadcrumb / captureApiError を呼ぶ。
 4. **SentryClient**（Infrastructure）  
-   → Sentry SDK を使ってイベントを送信する。
+   → Sentry SDK を使ってブレッドクラム付きでイベントを送信する。
 
 このようにすると、「どの画面・どの操作でエラーが出たか」は ViewModel が知っており、**「Sentry に送る」という処理は Data 層（SentryClient + Repository）にまとまり、他操作でも同じ Repository / SentryClient を再利用できる**。
 
@@ -89,8 +95,7 @@
   Sentry の **タグ（tag）** または **コンテキスト（context）** として付与し、`captureException` / `captureMessage` する際にスコープに設定する。ユーザーID は Sentry の [User 設定](https://docs.sentry.io/platforms/android/enriching-events/identify-user/)（`Sentry.setUser()` やイベントごとの user フィールド）に設定すると、コンソールの検索・フィルタで利用しやすい。  
   これにより、Sentry のイベント詳細に「画面」「操作」「ユーザーID」が表示され、スタックトレースとあわせて確認できる。
 - **誰が渡すか**  
-  ViewModel が「どの画面・どの操作で失敗したか」を知っており、ログイン状態に応じて **ユーザーID** も取得できるため、エラー報告用の UseCase を呼ぶときに **画面名・操作名・ユーザーID（未ログイン時は null 等）を引数で渡す**。UseCase → Repository → SentryClient の順でその情報を伝え、SentryClient が送信前にタグ／コンテキスト／User を設定する。  
-  Repository のアップロードメソッドのシグネチャは、例: `reportApiError(customApiError: CustomApiError, screen: String, operation: String, userId: String?)` のようにコンテキストを受け取る形にする。
+  ViewModel が「どの画面・どの操作で失敗したか」を知っており、ログイン状態に応じて **ユーザーID** も取得できるため、エラー報告用の UseCase を**1 回**呼ぶときに **画面名・操作名・ユーザーID（未ログイン時は null 等）** に加え、**breadcrumbContext**（操作の説明・検索クエリなど）を渡す。ReportErrorUseCase が送信直前に addBreadcrumb してから reportApiError するため、Sentry 上で「どのキーワードでエラーになったか」を Breadcrumbs から確認できる。必要に応じて **extra** も渡せる。PII に注意し、必要ならマスキングや長さ制限を行う。
 
 ---
 
@@ -122,8 +127,8 @@
 4. **環境の切り分け**  
    - debug ビルドではサンプルレートを下げる、または開発用 DSN を指定する等で、本番イベントを汚さないようにする。
 5. **ブレッドクラム**  
-   - 画面表示・API 呼び出し開始/完了・エラー表示など、重要な操作で `Sentry.addBreadcrumb()` を呼ぶ。  
-   - Compose の画面や ViewModel の主要処理でブレッドクラムを追加し、クラッシュ時の文脈が分かるようにする。
+   - エラー報告時に操作コンテキスト（検索クエリなど）を付ける場合は、ViewModel が `ReportErrorUseCase.invoke(..., breadcrumbContext = BreadcrumbContext(message, category, data))` で渡す。UseCase 内で先に addBreadcrumb してから reportApiError する。  
+   - 記事検索ではエラー時に `breadcrumbContext = BreadcrumbContext("記事検索", "operation", mapOf("query" to query))` を渡し、送信直前にブレッドクラムが付与される。
 6. **パフォーマンス（トランザクション）**  
    - アプリ起動・画面表示など、重要な操作をトランザクションとして計測する。  
    - `Sentry.startTransaction()` / `finish()` または SDK の自動計測機能を有効化し、`tracesSampleRate` でサンプリングする。
