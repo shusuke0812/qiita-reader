@@ -46,8 +46,7 @@ data/
 │   └── items/
 │       ├── Item.kt                # API レスポンスと同一のモデル（Snake_case → プロパティは Kotlin 慣習）
 │       ├── ItemList.kt            # 一覧用のラッパー
-│       ├── ItemsRepository.kt     # 実装
-│       └── (ItemsRepositoryProtocol は同一ファイルで interface として定義)
+│       └── ItemsRepository.kt     # interface ItemsRepository + 実装 ItemsRepositoryImpl（同一ファイル）
 └── infrastructure/                # 通信・永続化の具体的な手段
     ├── api/
     │   ├── ApiError.kt            # 通信・HTTP エラーを表す型（Presentation の ArticleSearchError でラップ可能）
@@ -83,8 +82,8 @@ data/
 
 ### テスト・差し替え
 
-- `ItemsRepositoryProtocol` を interface にしているので、UseCase や ViewModel のテストでは **モックの Repository** を注入できる。
+- `ItemsRepository` を interface にしているので、UseCase や ViewModel のテストでは **モックの Repository** を注入できる。
 - 同様に、`QiitaApiService` を別実装（モックやスタブ）に差し替えることで、Repository 単体のテストやオフライン動作の検証がしやすい。
-- `ItemsRepository` の単体テストは `ItemsRepositoryTest.kt` で、MockK で `QiitaApiService` をモックし、成功・IOException・HttpException（4xx/5xx）・その他例外の各パターンを検証している。
+- `ItemsRepositoryImpl` の単体テストは `ItemsRepositoryTest.kt` で、MockK で `QiitaApiService` をモックし、成功・IOException・HttpException（4xx/5xx）・その他例外の各パターンを検証している。
 
 ---

@@ -1,7 +1,7 @@
 package com.shusuke.qiitareader.domain.searcharticles
 
 import com.shusuke.qiitareader.data.repository.items.ItemList
-import com.shusuke.qiitareader.data.repository.items.ItemsRepositoryProtocol
+import com.shusuke.qiitareader.data.repository.items.ItemsRepository
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -13,7 +13,7 @@ interface SearchArticlesUseCase {
 }
 
 class SearchArticlesUseCaseImpl (
-    private val itemsRepository: ItemsRepositoryProtocol
+    private val itemsRepository: ItemsRepository
 ) : SearchArticlesUseCase {
 
     override fun invoke(page: Int, query: String): Flow<Result<ItemList>> =

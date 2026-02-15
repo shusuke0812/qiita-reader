@@ -16,7 +16,7 @@ import java.io.IOException
 class ItemsRepositoryTest {
 
     private val api = mockk<QiitaApiService>()
-    private val repository = ItemsRepository(api = api)
+    private val repository = ItemsRepositoryImpl(api = api)
 
     @Test
     fun getItems_success_returnsItemList() {

@@ -8,13 +8,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 
-interface ItemsRepositoryProtocol {
+interface ItemsRepository {
     fun getItemsFlow(page: Int, query: String): Flow<Result<ItemList>>
 }
 
-class ItemsRepository(
+class ItemsRepositoryImpl(
     private val api: QiitaApiService = QiitaApiClient.qiitaApiService
-) : ItemsRepositoryProtocol {
+) : ItemsRepository {
 
     override fun getItemsFlow(page: Int, query: String): Flow<Result<ItemList>> = flow {
         val result = withContext(Dispatchers.IO) {

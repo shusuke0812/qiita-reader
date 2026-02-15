@@ -3,7 +3,7 @@ package com.shusuke.qiitareader.presentation.screen.articlesearch
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shusuke.qiitareader.data.infrastructure.api.ApiError
-import com.shusuke.qiitareader.data.repository.items.ItemsRepository
+import com.shusuke.qiitareader.data.repository.items.ItemsRepositoryImpl
 import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCase
 import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCaseImpl
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class ArticleSearchViewModel(
     private val searchArticlesUseCase: SearchArticlesUseCase = SearchArticlesUseCaseImpl(
-        ItemsRepository()
+        ItemsRepositoryImpl()
     )
 ) : ViewModel() {
 
