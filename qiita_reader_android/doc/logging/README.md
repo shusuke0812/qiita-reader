@@ -37,6 +37,63 @@
 
 ---
 
+## エラーログ送信のアーキテクチャ概要
+
+記事検索（TextField でクエリ入力 → 検索）など、画面操作に伴って発生したエラーを Sentry に送る場合の「どこで受け取り、いつ送るか」と、送信処理をまとめる層の構成を述べる。
+
+### エラーを受け取るクラス・メソッド
+
+- **受け取り場所**: **ViewModel**。  
+  例: 記事検索では `ArticleSearchViewModel.searchItems()` 内で `searchArticlesUseCase.invoke(...).collect { result -> ... }` しており、`result` が `Result.failure` のときが「エラーを認識した」タイミングである。
+- エラー自体は **Data 層の Repository**（例: `ItemsRepository.getItemsFlow`）で API 失敗を `Result.failure(CustomApiError)` として emit し、UseCase はその Flow をそのまま返す。**補足（受け取り）は ViewModel の collect の onFailure 側**で行う。  
+  Presentation は「表示用のエラー（例: `ArticleSearchError`）に変換して UI State に載せる」責務に加え、「Sentry へ報告するかどうかを決め、報告を依頼する」役割を持つ。
+
+### アップロードのタイミング
+
+- **ViewModel が `Result.failure` を受け取った直後**（collect の `onFailure` ブロック内）で、Sentry へのアップロードを依頼する。  
+  UI State を Failure に更新するのと同時、またはその直後に「エラー報告用の UseCase」を呼ぶ形にすると、同じエラーについて「ユーザーへの表示」と「Sentry への送信」のタイミングが揃う。
+
+### Sentry 送信をまとめる層（Data 層）
+
+- **Infrastructure: SentryClient**  
+  Sentry SDK（`Sentry.captureException` / `captureMessage` 等）をラップするクラス。記事検索エラーに限らず、他の操作で発生したエラーを Sentry に送る場合もここを共通で使う。
+- **Repository: アップロードメソッドを定義**  
+  「エラーを Sentry に送る」という振る舞いを Domain / Presentation から使うために、**Repository のインターフェースにアップロード用メソッド**を定義する。  
+  実装クラスは Infrastructure の **SentryClient** を依存に持ち、そのメソッド内で SentryClient を呼んで実際の送信を行う。  
+  Domain / Presentation からは「Repository のインターフェース」だけを参照し、Sentry や SentryClient の詳細は Data 層に閉じる（[doc/architecture/README.md](../architecture/README.md) の Data 層の考え方に合わせる）。  
+  配置の目安: **Infrastructure** に `infrastructure/sentry/` 等を設けて SentryClient を置き、**Repository** に `repository/errorreport/` 等を設けて ErrorReportRepository（interface + 実装）を置く。
+
+### 呼び出しの流れ（例: 記事検索でエラー時）
+
+1. **ViewModel**（例: `ArticleSearchViewModel.searchItems()` の collect 内 `onFailure`）  
+   → エラーを受け取り、UI State を Failure に更新。  
+   → 同時に「エラー報告用の UseCase」を呼ぶ（例: `reportErrorUseCase.invoke(error)`）。
+2. **UseCase**（例: ReportErrorUseCase）  
+   → Repository のアップロードメソッドを呼ぶ（例: `errorReportRepository.reportApiError(customApiError)`）。
+3. **Repository 実装**（例: ErrorReportRepositoryImpl）  
+   → **SentryClient** を呼ぶ（例: `sentryClient.captureApiError(customApiError)`）。
+4. **SentryClient**（Infrastructure）  
+   → Sentry SDK を使ってイベントを送信する。
+
+このようにすると、「どの画面・どの操作でエラーが出たか」は ViewModel が知っており、**「Sentry に送る」という処理は Data 層（SentryClient + Repository）にまとまり、他操作でも同じ Repository / SentryClient を再利用できる**。
+
+### コンテキスト（画面・操作・ユーザーID）の付与
+
+エラーログと一緒に **どの画面で・どのような操作で発生したか**、および **ユーザーID** を Sentry に送り、スタックトレースやイベント詳細から原因を追いやすくし、Sentry コンソールからエラーログを検索・フィルタしやすくする。
+
+- **付与する情報**  
+  - **画面**: 例として画面名や画面を一意に表す識別子（例: `ArticleSearch`、`記事検索`）。  
+  - **操作**: 例としてユーザーが行った操作の種類（例: `記事検索`、`searchItems`、`ストック追加`）。  
+  - **ユーザーID**: ログイン済みユーザーを一意に表す識別子。Sentry コンソールで「特定ユーザーに発生したエラー」で検索・フィルタするために付与する。未ログインの場合は空文字や null を渡し、送信時に含めない、または `anonymous` 等のタグで区別する。
+- **送信の形**  
+  Sentry の **タグ（tag）** または **コンテキスト（context）** として付与し、`captureException` / `captureMessage` する際にスコープに設定する。ユーザーID は Sentry の [User 設定](https://docs.sentry.io/platforms/android/enriching-events/identify-user/)（`Sentry.setUser()` やイベントごとの user フィールド）に設定すると、コンソールの検索・フィルタで利用しやすい。  
+  これにより、Sentry のイベント詳細に「画面」「操作」「ユーザーID」が表示され、スタックトレースとあわせて確認できる。
+- **誰が渡すか**  
+  ViewModel が「どの画面・どの操作で失敗したか」を知っており、ログイン状態に応じて **ユーザーID** も取得できるため、エラー報告用の UseCase を呼ぶときに **画面名・操作名・ユーザーID（未ログイン時は null 等）を引数で渡す**。UseCase → Repository → SentryClient の順でその情報を伝え、SentryClient が送信前にタグ／コンテキスト／User を設定する。  
+  Repository のアップロードメソッドのシグネチャは、例: `reportApiError(customApiError: CustomApiError, screen: String, operation: String, userId: String?)` のようにコンテキストを受け取る形にする。
+
+---
+
 ## 送信するもの・送信しないもの
 
 | 種別 | 送信する | 送信しない（方針） |
@@ -73,6 +130,7 @@
 7. **ネットワークエラー（4xx/5xx）の送信**  
    - `CustomApiError` のうち HTTP 4xx/5xx に該当するものを検知したタイミングで、Sentry に送信する（`captureMessage` またはコンテキスト付きの `captureException`）。Repository で失敗を emit する箇所、または ViewModel で `Result.failure` を受け取った箇所のいずれかで、ステータスコードやエラー種別を付与して送る。  
    - 送信内容に PII（個人を特定しうる情報）やリクエストボディを含めない。
+   - **画面・操作・ユーザーID の付与**: どの画面・どの操作で発生したか、およびユーザーID（ログイン済みの場合）をエラーログと一緒に送る。ViewModel が報告用 UseCase を呼ぶ際に画面名・操作名・ユーザーID（未ログイン時は null 等）を渡し、SentryClient がタグ／コンテキスト／User に設定してから送信する。Sentry コンソールでユーザー単位にエラーを検索・フィルタしやすくなる（上記「コンテキスト（画面・操作・ユーザーID）の付与」を参照）。
 8. **手動報告**  
    - 想定外の状態（例: ある `CustomApiError` の分岐で未対応の型が来た場合）のみ、`Sentry.captureException()` で送信する。  
    - 送信前に PII（個人を特定しうる情報）が含まれないよう注意する。
