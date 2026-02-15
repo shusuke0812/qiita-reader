@@ -21,14 +21,14 @@ package com.shusuke.qiitareader.data.infrastructure.api
  * }
  * ```
  */
-sealed class ApiError : Throwable {
+sealed class CustomApiError : Throwable {
     constructor() : super()
     constructor(cause: Throwable?) : super(cause)
 
-    data object LackOfAccessToken : ApiError()
-    data class NetworkError(override val cause: Throwable) : ApiError(cause)
-    data class InvalidRequest(val dataString: String?, val statusCode: Int) : ApiError()
-    data class ResponseParseError(override val cause: Throwable) : ApiError(cause)
-    data class ServerError(val dataString: String?, val statusCode: Int) : ApiError()
-    data object Unknown : ApiError()
+    data object LackOfAccessToken : CustomApiError()
+    data class NetworkError(override val cause: Throwable) : CustomApiError(cause)
+    data class InvalidRequest(val dataString: String?, val statusCode: Int) : CustomApiError()
+    data class ResponseParseError(override val cause: Throwable) : CustomApiError(cause)
+    data class ServerError(val dataString: String?, val statusCode: Int) : CustomApiError()
+    data object Unknown : CustomApiError()
 }

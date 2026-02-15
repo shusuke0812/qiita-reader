@@ -1,6 +1,6 @@
 package com.shusuke.qiitareader.data.repository.items
 
-import com.shusuke.qiitareader.data.infrastructure.api.toApiError
+import com.shusuke.qiitareader.data.infrastructure.api.toCustomApiError
 import com.shusuke.qiitareader.data.infrastructure.qiitaapi.QiitaApiClient
 import com.shusuke.qiitareader.data.infrastructure.qiitaapi.QiitaApiService
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +23,7 @@ class ItemsRepositoryImpl(
                 ItemList(list = items)
             }.fold(
                 onSuccess = { Result.success(it) },
-                onFailure = { e -> Result.failure(e.toApiError()) }
+                onFailure = { e -> Result.failure(e.toCustomApiError()) }
             )
         }
         emit(result)

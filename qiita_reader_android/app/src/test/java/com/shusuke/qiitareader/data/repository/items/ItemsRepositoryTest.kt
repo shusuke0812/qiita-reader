@@ -1,6 +1,6 @@
 package com.shusuke.qiitareader.data.repository.items
 
-import com.shusuke.qiitareader.data.infrastructure.api.ApiError
+import com.shusuke.qiitareader.data.infrastructure.api.CustomApiError
 import com.shusuke.qiitareader.data.infrastructure.qiitaapi.QiitaApiService
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -61,8 +61,8 @@ class ItemsRepositoryTest {
 
         assertTrue(result.isFailure)
         val error = result.exceptionOrNull()
-        assertTrue(error is ApiError.NetworkError)
-        assertEquals(ioException, (error as ApiError.NetworkError).cause)
+        assertTrue(error is CustomApiError.NetworkError)
+        assertEquals(ioException, (error as CustomApiError.NetworkError).cause)
         }
     }
 
@@ -78,8 +78,8 @@ class ItemsRepositoryTest {
 
         assertTrue(result.isFailure)
         val error = result.exceptionOrNull()
-        assertTrue(error is ApiError.InvalidRequest)
-        assertEquals(404, (error as ApiError.InvalidRequest).statusCode)
+        assertTrue(error is CustomApiError.InvalidRequest)
+        assertEquals(404, (error as CustomApiError.InvalidRequest).statusCode)
         }
     }
 
@@ -95,8 +95,8 @@ class ItemsRepositoryTest {
 
         assertTrue(result.isFailure)
         val error = result.exceptionOrNull()
-        assertTrue(error is ApiError.ServerError)
-        assertEquals(503, (error as ApiError.ServerError).statusCode)
+        assertTrue(error is CustomApiError.ServerError)
+        assertEquals(503, (error as CustomApiError.ServerError).statusCode)
         }
     }
 
@@ -109,7 +109,7 @@ class ItemsRepositoryTest {
 
         assertTrue(result.isFailure)
         val error = result.exceptionOrNull()
-        assertTrue(error is ApiError.Unknown)
+        assertTrue(error is CustomApiError.Unknown)
         }
     }
 

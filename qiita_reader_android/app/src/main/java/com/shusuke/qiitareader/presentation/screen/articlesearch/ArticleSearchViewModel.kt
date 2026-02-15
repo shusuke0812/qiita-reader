@@ -2,7 +2,7 @@ package com.shusuke.qiitareader.presentation.screen.articlesearch
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shusuke.qiitareader.data.infrastructure.api.ApiError
+import com.shusuke.qiitareader.data.infrastructure.api.CustomApiError
 import com.shusuke.qiitareader.data.repository.items.ItemsRepositoryImpl
 import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCase
 import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCaseImpl
@@ -49,8 +49,8 @@ class ArticleSearchViewModel(
                             it.copy(
                                 isLoading = false,
                                 content = ArticleSearchUiState.ArticleSearchContent.Failure(
-                                    (e as? ApiError)?.let { ArticleSearchError.FromApi(it) }
-                                        ?: ArticleSearchError.FromApi(ApiError.Unknown)
+                                    (e as? CustomApiError)?.let { ArticleSearchError.FromApi(it) }
+                                        ?: ArticleSearchError.FromApi(CustomApiError.Unknown)
                                 )
                             )
                         }

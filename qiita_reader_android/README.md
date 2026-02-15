@@ -31,7 +31,7 @@ Domain / Presentation からは **Repository のインターフェース（Proto
 
 - **Repository**  
   UseCase から呼ばれる窓口。  
-  - 一覧系は `getItemsFlow` のように **Flow** を返す。API の呼び出し、レスポンスのモデル（Entity）への変換、成功時は `Result.success` を emit、失敗時は `Throwable.toApiError()`（`ApiErrorExtensions.kt`）で `ApiError` にマッピングして `Result.failure` を emit。  
+  - 一覧系は `getItemsFlow` のように **Flow** を返す。API の呼び出し、レスポンスのモデル（Entity）への変換、成功時は `Result.success` を emit、失敗時は `Throwable.toCustomApiError()`（`ApiErrorExtensions.kt`）で `CustomApiError` にマッピングして `Result.failure` を emit。  
   - 一発の操作は suspend + Result を返す（現状は一覧系のみ実装）。  
   - 必要ならキャッシュや DB とのやりとりもここで行う（現状は API のみ）
 - **Infrastructure**  
@@ -49,8 +49,8 @@ data/
 │       └── ItemsRepository.kt     # interface ItemsRepository + 実装 ItemsRepositoryImpl（同一ファイル）
 └── infrastructure/                # 通信・永続化の具体的な手段
     ├── api/
-    │   ├── ApiError.kt            # 通信・HTTP エラーを表す型（Presentation の ArticleSearchError でラップ可能）
-    │   └── ApiErrorExtensions.kt   # Throwable.toApiError()（他 Repository でも利用可能）
+    │   ├── ApiError.kt                 # CustomApiError（通信・HTTP エラー型。Presentation の ArticleSearchError でラップ可能）
+    │   └── ApiErrorExtensions.kt   # Throwable.toCustomApiError()（他 Repository でも利用可能）
     └── qiitaapi/
         ├── QiitaApiService.kt     # Retrofit の interface（GET /items など）
         └── QiitaApiClient.kt      # Retrofit の組み立て・BASE_URL・Json 設定
@@ -59,9 +59,9 @@ data/
 - **モデル（Item, ItemList）**  
   Qiita API のレスポンス形状に合わせた Data 層のモデル。  
   `@SerialName` で Snake_case とマッピングし、表示用の導出値（例: `formattedUpdatedAtString`）は Data 層のモデルに持たせている（Presentation で重複させない）。
-- **ApiError**  
+- **CustomApiError**  
   ネットワーク障害、4xx/5xx、パース失敗などを sealed class で表現。  
-  一覧系は Repository が `Flow<Result<ItemList>>` を返し、失敗時は `Result.failure(ApiError)` を emit する。  
+  一覧系は Repository が `Flow<Result<ItemList>>` を返し、失敗時は `Result.failure(CustomApiError)` を emit する。  
   Presentation 側では必要に応じて `ArticleSearchError` などに変換する。
 
 ### スレッド・非同期
@@ -76,9 +76,9 @@ data/
 - **Repository**  
   `getItemsFlow` 内で `runCatching` で API 呼び出しを囲み、  
   - 成功: `Result.success(ItemList)` を emit  
-  - 失敗: 例外を `Throwable.toApiError()`（`ApiErrorExtensions.kt`）で `ApiError` に変換し、`Result.failure(apiError)` を emit。`toApiError()` は他 Repository でも利用する。
+  - 失敗: 例外を `Throwable.toCustomApiError()`（`ApiErrorExtensions.kt`）で `CustomApiError` に変換し、`Result.failure(apiError)` を emit。`toCustomApiError()` は他 Repository でも利用する。
 - **Domain / Presentation**  
-  `Result` を受け取り、成功時はデータを流し、失敗時は `ApiError`（またはそれをラップした UI 用エラー）でメッセージ表示やリトライを決める。
+  `Result` を受け取り、成功時はデータを流し、失敗時は `CustomApiError`（またはそれをラップした UI 用エラー）でメッセージ表示やリトライを決める。
 
 ### テスト・差し替え
 
