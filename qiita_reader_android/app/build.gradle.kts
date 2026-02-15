@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.secrets.gradle)
+    alias(libs.plugins.sentry.android.gradle)
 }
 
 android {
@@ -106,6 +107,9 @@ dependencies {
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
+
+    implementation(libs.sentry.android)
+    implementation(libs.sentry.compose)
 }
 
 secrets {

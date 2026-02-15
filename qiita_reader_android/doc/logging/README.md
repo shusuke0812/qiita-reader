@@ -1,7 +1,15 @@
-# ロギング・クラッシュレポート設計（Sentry 導入検討）
+# ロギング・クラッシュレポート設計（Sentry）
 
 本ドキュメントは、qiita-reader-android へ **Sentry** を導入する際の設計方針を定める。  
 クラッシュ・未処理例外の収集に加え、ブレッドクラムとパフォーマンス監視を導入し、本番環境の不具合を把握しやすくすることを目的とする。
+
+---
+
+## 実装状況（初期化まで完了）
+
+- **SDK**: `sentry-android` と `sentry-compose` を `libs.versions.toml` および `app/build.gradle.kts` で追加。Sentry Gradle プラグイン（`io.sentry.android.gradle`）を適用。
+- **DSN の設定**: `env.defaults.properties` に `SENTRY_DNS`（prod）・`STG_SENTRY_DNS`（staging）を定義。実際の値は `env.properties` に記述し、secrets プラグイン経由で `BuildConfig` に渡す。アプリからは `Env.Qiita.sentryDns` で参照。
+- **手動初期化**: `AndroidManifest.xml` で `SentryInitProvider` を `tools:node="remove"` によりマージ結果から削除し、[Sentry の手動初期化](https://docs.sentry.io/platforms/android/configuration/manual-init/)に従う。`QiitaReaderApplication#onCreate` で `Env.Qiita.sentryDns` が空でない場合のみ `SentryAndroid.init()` を呼ぶ。DSN が未設定のときは Sentry は有効にせず、クラッシュしない。
 
 ---
 
@@ -25,7 +33,7 @@
   - Data 層では `Result.failure(CustomApiError)` を返し、例外は Repository 内でキャッチして `CustomApiError` に変換している。  
   - Sentry には **キャッチされなかった例外**、**意図的に報告するエラー**に加え、**ネットワークエラー（4xx/5xx）** も送信する。4xx/5xx を送ることで、API の障害やクライアント側のリクエスト不備の傾向を把握できる。
 - **初期化**  
-  Sentry の初期化は **Application**（例: `QiitaReaderApplication`）の `onCreate` で行う。DSN や環境（debug/release）は BuildConfig や設定ファイルで切り替える。
+  Sentry の初期化は **Application**（`QiitaReaderApplication`）の `onCreate` で行う。DSN は `Env.Qiita.sentryDns`（BuildConfig 由来）を参照し、空のときは `SentryAndroid.init()` を呼ばない。自動初期化用の `SentryInitProvider` は AndroidManifest で `tools:node="remove"` により削除している。
 
 ---
 
@@ -48,8 +56,9 @@
    - 公式 [Sentry Android](https://docs.sentry.io/platforms/android/manual-setup/) に従い、Gradle で `sentry-android` を追加する。  
    - Compose 利用のため `sentry-compose` を追加し、ブレッドクラム・パフォーマンス計測に活用する。
 2. **初期化**  
-   - `Application#onCreate` で `SentryAndroid.init()` を呼ぶ。  
-   - DSN は **`env.properties`** にキー **`SENTRY_DNS`** で定義する。ビルド時に読み取り `BuildConfig` に渡し、アプリからは `BuildConfig.SENTRY_DNS` を参照する。`env.properties` はリポジトリに含めない（secrets 管理に合わせる）。
+   - `Application#onCreate` で、`Env.Qiita.sentryDns` が空でない場合のみ `SentryAndroid.init()` を呼ぶ。  
+   - DSN は **`env.properties`** にキー **`SENTRY_DNS`**（prod）・**`STG_SENTRY_DNS`**（staging）で定義する。ビルド時に `BuildConfig` に渡し、アプリからは `Env.Qiita.sentryDns` で参照する。`env.properties` はリポジトリに含めない（secrets 管理に合わせる）。  
+   - 手動初期化のため、`AndroidManifest.xml` で `SentryInitProvider` を `tools:node="remove"` によりマージ結果から削除している（DSN 未設定時に ContentProvider が DSN 必須でクラッシュするのを防ぐ）。
 3. **オフライン時のエラー送信**  
    - Sentry SDK のエンベロープキャッシュ（ディスクキュー）を有効にし、オフラインで発生したイベントをローカルに保存する。  
    - オンライン復帰時（ネットワーク利用可能になったタイミング）に、キューに溜まったイベントを自動でアップロードする。SDK のデフォルト挙動または `beforeSend` で送信タイミングを確認する。

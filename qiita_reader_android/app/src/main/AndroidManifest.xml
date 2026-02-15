@@ -15,6 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QiitaReader"
         tools:targetApi="31">
+        <!-- Sentry: 手動初期化のため ContentProvider をマージ結果から削除（DSN 未設定時は Application で init しない） -->
+        <provider
+            android:name="io.sentry.android.core.SentryInitProvider"
+            android:authorities="${applicationId}.SentryInitProvider"
+            tools:node="remove" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
