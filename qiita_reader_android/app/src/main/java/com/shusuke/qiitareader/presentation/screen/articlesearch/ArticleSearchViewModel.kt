@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.shusuke.qiitareader.data.infrastructure.api.ApiError
 import com.shusuke.qiitareader.data.repository.items.ItemsRepository
 import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCase
-import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCaseProtocol
+import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCaseImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ArticleSearchViewModel(
-    private val searchArticlesUseCase: SearchArticlesUseCaseProtocol = SearchArticlesUseCase(
+    private val searchArticlesUseCase: SearchArticlesUseCase = SearchArticlesUseCaseImpl(
         ItemsRepository()
     )
 ) : ViewModel() {
@@ -30,7 +30,7 @@ class ArticleSearchViewModel(
     fun searchItems() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            searchArticlesUseCase.invokeFlow(page = page, query = _uiState.value.query).collect { result ->
+            searchArticlesUseCase.invoke(page = page, query = _uiState.value.query).collect { result ->
                 result.fold(
                     onSuccess = { itemList ->
                         _uiState.update {

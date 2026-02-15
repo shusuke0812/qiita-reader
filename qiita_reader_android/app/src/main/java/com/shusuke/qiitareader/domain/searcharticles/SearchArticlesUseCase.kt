@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.Flow
  * 記事検索
  * クエリに応じた記事一覧を Flow で返す
  */
-interface SearchArticlesUseCaseProtocol {
-    fun invokeFlow(page: Int, query: String): Flow<Result<ItemList>>
+interface SearchArticlesUseCase {
+    fun invoke(page: Int, query: String): Flow<Result<ItemList>>
 }
 
-class SearchArticlesUseCase(
+class SearchArticlesUseCaseImpl (
     private val itemsRepository: ItemsRepositoryProtocol
-) : SearchArticlesUseCaseProtocol {
+) : SearchArticlesUseCase {
 
-    override fun invokeFlow(page: Int, query: String): Flow<Result<ItemList>> =
+    override fun invoke(page: Int, query: String): Flow<Result<ItemList>> =
         itemsRepository.getItemsFlow(page = page, query = query)
 }
