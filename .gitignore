@@ -99,3 +99,6 @@ iOSInjectionProject/
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 # End of https://www.toptal.com/developers/gitignore/api/swift,xcode
+
+# Cursor / qiita_reader_android TODO ワークフロー用一時ファイル
+.cursor/qiita_reader_android_todo_start.txt

@@ -8,13 +8,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.shusuke.qiitareader.presentation.screen.articlesearch.compose.ArticleSearchScreen
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.shusuke.qiitareader.presentation.theme.QiitaReaderTheme
 
 class ArticleSearchFragment : Fragment() {
 
-    private val viewModel: ArticleSearchViewModel by viewModels()
+    private val viewModel: ArticleSearchViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
