@@ -9,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.shusuke.qiitareader.presentation.UiState
 import com.shusuke.qiitareader.presentation.screen.articlesearch.compose.ArticleSearchScreen
 import com.shusuke.qiitareader.presentation.theme.QiitaReaderTheme
 
@@ -25,12 +24,10 @@ class ArticleSearchFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 QiitaReaderTheme {
-                    val query by viewModel.query.collectAsState(initial = "")
-                    val viewState by viewModel.viewState.collectAsState(initial = UiState.Standby)
+                    val uiState by viewModel.uiState.collectAsState(initial = ArticleSearchUiState())
                     ArticleSearchScreen(
-                        query = query,
+                        uiState = uiState,
                         onQueryChange = viewModel::updateQuery,
-                        viewState = viewState,
                         onSearch = viewModel::searchItems,
                         onTagClick = { _ -> /* TODO: タグ記事画面へ */ },
                         onItemClick = { _ -> /* TODO: 記事詳細へ */ },

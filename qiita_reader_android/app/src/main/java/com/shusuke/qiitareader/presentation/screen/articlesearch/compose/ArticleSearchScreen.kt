@@ -27,20 +27,19 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import com.shusuke.qiitareader.data.repository.items.Item
 import com.shusuke.qiitareader.data.repository.items.ItemList
-import com.shusuke.qiitareader.presentation.UiState
 import com.shusuke.qiitareader.presentation.screen.articlesearch.ArticleSearchError
+import com.shusuke.qiitareader.presentation.screen.articlesearch.ArticleSearchUiState
 import com.shusuke.qiitareader.presentation.theme.QiitaReaderTheme
 
 /**
  * 記事検索画面（Compose）。
  *
- * State は持たず、Fragment から渡された [query], [onQueryChange], [viewState], [onSearch] 等で描画する。
+ * State は持たず、Fragment から渡された [uiState], [onQueryChange], [onSearch] 等で描画する。
  */
 @Composable
 fun ArticleSearchScreen(
-    query: String,
+    uiState: ArticleSearchUiState,
     onQueryChange: (String) -> Unit,
-    viewState: UiState<ItemList, ArticleSearchError>,
     onSearch: () -> Unit,
     onTagClick: (String) -> Unit,
     onItemClick: (String) -> Unit,
@@ -55,7 +54,7 @@ fun ArticleSearchScreen(
         ) {
             val focusManager = LocalFocusManager.current
             OutlinedTextField(
-                value = query,
+                value = uiState.query,
                 onValueChange = onQueryChange,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -64,25 +63,31 @@ fun ArticleSearchScreen(
                 singleLine = true,
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus(); onSearch() })
+                keyboardActions = KeyboardActions(onSearch = {
+                    focusManager.clearFocus()
+                    onSearch()
+                })
             )
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 8.dp)
             ) {
-                when (viewState) {
-                    is UiState.Standby -> StandbyView()
-                    is UiState.Loading -> LoadingView()
-                    is UiState.Success -> ArticleListView(
-                        itemList = viewState.data,
-                        onTagClick = onTagClick,
-                        onItemClick = onItemClick,
-                        onStockClick = onStockClick
-                    )
-                    is UiState.Failure -> ErrorView(
-                        message = viewState.error.messageForDisplay()
-                    )
+                if (uiState.isLoading) {
+                    LoadingView()
+                } else {
+                    when (val content = uiState.content) {
+                        is ArticleSearchUiState.ArticleSearchContent.Standby -> StandbyView()
+                        is ArticleSearchUiState.ArticleSearchContent.Success -> ArticleListView(
+                            itemList = content.itemList,
+                            onTagClick = onTagClick,
+                            onItemClick = onItemClick,
+                            onStockClick = onStockClick
+                        )
+                        is ArticleSearchUiState.ArticleSearchContent.Failure -> ErrorView(
+                            message = content.error.messageForDisplay()
+                        )
+                    }
                 }
             }
         }
@@ -169,9 +174,8 @@ private fun ErrorView(
 private fun ArticleSearchScreenStandbyPreview() {
     QiitaReaderTheme {
         ArticleSearchScreen(
-            query = "",
+            uiState = ArticleSearchUiState(),
             onQueryChange = {},
-            viewState = UiState.Standby,
             onSearch = {},
             onTagClick = {},
             onItemClick = {},
@@ -185,9 +189,8 @@ private fun ArticleSearchScreenStandbyPreview() {
 private fun ArticleSearchScreenLoadingPreview() {
     QiitaReaderTheme {
         ArticleSearchScreen(
-            query = "Kotlin",
+            uiState = ArticleSearchUiState(query = "Kotlin", isLoading = true),
             onQueryChange = {},
-            viewState = UiState.Loading,
             onSearch = {},
             onTagClick = {},
             onItemClick = {},
@@ -201,16 +204,18 @@ private fun ArticleSearchScreenLoadingPreview() {
 private fun ArticleSearchScreenSuccessPreview() {
     QiitaReaderTheme {
         ArticleSearchScreen(
-            query = "Kotlin",
-            onQueryChange = {},
-            viewState = UiState.Success(
-                ItemList(
-                    list = listOf(
-                        sampleItemForPreview(id = "1", title = "Kotlin 入門", profileImageId = 1005),
-                        sampleItemForPreview(id = "2", title = "Compose の使い方", profileImageId = 1006)
+            uiState = ArticleSearchUiState(
+                query = "Kotlin",
+                content = ArticleSearchUiState.ArticleSearchContent.Success(
+                    ItemList(
+                        list = listOf(
+                            sampleItemForPreview(id = "1", title = "Kotlin 入門", profileImageId = 1005),
+                            sampleItemForPreview(id = "2", title = "Compose の使い方", profileImageId = 1006)
+                        )
                     )
                 )
             ),
+            onQueryChange = {},
             onSearch = {},
             onTagClick = {},
             onItemClick = {},
@@ -224,9 +229,11 @@ private fun ArticleSearchScreenSuccessPreview() {
 private fun ArticleSearchScreenErrorPreview() {
     QiitaReaderTheme {
         ArticleSearchScreen(
-            query = "Kotlin",
+            uiState = ArticleSearchUiState(
+                query = "Kotlin",
+                content = ArticleSearchUiState.ArticleSearchContent.Failure(ArticleSearchError.NotFoundArticles),
+            ),
             onQueryChange = {},
-            viewState = UiState.Failure(ArticleSearchError.NotFoundArticles),
             onSearch = {},
             onTagClick = {},
             onItemClick = {},
