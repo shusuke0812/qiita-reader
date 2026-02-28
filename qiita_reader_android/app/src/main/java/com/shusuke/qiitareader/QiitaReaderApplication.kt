@@ -1,3 +1,4 @@
+
 package com.shusuke.qiitareader
 
 import android.app.Application
@@ -25,6 +26,9 @@ class QiitaReaderApplication : Application() {
         if (sentryDsn.isNotBlank()) {
             SentryAndroid.init(this) { options ->
                 options.dsn = sentryDsn
+                options.tracesSampleRate = 0.5
+                options.sendDefaultPii = false
+                options.isEnableLogcatBreadcrumbs = true
             }
         }
     }
