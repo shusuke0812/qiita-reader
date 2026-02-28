@@ -27,8 +27,7 @@ class QiitaReaderApplication : Application() {
             SentryAndroid.init(this) { options ->
                 options.dsn = sentryDsn
                 options.tracesSampleRate = 0.5
-                options.sendDefaultPii = false
-                options.isEnableLogcatBreadcrumbs = true
+                options.isSendDefaultPii = false
             }
         }
     }
