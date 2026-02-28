@@ -35,6 +35,36 @@
 - どのユーザーで発生したログか検索できるようにするためにReportErrorUseCaseではUser IDをTagとして設定するようにする。
 - User IDはRepositoryから取得できるようにしておく。
 
+### クラス構成図
+
+```mermaid
+flowchart TB
+    subgraph Presentation
+        VM[ArticleSearchViewModel]
+        OtherUI[その他 UI コンポーネント]
+    end
+    subgraph Domain
+        ReportUC[ReportErrorUseCase]
+        OtherUC[その他 UseCase]
+    end
+    subgraph Data
+        ErrRepo[ErrorReportRepository]
+        ItemsRepo[ItemsRepository 等]
+    end
+    subgraph Infrastructure
+        SentryClient[SentryClient]
+    end
+    VM -->|"Log.d"| Logcat[Logcat]
+    OtherUI -->|"Log.d"| Logcat
+    OtherUC -->|"Log.d"| Logcat
+    ItemsRepo -->|"Log.d"| Logcat
+    VM -->|"invoke(error, screen, operation, userId)"| ReportUC
+    ReportUC --> ErrRepo
+    ErrRepo --> SentryClient
+    SentryClient -->|"Sentry.captureException"| Sentry[Sentry SDK]
+    Logcat -->|"isEnableLogcatBreadcrumbs"| Sentry
+```
+
 ## 設定項目
 
 - **DSN**: Sentry プロジェクトの DSN。**`env.properties`** にキー **`SENTRY_DNS`** で定義し、ビルド時に `BuildConfig` へ注入する。
