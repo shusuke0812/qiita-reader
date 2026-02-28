@@ -1,10 +1,10 @@
 package com.shusuke.qiitareader.presentation.screen.articlesearch
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shusuke.qiitareader.data.infrastructure.api.CustomApiError
 import com.shusuke.qiitareader.data.repository.items.ItemList
-import com.shusuke.qiitareader.domain.reporterror.BreadcrumbContext
 import com.shusuke.qiitareader.domain.reporterror.ReportErrorUseCase
 import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +29,7 @@ class ArticleSearchViewModel(
 
     fun searchItems() {
         val query = _uiState.value.query
+        Log.d("ArticleSearch", "searchItems: query=$query")
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             searchArticlesUseCase.invoke(page = page, query = query).collect { result ->
@@ -64,15 +65,10 @@ class ArticleSearchViewModel(
             )
         }
         reportErrorUseCase.invoke(
-            customApiError = apiError,
-            screen = this::class.simpleName!!.removeSuffix("ViewModel"),
+            error = e,
+            screenName = this::class.simpleName!!.removeSuffix("ViewModel"),
             operation = ::searchItems.name,
-            userId = null,
-            breadcrumbContext = BreadcrumbContext(
-                message = "記事検索",
-                category = "operation",
-                data = mapOf("query" to query)
-            )
+            extra = mapOf("query" to query)
         )
     }
 }

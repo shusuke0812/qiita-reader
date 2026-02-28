@@ -1,5 +1,6 @@
 package com.shusuke.qiitareader.data.repository.items
 
+import android.util.Log
 import com.shusuke.qiitareader.data.infrastructure.api.toCustomApiError
 import com.shusuke.qiitareader.data.infrastructure.qiitaapi.QiitaApiClient
 import com.shusuke.qiitareader.data.infrastructure.qiitaapi.QiitaApiService
@@ -17,13 +18,18 @@ class ItemsRepositoryImpl(
 ) : ItemsRepository {
 
     override fun getItemsFlow(page: Int, query: String): Flow<Result<ItemList>> = flow {
+        Log.d("ItemsRepository", "getItemsFlow: page=$page, query=$query")
         val result = withContext(Dispatchers.IO) {
             runCatching {
                 val items = api.getItems(page = page, perPage = 20, query = query)
+                Log.d("ItemsRepository", "getItemsFlow: success, count=${items.size}")
                 ItemList(list = items)
             }.fold(
                 onSuccess = { Result.success(it) },
-                onFailure = { e -> Result.failure(e.toCustomApiError()) }
+                onFailure = { e ->
+                    Log.d("ItemsRepository", "getItemsFlow: failure")
+                    Result.failure(e.toCustomApiError())
+                }
             )
         }
         emit(result)
