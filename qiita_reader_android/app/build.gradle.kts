@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.secrets.gradle)
-    alias(libs.plugins.sentry.android.gradle)
 }
 
 android {
