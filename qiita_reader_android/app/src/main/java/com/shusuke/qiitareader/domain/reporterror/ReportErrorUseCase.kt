@@ -3,7 +3,7 @@ package com.shusuke.qiitareader.domain.reporterror
 import com.shusuke.qiitareader.data.repository.errorreport.ErrorReportRepository
 
 interface ReportErrorUseCase {
-    fun invoke(
+    operator fun invoke(
         error: Throwable,
         screenName: String,
         operation: String,
@@ -15,7 +15,7 @@ class ReportErrorUseCaseImpl(
     private val errorReportRepository: ErrorReportRepository
 ) : ReportErrorUseCase {
 
-    override fun invoke(
+    override operator fun invoke(
         error: Throwable,
         screenName: String,
         operation: String,

@@ -1,6 +1,5 @@
 package com.shusuke.qiitareader.presentation.screen.articlesearch
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shusuke.qiitareader.data.infrastructure.api.CustomApiError
@@ -29,10 +28,9 @@ class ArticleSearchViewModel(
 
     fun searchItems() {
         val query = _uiState.value.query
-        Log.d("ArticleSearch", "searchItems: query=$query")
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            searchArticlesUseCase.invoke(page = page, query = query).collect { result ->
+            searchArticlesUseCase(page = page, query = query).collect { result ->
                 result.fold(
                     onSuccess = { itemList -> updateStateOnSearchSuccess(itemList) },
                     onFailure = { e -> handleSearchFailure(e, query) }
@@ -64,7 +62,7 @@ class ArticleSearchViewModel(
                 )
             )
         }
-        reportErrorUseCase.invoke(
+        reportErrorUseCase(
             error = e,
             screenName = this::class.simpleName!!.removeSuffix("ViewModel"),
             operation = ::searchItems.name,

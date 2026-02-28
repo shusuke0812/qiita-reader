@@ -10,14 +10,14 @@ import kotlinx.coroutines.flow.Flow
  * クエリに応じた記事一覧を Flow で返す
  */
 interface SearchArticlesUseCase {
-    fun invoke(page: Int, query: String): Flow<Result<ItemList>>
+    operator fun invoke(page: Int, query: String): Flow<Result<ItemList>>
 }
 
 class SearchArticlesUseCaseImpl (
     private val itemsRepository: ItemsRepository
 ) : SearchArticlesUseCase {
 
-    override fun invoke(page: Int, query: String): Flow<Result<ItemList>> {
+    override operator fun invoke(page: Int, query: String): Flow<Result<ItemList>> {
         Log.d("SearchArticlesUseCase", "invoke: page=$page, query=$query")
         return itemsRepository.getItemsFlow(page = page, query = query)
     }
