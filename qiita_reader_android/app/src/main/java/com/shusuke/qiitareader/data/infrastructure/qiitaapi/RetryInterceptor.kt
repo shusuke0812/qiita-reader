@@ -18,7 +18,8 @@ import java.io.IOException
 class RetryInterceptor(
     private val maxRetryCount: Int = 3,
     private val initialDelayMs: Long = 500,
-    private val multiplier: Double = 2.0
+    private val multiplier: Double = 2.0,
+    private val sleeper: (Long) -> Unit = { Thread.sleep(it) }
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -54,6 +55,6 @@ class RetryInterceptor(
     private fun sleepBackoff(attempt: Int) {
         var delayMs = initialDelayMs.toDouble()
         repeat(attempt) { delayMs *= multiplier }
-        Thread.sleep(delayMs.toLong())
+        sleeper
     }
 }
