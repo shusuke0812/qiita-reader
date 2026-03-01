@@ -21,7 +21,6 @@ coil = "2.5.0"
 materialIconsExtended = "1.2.0"
 appcompat = "1.7.1"
 koin = "4.0.0"
-sentry = "8.32.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,8 +52,6 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
 koin-core = { group = "io.insert-koin", name = "koin-core" }
 koin-android = { group = "io.insert-koin", name = "koin-android" }
-sentry-android = { group = "io.sentry", name = "sentry-android", version.ref = "sentry" }
-sentry-compose = { group = "io.sentry", name = "sentry-compose-android", version.ref = "sentry" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -62,4 +59,4 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 secrets-gradle = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsGradle" }
-sentry-android-gradle = { id = "io.sentry.android.gradle", version = "6.0.0" }
+sentry-android-gradle = { id = "io.sentry.android.gradle", version = "6.1.0" }

@@ -1,3 +1,5 @@
+import io.sentry.android.gradle.instrumentation.logcat.LogcatLevel
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -107,12 +109,19 @@ dependencies {
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
-
-    implementation(libs.sentry.android)
-    implementation(libs.sentry.compose)
 }
 
 secrets {
     propertiesFileName = "env.properties"
     defaultPropertiesFileName =  "env.defaults.properties"
+}
+
+sentry {
+    tracingInstrumentation {
+        enabled = true
+        logcat {
+            enabled = true
+            minLevel = LogcatLevel.DEBUG
+        }
+    }
 }

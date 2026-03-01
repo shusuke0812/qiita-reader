@@ -1,3 +1,4 @@
+
 package com.shusuke.qiitareader
 
 import android.app.Application
@@ -13,15 +14,21 @@ class QiitaReaderApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        initSentry()
+        startKoin {
+            androidContext(this@QiitaReaderApplication)
+            modules(dataModule, domainModule, presentationModule)
+        }
+    }
+
+    private fun initSentry() {
         val sentryDsn = Env.Qiita.sentryDns
         if (sentryDsn.isNotBlank()) {
             SentryAndroid.init(this) { options ->
                 options.dsn = sentryDsn
+                options.tracesSampleRate = 0.1
+                options.isSendDefaultPii = false
             }
-        }
-        startKoin {
-            androidContext(this@QiitaReaderApplication)
-            modules(dataModule, domainModule, presentationModule)
         }
     }
 }
