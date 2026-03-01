@@ -14,6 +14,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Bookmark
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +34,7 @@ import com.shusuke.qiitareader.presentation.theme.QiitaReaderTheme
 @Composable
 fun ArticleSearchItemView(
     item: Item,
+    isStocked: Boolean = false,
     onSelectedTag: (String) -> Unit,
     onSelectedItem: () -> Unit,
     onStockItem: (String) -> Unit,
@@ -129,8 +132,8 @@ fun ArticleSearchItemView(
                 modifier = Modifier.padding(start = 8.dp)
             )
             Icon(
-                imageVector = Icons.Default.Bookmark,
-                contentDescription = "ストック",
+                imageVector = if (isStocked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
+                contentDescription = if (isStocked) "ストック済み" else "ストック",
                 modifier = Modifier
                     .size(24.dp)
                     .clickable { onStockItem(item.id) }
@@ -160,6 +163,7 @@ private fun ArticleSearchItemViewPreview() {
                     profileImageUrlString = ""
                 )
             ),
+            isStocked = false,
             onSelectedTag = {},
             onSelectedItem = {},
             onStockItem = {}
