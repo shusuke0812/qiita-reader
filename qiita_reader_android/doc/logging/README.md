@@ -68,7 +68,7 @@ flowchart TB
 ## 設定項目
 
 - **DSN**: Sentry プロジェクトの DSN。**`env.properties`** にキー **`SENTRY_DNS`** で定義し、ビルド時に `BuildConfig` へ注入する。
-- **tracesSampleRate**: パフォーマンス計測のサンプリング率（0.0 ～ 1.0）。本番では 1.0 または適切な割合を指定する。
+- **tracesSampleRate**: パフォーマンス計測のサンプリング率（0.0 ～ 1.0）。本番では 0.1 または適切な割合を指定する。
 - **sendDefaultPii**: 個人情報を含めない方針とする場合はfalse。
 - **isEnableLogcatBreadcrumbs**: LogcatをBreadcrumbsに統合する場合はtrue。
 
