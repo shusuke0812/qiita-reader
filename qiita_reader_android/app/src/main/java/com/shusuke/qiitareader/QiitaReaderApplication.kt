@@ -26,7 +26,7 @@ class QiitaReaderApplication : Application() {
         if (sentryDsn.isNotBlank()) {
             SentryAndroid.init(this) { options ->
                 options.dsn = sentryDsn
-                options.tracesSampleRate = 0.5
+                options.tracesSampleRate = 0.1
                 options.isSendDefaultPii = false
             }
         }
