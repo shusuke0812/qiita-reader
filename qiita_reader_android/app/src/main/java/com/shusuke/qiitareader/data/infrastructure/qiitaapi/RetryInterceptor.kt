@@ -1,5 +1,6 @@
 package com.shusuke.qiitareader.data.infrastructure.qiitaapi
 
+import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -39,6 +40,7 @@ class RetryInterceptor(
             } catch (e: IOException) {
                 lastException = e
                 if (attempt == maxRetryCount) throw e
+                Log.d("RetryInterceptor", "Retry attempt ${attempt + 1}/$maxRetryCount after IOException: ${e.message}")
                 sleepBackoff(attempt)
             }
         }
