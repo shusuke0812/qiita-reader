@@ -110,7 +110,6 @@ fun ArticleSearchScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
-                    .background(DevGrey50)
             ) {
                 if (uiState.isLoading) {
                     LoadingView()
