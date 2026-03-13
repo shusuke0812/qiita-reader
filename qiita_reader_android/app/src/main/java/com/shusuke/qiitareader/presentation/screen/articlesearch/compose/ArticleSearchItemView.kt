@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
@@ -67,140 +68,181 @@ fun ArticleSearchItemView(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
-            // Header: Avatar + Name + Date | Bookmark
-            Row(
+            ArticleCardHeader(
+                profileImageUrl = item.user.profileImageUrlString,
+                userName = item.user.name,
+                formattedDate = item.formattedUpdatedAtString,
+                isStocked = isStocked,
+                onStockClick = { onStockItem(item.id) }
+            )
+            ArticleCardBody(title = item.title)
+            ArticleCardDivider()
+            ArticleCardFooter(
+                tags = item.tags,
+                likesCount = item.likesCount,
+                onTagClick = onSelectedTag
+            )
+        }
+    }
+}
+
+@Composable
+private fun ArticleCardHeader(
+    profileImageUrl: String,
+    userName: String,
+    formattedDate: String,
+    isStocked: Boolean,
+    onStockClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.weight(1f)
+        ) {
+            SubcomposeAsyncImage(
+                model = profileImageUrl,
+                contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    SubcomposeAsyncImage(
-                        model = item.user.profileImageUrlString,
-                        contentDescription = null,
+                    .size(36.dp)
+                    .clip(RoundedCornerShape(50)),
+                contentScale = ContentScale.Crop,
+                loading = {
+                    Box(
                         modifier = Modifier
                             .size(36.dp)
                             .clip(RoundedCornerShape(50)),
-                        contentScale = ContentScale.Crop,
-                        loading = {
-                            Box(
-                                modifier = Modifier
-                                    .size(36.dp)
-                                    .clip(RoundedCornerShape(50)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator(modifier = Modifier.size(20.dp))
-                            }
-                        },
-                        error = {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = null,
-                                modifier = Modifier.size(36.dp)
-                            )
-                        }
-                    )
-                    Column(
-                        modifier = Modifier.padding(start = 12.dp)
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = item.user.name,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
-                            color = DevGrey900,
-                            maxLines = 1
-                        )
-                        Text(
-                            text = item.formattedUpdatedAtString,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = DevGrey400
-                        )
+                        CircularProgressIndicator(modifier = Modifier.size(20.dp))
                     }
+                },
+                error = {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null,
+                        modifier = Modifier.size(36.dp)
+                    )
                 }
-                Icon(
-                    imageVector = if (isStocked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
-                    contentDescription = if (isStocked) "ストック済み" else "ストック",
-                    tint = DevGrey400,
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clickable { onStockItem(item.id) }
+            )
+            Column(
+                modifier = Modifier.padding(start = 12.dp)
+            ) {
+                Text(
+                    text = userName,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = DevGrey900,
+                    maxLines = 1
+                )
+                Text(
+                    text = formattedDate,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = DevGrey400
                 )
             }
-            // Body: Title
-            Text(
-                text = item.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                color = DevGrey900,
-                maxLines = 2,
-                modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 16.dp)
-            )
-            // Stitch: border-t border-devGrey-50
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = DevGrey50
-            )
-            // Footer: Tags (horizontal scroll) | Heart + Likes
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .padding(top = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    items(
-                        items = item.tags,
-                        key = { it.name }
-                    ) { tag ->
-                        val tagIndex = item.tags.indexOf(tag)
-                        val (bgColor, textColor) = if (tagIndex == 0) {
-                            // Stitch: first tag uses blue or green accent (e.g. Development=blue, AI=green)
-                            val useGreen = tag.name.uppercase().let { n ->
-                                n == "AI" || n.startsWith("AI") || n.contains("ML")
-                            }
-                            if (useGreen) DevGreen50 to DevGreen600 else DevBlue50 to DevBlue600
-                        } else {
-                            DevGrey100 to DevGrey600
-                        }
-                        Text(
-                            text = tag.name.uppercase(),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = textColor,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                            modifier = Modifier
-                                .background(bgColor, RoundedCornerShape(6.dp))
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
-                                .clickable { onSelectedTag(tag.name) }
-                        )
+        }
+        Icon(
+            imageVector = if (isStocked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
+            contentDescription = if (isStocked) "ストック済み" else "ストック",
+            tint = DevGrey400,
+            modifier = Modifier
+                .size(20.dp)
+                .clickable { onStockClick() }
+        )
+    }
+}
+
+@Composable
+private fun ArticleCardBody(
+    title: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Bold,
+        color = DevGrey900,
+        maxLines = 2,
+        modifier = modifier.padding(horizontal = 16.dp).padding(bottom = 16.dp)
+    )
+}
+
+@Composable
+private fun ArticleCardDivider(modifier: Modifier = Modifier) {
+    HorizontalDivider(
+        modifier = modifier,
+        thickness = 1.dp,
+        color = DevGrey50
+    )
+}
+
+@Composable
+private fun ArticleCardFooter(
+    tags: List<Item.Tag>,
+    likesCount: Int,
+    onTagClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .padding(top = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            items(
+                items = tags,
+                key = { it.name }
+            ) { tag ->
+                val tagIndex = tags.indexOf(tag)
+                val (bgColor, textColor) = if (tagIndex == 0) {
+                    val useGreen = tag.name.uppercase().let { n ->
+                        n == "AI" || n.startsWith("AI") || n.contains("ML")
                     }
+                    if (useGreen) DevGreen50 to DevGreen600 else DevBlue50 to DevBlue600
+                } else {
+                    DevGrey100 to DevGrey600
                 }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    modifier = Modifier.padding(start = 8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder,
-                        contentDescription = null,
-                        tint = DevGrey400,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Text(
-                        text = formatLikesCount(item.likesCount),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = DevGrey400
-                    )
-                }
+                Text(
+                    text = tag.name.uppercase(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = textColor,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .background(bgColor, RoundedCornerShape(6.dp))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .clickable { onTagClick(tag.name) }
+                )
             }
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            modifier = Modifier.padding(start = 8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.FavoriteBorder,
+                contentDescription = null,
+                tint = DevGrey400,
+                modifier = Modifier.size(20.dp)
+            )
+            Text(
+                text = formatLikesCount(likesCount),
+                style = MaterialTheme.typography.bodySmall,
+                color = DevGrey400
+            )
         }
     }
 }
