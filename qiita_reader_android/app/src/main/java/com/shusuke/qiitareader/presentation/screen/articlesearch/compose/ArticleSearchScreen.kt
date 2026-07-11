@@ -57,75 +57,69 @@ fun ArticleSearchScreen(
     onStockClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        containerColor = DevGrey50
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+            shadowElevation = 0.dp,
+            border = BorderStroke(1.dp, DevGrey100)
         ) {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
-                shadowElevation = 0.dp,
-                border = BorderStroke(1.dp, DevGrey100)
-            ) {
-                val focusManager = LocalFocusManager.current
-                TextField(
-                    value = uiState.query,
-                    onValueChange = onQueryChange,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    placeholder = { Text("Search articles...") },
-                    singleLine = true,
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.Search,
-                            contentDescription = null,
-                            tint = DevGrey400
-                        )
-                    },
-                    shape = RoundedCornerShape(12.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = DevGrey100,
-                        unfocusedContainerColor = DevGrey100,
-                        disabledContainerColor = DevGrey100,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        unfocusedPlaceholderColor = DevGrey400,
-                        focusedPlaceholderColor = DevGrey400
-                    ),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(onSearch = {
-                        focusManager.clearFocus()
-                        onSearch()
-                    })
-                )
-            }
-            Box(
+            val focusManager = LocalFocusManager.current
+            TextField(
+                value = uiState.query,
+                onValueChange = onQueryChange,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp)
-            ) {
-                if (uiState.isLoading) {
-                    LoadingView()
-                } else {
-                    when (val content = uiState.content) {
-                        is ArticleSearchUiState.ArticleSearchContent.Standby -> StandbyView()
-                        is ArticleSearchUiState.ArticleSearchContent.Success -> ArticleListView(
-                            itemList = content.itemList,
-                            onTagClick = onTagClick,
-                            onItemClick = onItemClick,
-                            onStockClick = onStockClick
-                        )
-                        is ArticleSearchUiState.ArticleSearchContent.Failure -> ErrorView(
-                            message = content.error.messageForDisplay()
-                        )
-                    }
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                placeholder = { Text("Search articles...") },
+                singleLine = true,
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.Search,
+                        contentDescription = null,
+                        tint = DevGrey400
+                    )
+                },
+                shape = RoundedCornerShape(12.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = DevGrey100,
+                    unfocusedContainerColor = DevGrey100,
+                    disabledContainerColor = DevGrey100,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    unfocusedPlaceholderColor = DevGrey400,
+                    focusedPlaceholderColor = DevGrey400
+                ),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = {
+                    focusManager.clearFocus()
+                    onSearch()
+                })
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+        ) {
+            if (uiState.isLoading) {
+                LoadingView()
+            } else {
+                when (val content = uiState.content) {
+                    is ArticleSearchUiState.ArticleSearchContent.Standby -> StandbyView()
+                    is ArticleSearchUiState.ArticleSearchContent.Success -> ArticleListView(
+                        itemList = content.itemList,
+                        onTagClick = onTagClick,
+                        onItemClick = onItemClick,
+                        onStockClick = onStockClick
+                    )
+                    is ArticleSearchUiState.ArticleSearchContent.Failure -> ErrorView(
+                        message = content.error.messageForDisplay()
+                    )
                 }
             }
         }
