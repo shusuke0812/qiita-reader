@@ -30,9 +30,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.shusuke.qiitareader.R
 import com.shusuke.qiitareader.data.repository.items.Item
 import com.shusuke.qiitareader.data.repository.items.ItemList
 import com.shusuke.qiitareader.presentation.screen.articlesearch.ArticleSearchError
@@ -74,7 +76,7 @@ fun ArticleSearchScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                placeholder = { Text("Search articles...") },
+                placeholder = { Text(stringResource(R.string.search_articles_placeholder)) },
                 singleLine = true,
                 leadingIcon = {
                     Icon(
@@ -118,7 +120,7 @@ fun ArticleSearchScreen(
                         onStockClick = onStockClick
                     )
                     is ArticleSearchUiState.ArticleSearchContent.Failure -> ErrorView(
-                        message = content.error.messageForDisplay()
+                        message = stringResource(content.error.messageResId())
                     )
                 }
             }
@@ -140,7 +142,7 @@ private fun StandbyView(modifier: Modifier = Modifier) {
             contentDescription = null,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-        Text("キーワードを入力して検索")
+        Text(stringResource(R.string.search_standby_message))
     }
 }
 

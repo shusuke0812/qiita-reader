@@ -1,5 +1,6 @@
 package com.shusuke.qiitareader.presentation.screen.setting.compose
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -26,14 +27,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.shusuke.qiitareader.R
 import com.shusuke.qiitareader.presentation.theme.DevGrey400
 import com.shusuke.qiitareader.presentation.theme.DevGrey50
 import com.shusuke.qiitareader.presentation.theme.DevGrey800
 
-enum class AppLanguage(val displayName: String) {
-    JAPANESE("日本語"),
-    ENGLISH("English")
+enum class AppLanguage(@StringRes val nameResId: Int) {
+    JAPANESE(R.string.language_japanese),
+    ENGLISH(R.string.language_english)
 }
 
 @Composable
@@ -46,7 +49,7 @@ fun SettingScreen() {
             .fillMaxSize()
             .background(DevGrey50)
     ) {
-        SettingSection(title = "言語＆地域") {
+        SettingSection(title = stringResource(R.string.setting_section_language_region)) {
             LanguageSettingCell(
                 currentLanguage = selectedLanguage,
                 onClick = { showLanguageDialog = true }
@@ -102,13 +105,13 @@ private fun LanguageSettingCell(
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
-            text = "表示言語",
+            text = stringResource(R.string.setting_display_language),
             style = MaterialTheme.typography.bodyMedium,
             color = DevGrey800,
             modifier = Modifier.weight(1f)
         )
         Text(
-            text = currentLanguage.displayName,
+            text = stringResource(currentLanguage.nameResId),
             style = MaterialTheme.typography.bodyMedium,
             color = DevGrey400
         )
@@ -125,7 +128,7 @@ private fun LanguageDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("表示言語") },
+        title = { Text(stringResource(R.string.setting_display_language)) },
         text = {
             Column {
                 AppLanguage.entries.forEach { language ->
@@ -142,7 +145,7 @@ private fun LanguageDialog(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = language.displayName,
+                            text = stringResource(language.nameResId),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
@@ -151,12 +154,12 @@ private fun LanguageDialog(
         },
         confirmButton = {
             TextButton(onClick = { onConfirm(selectedLanguage) }) {
-                Text("OK")
+                Text(stringResource(R.string.ok))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("キャンセル")
+                Text(stringResource(R.string.cancel))
             }
         }
     )

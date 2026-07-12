@@ -1,22 +1,21 @@
 package com.shusuke.qiitareader.presentation.screen.articlesearch
 
+import androidx.annotation.StringRes
+import com.shusuke.qiitareader.R
 import com.shusuke.qiitareader.data.infrastructure.api.CustomApiError
 
-/**
- * 記事検索画面用のエラー型（iOS ArticleSearchError に相当）。
- * CustomApiError をラップし、画面固有のエラー（検索結果0件など）を追加する。
- */
 sealed class ArticleSearchError : Throwable() {
     data object NotFoundArticles : ArticleSearchError()
     data class FromApi(val error: CustomApiError) : ArticleSearchError()
 
-    fun messageForDisplay(): String = when (this) {
-        is NotFoundArticles -> "記事が見つかりませんでした"
+    @StringRes
+    fun messageResId(): Int = when (this) {
+        is NotFoundArticles -> R.string.error_not_found_articles
         is FromApi -> when (error) {
-            is CustomApiError.NetworkError -> "ネットワークエラー"
-            is CustomApiError.InvalidRequest -> "リクエストエラー"
-            is CustomApiError.ServerError -> "サーバーエラー"
-            else -> "エラーが発生しました"
+            is CustomApiError.NetworkError -> R.string.error_network
+            is CustomApiError.InvalidRequest -> R.string.error_invalid_request
+            is CustomApiError.ServerError -> R.string.error_server
+            else -> R.string.error_unknown
         }
     }
 }
