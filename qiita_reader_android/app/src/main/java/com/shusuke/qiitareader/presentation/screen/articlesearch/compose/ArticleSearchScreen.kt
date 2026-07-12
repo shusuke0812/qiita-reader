@@ -29,12 +29,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.shusuke.qiitareader.R
 import com.shusuke.qiitareader.data.repository.items.Item
 import com.shusuke.qiitareader.data.repository.items.ItemList
+import com.shusuke.qiitareader.presentation.ResourceProvider
 import com.shusuke.qiitareader.presentation.screen.articlesearch.ArticleSearchError
 import com.shusuke.qiitareader.presentation.screen.articlesearch.ArticleSearchUiState
 import com.shusuke.qiitareader.presentation.theme.DevGrey50
@@ -50,6 +53,7 @@ import com.shusuke.qiitareader.presentation.theme.QiitaReaderTheme
 @Composable
 fun ArticleSearchScreen(
     uiState: ArticleSearchUiState,
+    resourceProvider: ResourceProvider,
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
     onTagClick: (String) -> Unit,
@@ -57,75 +61,72 @@ fun ArticleSearchScreen(
     onStockClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        containerColor = DevGrey50
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
+    val language = uiState.language
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+            shadowElevation = 0.dp,
+            border = BorderStroke(1.dp, DevGrey100)
         ) {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
-                shadowElevation = 0.dp,
-                border = BorderStroke(1.dp, DevGrey100)
-            ) {
-                val focusManager = LocalFocusManager.current
-                TextField(
-                    value = uiState.query,
-                    onValueChange = onQueryChange,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    placeholder = { Text("Search articles...") },
-                    singleLine = true,
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.Search,
-                            contentDescription = null,
-                            tint = DevGrey400
-                        )
-                    },
-                    shape = RoundedCornerShape(12.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = DevGrey100,
-                        unfocusedContainerColor = DevGrey100,
-                        disabledContainerColor = DevGrey100,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        unfocusedPlaceholderColor = DevGrey400,
-                        focusedPlaceholderColor = DevGrey400
-                    ),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(onSearch = {
-                        focusManager.clearFocus()
-                        onSearch()
-                    })
-                )
-            }
-            Box(
+            val focusManager = LocalFocusManager.current
+            TextField(
+                value = uiState.query,
+                onValueChange = onQueryChange,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp)
-            ) {
-                if (uiState.isLoading) {
-                    LoadingView()
-                } else {
-                    when (val content = uiState.content) {
-                        is ArticleSearchUiState.ArticleSearchContent.Standby -> StandbyView()
-                        is ArticleSearchUiState.ArticleSearchContent.Success -> ArticleListView(
-                            itemList = content.itemList,
-                            onTagClick = onTagClick,
-                            onItemClick = onItemClick,
-                            onStockClick = onStockClick
-                        )
-                        is ArticleSearchUiState.ArticleSearchContent.Failure -> ErrorView(
-                            message = content.error.messageForDisplay()
-                        )
-                    }
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                placeholder = { Text(resourceProvider.getString(R.string.search_articles_placeholder, language)) },
+                singleLine = true,
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.Search,
+                        contentDescription = null,
+                        tint = DevGrey400
+                    )
+                },
+                shape = RoundedCornerShape(12.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = DevGrey100,
+                    unfocusedContainerColor = DevGrey100,
+                    disabledContainerColor = DevGrey100,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    unfocusedPlaceholderColor = DevGrey400,
+                    focusedPlaceholderColor = DevGrey400
+                ),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = {
+                    focusManager.clearFocus()
+                    onSearch()
+                })
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+        ) {
+            if (uiState.isLoading) {
+                LoadingView()
+            } else {
+                when (val content = uiState.content) {
+                    is ArticleSearchUiState.ArticleSearchContent.Standby -> StandbyView(
+                        message = resourceProvider.getString(R.string.search_standby_message, language)
+                    )
+                    is ArticleSearchUiState.ArticleSearchContent.Success -> ArticleListView(
+                        itemList = content.itemList,
+                        onTagClick = onTagClick,
+                        onItemClick = onItemClick,
+                        onStockClick = onStockClick
+                    )
+                    is ArticleSearchUiState.ArticleSearchContent.Failure -> ErrorView(
+                        message = resourceProvider.getString(content.error.messageResId(), language)
+                    )
                 }
             }
         }
@@ -133,7 +134,10 @@ fun ArticleSearchScreen(
 }
 
 @Composable
-private fun StandbyView(modifier: Modifier = Modifier) {
+private fun StandbyView(
+    message: String,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -146,7 +150,7 @@ private fun StandbyView(modifier: Modifier = Modifier) {
             contentDescription = null,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-        Text("キーワードを入力して検索")
+        Text(message)
     }
 }
 
@@ -211,9 +215,11 @@ private fun ErrorView(
 @Preview(widthDp = 360, heightDp = 640, showBackground = true)
 @Composable
 private fun ArticleSearchScreenStandbyPreview() {
+    val context = LocalContext.current
     QiitaReaderTheme {
         ArticleSearchScreen(
             uiState = ArticleSearchUiState(),
+            resourceProvider = ResourceProvider(context),
             onQueryChange = {},
             onSearch = {},
             onTagClick = {},
@@ -226,9 +232,11 @@ private fun ArticleSearchScreenStandbyPreview() {
 @Preview(widthDp = 360, heightDp = 640, showBackground = true)
 @Composable
 private fun ArticleSearchScreenLoadingPreview() {
+    val context = LocalContext.current
     QiitaReaderTheme {
         ArticleSearchScreen(
             uiState = ArticleSearchUiState(query = "Kotlin", isLoading = true),
+            resourceProvider = ResourceProvider(context),
             onQueryChange = {},
             onSearch = {},
             onTagClick = {},
@@ -241,6 +249,7 @@ private fun ArticleSearchScreenLoadingPreview() {
 @Preview(widthDp = 360, heightDp = 640, showBackground = true)
 @Composable
 private fun ArticleSearchScreenSuccessPreview() {
+    val context = LocalContext.current
     QiitaReaderTheme {
         ArticleSearchScreen(
             uiState = ArticleSearchUiState(
@@ -254,6 +263,7 @@ private fun ArticleSearchScreenSuccessPreview() {
                     )
                 )
             ),
+            resourceProvider = ResourceProvider(context),
             onQueryChange = {},
             onSearch = {},
             onTagClick = {},
@@ -266,12 +276,14 @@ private fun ArticleSearchScreenSuccessPreview() {
 @Preview(widthDp = 360, heightDp = 640, showBackground = true)
 @Composable
 private fun ArticleSearchScreenErrorPreview() {
+    val context = LocalContext.current
     QiitaReaderTheme {
         ArticleSearchScreen(
             uiState = ArticleSearchUiState(
                 query = "Kotlin",
                 content = ArticleSearchUiState.ArticleSearchContent.Failure(ArticleSearchError.NotFoundArticles),
             ),
+            resourceProvider = ResourceProvider(context),
             onQueryChange = {},
             onSearch = {},
             onTagClick = {},
