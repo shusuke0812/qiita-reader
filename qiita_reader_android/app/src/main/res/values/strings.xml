@@ -1,3 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">QiitaReader</string>
+
+    <!-- BottomNavigation -->
+    <string name="nav_search">Search</string>
+    <string name="nav_setting">Setting</string>
+
+    <!-- ArticleSearch -->
+    <string name="search_articles_placeholder">Search articles...</string>
+    <string name="search_standby_message">Enter keywords to search</string>
+
+    <!-- Errors -->
+    <string name="error_not_found_articles">No articles found</string>
+    <string name="error_network">Network error</string>
+    <string name="error_invalid_request">Request error</string>
+    <string name="error_server">Server error</string>
+    <string name="error_unknown">An error occurred</string>
+
+    <!-- Settings -->
+    <string name="setting_section_language_region">Language &amp; Region</string>
+    <string name="setting_display_language">Display Language</string>
+
+    <!-- Languages -->
+    <string name="language_japanese">Japanese</string>
+    <string name="language_english">English</string>
+
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>
