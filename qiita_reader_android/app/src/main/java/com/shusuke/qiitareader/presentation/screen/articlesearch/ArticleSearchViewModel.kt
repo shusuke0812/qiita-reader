@@ -4,21 +4,34 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shusuke.qiitareader.data.infrastructure.api.CustomApiError
 import com.shusuke.qiitareader.data.repository.items.ItemList
+import com.shusuke.qiitareader.data.repository.language.LanguageRepository
 import com.shusuke.qiitareader.domain.reporterror.ReportErrorUseCase
 import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ArticleSearchViewModel(
     private val searchArticlesUseCase: SearchArticlesUseCase,
-    private val reportErrorUseCase: ReportErrorUseCase
+    private val reportErrorUseCase: ReportErrorUseCase,
+    private val languageRepository: LanguageRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ArticleSearchUiState())
-    val uiState: StateFlow<ArticleSearchUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<ArticleSearchUiState> = combine(
+        _uiState,
+        languageRepository.currentLanguage
+    ) { state, language ->
+        state.copy(language = language)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = ArticleSearchUiState()
+    )
 
     private var page = 1
 

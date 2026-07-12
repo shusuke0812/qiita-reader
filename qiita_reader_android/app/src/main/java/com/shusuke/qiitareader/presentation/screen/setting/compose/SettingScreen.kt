@@ -1,6 +1,5 @@
 package com.shusuke.qiitareader.presentation.screen.setting.compose
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -27,21 +26,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.shusuke.qiitareader.R
+import com.shusuke.qiitareader.presentation.ResourceProvider
+import com.shusuke.qiitareader.presentation.screen.setting.AppLanguage
+import com.shusuke.qiitareader.presentation.screen.setting.SettingUiState
 import com.shusuke.qiitareader.presentation.theme.DevGrey400
 import com.shusuke.qiitareader.presentation.theme.DevGrey50
 import com.shusuke.qiitareader.presentation.theme.DevGrey800
 
-enum class AppLanguage(@StringRes val nameResId: Int) {
-    JAPANESE(R.string.language_japanese),
-    ENGLISH(R.string.language_english)
-}
-
 @Composable
-fun SettingScreen() {
-    var selectedLanguage by remember { mutableStateOf(AppLanguage.JAPANESE) }
+fun SettingScreen(
+    uiState: SettingUiState,
+    resourceProvider: ResourceProvider,
+    onLanguageSelected: (AppLanguage) -> Unit
+) {
     var showLanguageDialog by remember { mutableStateOf(false) }
 
     Column(
@@ -49,9 +48,10 @@ fun SettingScreen() {
             .fillMaxSize()
             .background(DevGrey50)
     ) {
-        SettingSection(title = stringResource(R.string.setting_section_language_region)) {
+        SettingSection(title = resourceProvider.getString(R.string.setting_section_language_region, uiState.selectedLanguage)) {
             LanguageSettingCell(
-                currentLanguage = selectedLanguage,
+                label = resourceProvider.getString(R.string.setting_display_language, uiState.selectedLanguage),
+                currentLanguageName = resourceProvider.getString(uiState.selectedLanguage.nameResId, uiState.selectedLanguage),
                 onClick = { showLanguageDialog = true }
             )
         }
@@ -59,9 +59,10 @@ fun SettingScreen() {
 
     if (showLanguageDialog) {
         LanguageDialog(
-            currentLanguage = selectedLanguage,
+            currentLanguage = uiState.selectedLanguage,
+            resourceProvider = resourceProvider,
             onConfirm = { language ->
-                selectedLanguage = language
+                onLanguageSelected(language)
                 showLanguageDialog = false
             },
             onDismiss = { showLanguageDialog = false }
@@ -87,7 +88,8 @@ private fun SettingSection(
 
 @Composable
 private fun LanguageSettingCell(
-    currentLanguage: AppLanguage,
+    label: String,
+    currentLanguageName: String,
     onClick: () -> Unit
 ) {
     Row(
@@ -105,13 +107,13 @@ private fun LanguageSettingCell(
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
-            text = stringResource(R.string.setting_display_language),
+            text = label,
             style = MaterialTheme.typography.bodyMedium,
             color = DevGrey800,
             modifier = Modifier.weight(1f)
         )
         Text(
-            text = stringResource(currentLanguage.nameResId),
+            text = currentLanguageName,
             style = MaterialTheme.typography.bodyMedium,
             color = DevGrey400
         )
@@ -121,6 +123,7 @@ private fun LanguageSettingCell(
 @Composable
 private fun LanguageDialog(
     currentLanguage: AppLanguage,
+    resourceProvider: ResourceProvider,
     onConfirm: (AppLanguage) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -128,7 +131,7 @@ private fun LanguageDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.setting_display_language)) },
+        title = { Text(resourceProvider.getString(R.string.setting_display_language, currentLanguage)) },
         text = {
             Column {
                 AppLanguage.entries.forEach { language ->
@@ -145,7 +148,7 @@ private fun LanguageDialog(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = stringResource(language.nameResId),
+                            text = resourceProvider.getString(language.nameResId, language),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
@@ -154,12 +157,12 @@ private fun LanguageDialog(
         },
         confirmButton = {
             TextButton(onClick = { onConfirm(selectedLanguage) }) {
-                Text(stringResource(R.string.ok))
+                Text(resourceProvider.getString(R.string.ok, currentLanguage))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel))
+                Text(resourceProvider.getString(R.string.cancel, currentLanguage))
             }
         }
     )

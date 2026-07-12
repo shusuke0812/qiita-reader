@@ -7,6 +7,7 @@ import com.shusuke.qiitareader.data.repository.errorreport.ErrorReportRepository
 import com.shusuke.qiitareader.data.repository.errorreport.ErrorReportRepositoryImpl
 import com.shusuke.qiitareader.data.repository.items.ItemsRepository
 import com.shusuke.qiitareader.data.repository.items.ItemsRepositoryImpl
+import com.shusuke.qiitareader.data.repository.language.LanguageRepository
 import org.koin.dsl.module
 
 val dataModule = module {
@@ -17,4 +18,6 @@ val dataModule = module {
 
     single { SentryClient() }
     single<ErrorReportRepository> { ErrorReportRepositoryImpl(get()) }
+
+    single { LanguageRepository() }
 }
