@@ -54,6 +54,7 @@ import com.shusuke.qiitareader.presentation.theme.QiitaReaderTheme
 @Composable
 fun ArticleSearchScreen(
     uiState: ArticleSearchUiState,
+    query: String,
     resourceProvider: ResourceProvider,
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
@@ -74,7 +75,7 @@ fun ArticleSearchScreen(
         ) {
             val focusManager = LocalFocusManager.current
             TextField(
-                value = uiState.query,
+                value = query,
                 onValueChange = onQueryChange,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,23 +112,20 @@ fun ArticleSearchScreen(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
         ) {
-            if (uiState.isLoading) {
-                LoadingView()
-            } else {
-                when (val content = uiState.content) {
-                    is ArticleSearchUiState.ArticleSearchContent.Standby -> StandbyView(
-                        message = resourceProvider.getString(R.string.search_standby_message)
-                    )
-                    is ArticleSearchUiState.ArticleSearchContent.Success -> ArticleListView(
-                        itemList = content.itemList,
-                        onTagClick = onTagClick,
-                        onItemClick = onItemClick,
-                        onStockClick = onStockClick
-                    )
-                    is ArticleSearchUiState.ArticleSearchContent.Failure -> ErrorView(
-                        message = resourceProvider.getString(content.error.messageResId())
-                    )
-                }
+            when (uiState) {
+                is ArticleSearchUiState.Initial -> StandbyView(
+                    message = resourceProvider.getString(R.string.search_standby_message)
+                )
+                is ArticleSearchUiState.Loading -> LoadingView()
+                is ArticleSearchUiState.Searched -> ArticleListView(
+                    itemList = uiState.itemList,
+                    onTagClick = onTagClick,
+                    onItemClick = onItemClick,
+                    onStockClick = onStockClick
+                )
+                is ArticleSearchUiState.SearchError -> ErrorView(
+                    message = resourceProvider.getString(uiState.error.messageResId())
+                )
             }
         }
     }
@@ -218,7 +216,8 @@ private fun ArticleSearchScreenStandbyPreview() {
     val context = LocalContext.current
     QiitaReaderTheme {
         ArticleSearchScreen(
-            uiState = ArticleSearchUiState(),
+            uiState = ArticleSearchUiState.Initial,
+            query = "",
             resourceProvider = ResourceProvider(context, LanguageRepository()),
             onQueryChange = {},
             onSearch = {},
@@ -235,7 +234,8 @@ private fun ArticleSearchScreenLoadingPreview() {
     val context = LocalContext.current
     QiitaReaderTheme {
         ArticleSearchScreen(
-            uiState = ArticleSearchUiState(query = "Kotlin", isLoading = true),
+            uiState = ArticleSearchUiState.Loading,
+            query = "Kotlin",
             resourceProvider = ResourceProvider(context, LanguageRepository()),
             onQueryChange = {},
             onSearch = {},
@@ -252,17 +252,15 @@ private fun ArticleSearchScreenSuccessPreview() {
     val context = LocalContext.current
     QiitaReaderTheme {
         ArticleSearchScreen(
-            uiState = ArticleSearchUiState(
-                query = "Kotlin",
-                content = ArticleSearchUiState.ArticleSearchContent.Success(
-                    ItemList(
-                        list = listOf(
-                            sampleItemForPreview(id = "1", title = "Kotlin 入門", profileImageId = 1005),
-                            sampleItemForPreview(id = "2", title = "Compose の使い方", profileImageId = 1006)
-                        )
+            uiState = ArticleSearchUiState.Searched.List(
+                itemList = ItemList(
+                    list = listOf(
+                        sampleItemForPreview(id = "1", title = "Kotlin 入門", profileImageId = 1005),
+                        sampleItemForPreview(id = "2", title = "Compose の使い方", profileImageId = 1006)
                     )
                 )
             ),
+            query = "Kotlin",
             resourceProvider = ResourceProvider(context, LanguageRepository()),
             onQueryChange = {},
             onSearch = {},
@@ -279,10 +277,8 @@ private fun ArticleSearchScreenErrorPreview() {
     val context = LocalContext.current
     QiitaReaderTheme {
         ArticleSearchScreen(
-            uiState = ArticleSearchUiState(
-                query = "Kotlin",
-                content = ArticleSearchUiState.ArticleSearchContent.Failure(ArticleSearchError.NotFoundArticles),
-            ),
+            uiState = ArticleSearchUiState.SearchError(ArticleSearchError.NotFoundArticles),
+            query = "Kotlin",
             resourceProvider = ResourceProvider(context, LanguageRepository()),
             onQueryChange = {},
             onSearch = {},

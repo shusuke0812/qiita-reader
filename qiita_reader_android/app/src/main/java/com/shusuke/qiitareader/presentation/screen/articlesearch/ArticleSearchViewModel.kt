@@ -44,26 +44,18 @@ class ArticleSearchViewModel(
 
     private fun updateStateOnSearchSuccess(itemList: ItemList) {
         _uiState.update {
-            it.copy(
-                isLoading = false,
-                content = if (itemList.list.isEmpty()) {
-                    ArticleSearchUiState.ArticleSearchContent.Failure(ArticleSearchError.NotFoundArticles)
-                } else {
-                    ArticleSearchUiState.ArticleSearchContent.Success(itemList)
-                }
-            )
+            if (itemList.list.isEmpty()) {
+                ArticleSearchUiState.SearchError(ArticleSearchError.NotFoundArticles)
+            } else {
+                ArticleSearchUiState.Searched.List(itemList)
+            }
         }
     }
 
     private fun handleSearchFailure(e: Throwable, query: String) {
         val apiError = (e as? CustomApiError) ?: CustomApiError.Unknown
         _uiState.update {
-            it.copy(
-                isLoading = false,
-                content = ArticleSearchUiState.ArticleSearchContent.Failure(
-                    ArticleSearchError.FromApi(apiError)
-                )
-            )
+            ArticleSearchUiState.SearchError(ArticleSearchError.FromApi(apiError))
         }
         reportErrorUseCase(
             error = e,

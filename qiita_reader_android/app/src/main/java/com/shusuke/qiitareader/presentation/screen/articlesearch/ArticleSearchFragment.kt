@@ -30,8 +30,10 @@ class ArticleSearchFragment : Fragment() {
             setContent {
                 QiitaReaderTheme {
                     val uiState by viewModel.uiState.collectAsState()
+                    val query by viewModel.query.collectAsState()
                     ArticleSearchScreen(
                         uiState = uiState,
+                        query = query,
                         resourceProvider = resourceProvider,
                         onQueryChange = viewModel::updateQuery,
                         onSearch = viewModel::searchItems,
