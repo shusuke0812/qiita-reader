@@ -1,6 +1,5 @@
 package com.shusuke.qiitareader.presentation.screen.articlesearch.compose
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +19,6 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -41,7 +39,6 @@ import com.shusuke.qiitareader.data.repository.language.LanguageRepository
 import com.shusuke.qiitareader.presentation.ResourceProvider
 import com.shusuke.qiitareader.presentation.screen.articlesearch.ArticleSearchError
 import com.shusuke.qiitareader.presentation.screen.articlesearch.ArticleSearchUiState
-import com.shusuke.qiitareader.presentation.theme.DevGrey50
 import com.shusuke.qiitareader.presentation.theme.DevGrey100
 import com.shusuke.qiitareader.presentation.theme.DevGrey400
 import com.shusuke.qiitareader.presentation.theme.QiitaReaderTheme
@@ -113,8 +110,8 @@ fun ArticleSearchScreen(
                 .padding(horizontal = 16.dp)
         ) {
             when (uiState) {
-                is ArticleSearchUiState.Initial -> StandbyView(
-                    message = resourceProvider.getString(R.string.search_standby_message)
+                is ArticleSearchUiState.Initial -> InitialView(
+                    message = resourceProvider.getString(R.string.search_initial_message)
                 )
                 is ArticleSearchUiState.Loading -> LoadingView()
                 is ArticleSearchUiState.Searched -> ArticleListView(
@@ -132,7 +129,7 @@ fun ArticleSearchScreen(
 }
 
 @Composable
-private fun StandbyView(
+private fun InitialView(
     message: String,
     modifier: Modifier = Modifier
 ) {
@@ -212,7 +209,7 @@ private fun ErrorView(
 
 @Preview(widthDp = 360, heightDp = 640, showBackground = true)
 @Composable
-private fun ArticleSearchScreenStandbyPreview() {
+private fun ArticleSearchScreenInitialPreview() {
     val context = LocalContext.current
     QiitaReaderTheme {
         ArticleSearchScreen(

@@ -8,7 +8,7 @@
 
     <!-- ArticleSearch -->
     <string name="search_articles_placeholder">記事を検索...</string>
-    <string name="search_standby_message">キーワードを入力して検索</string>
+    <string name="search_initial_message">キーワードを入力して検索</string>
 
     <!-- Errors -->
     <string name="error_not_found_articles">記事が見つかりませんでした</string>
