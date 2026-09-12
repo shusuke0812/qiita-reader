@@ -30,14 +30,17 @@ class ArticleSearchFragment : Fragment() {
             setContent {
                 QiitaReaderTheme {
                     val uiState by viewModel.uiState.collectAsState()
+                    val query by viewModel.query.collectAsState()
                     ArticleSearchScreen(
                         uiState = uiState,
+                        query = query,
                         resourceProvider = resourceProvider,
-                        onQueryChange = viewModel::updateQuery,
-                        onSearch = viewModel::searchItems,
+                        onQueryChange = { value -> viewModel.onAction(ArticleSearchAction.QueryChanged(value)) },
+                        onSearch = { viewModel.onAction(ArticleSearchAction.Search) },
                         onTagClick = { _ -> /* TODO: タグ記事画面へ */ },
                         onItemClick = { _ -> /* TODO: 記事詳細へ */ },
-                        onStockClick = { _ -> /* TODO: ストック */ }
+                        onStockClick = { _ -> /* TODO: ストック */ },
+                        onPageErrorDismiss = { viewModel.onAction(ArticleSearchAction.DismissPageError) }
                     )
                 }
             }

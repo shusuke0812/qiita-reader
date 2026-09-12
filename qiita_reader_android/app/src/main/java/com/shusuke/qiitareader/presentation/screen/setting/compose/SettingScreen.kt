@@ -48,10 +48,10 @@ fun SettingScreen(
             .fillMaxSize()
             .background(DevGrey50)
     ) {
-        SettingSection(title = resourceProvider.getString(R.string.setting_section_language_region, uiState.selectedLanguage)) {
+        SettingSection(title = resourceProvider.getString(R.string.setting_section_language_region)) {
             LanguageSettingCell(
-                label = resourceProvider.getString(R.string.setting_display_language, uiState.selectedLanguage),
-                currentLanguageName = resourceProvider.getString(uiState.selectedLanguage.nameResId, uiState.selectedLanguage),
+                label = resourceProvider.getString(R.string.setting_display_language),
+                currentLanguageName = resourceProvider.getString(uiState.selectedLanguage.nameResId),
                 onClick = { showLanguageDialog = true }
             )
         }
@@ -131,7 +131,7 @@ private fun LanguageDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(resourceProvider.getString(R.string.setting_display_language, currentLanguage)) },
+        title = { Text(resourceProvider.getString(R.string.setting_display_language)) },
         text = {
             Column {
                 AppLanguage.entries.forEach { language ->
@@ -157,12 +157,12 @@ private fun LanguageDialog(
         },
         confirmButton = {
             TextButton(onClick = { onConfirm(selectedLanguage) }) {
-                Text(resourceProvider.getString(R.string.ok, currentLanguage))
+                Text(resourceProvider.getString(R.string.ok))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(resourceProvider.getString(R.string.cancel, currentLanguage))
+                Text(resourceProvider.getString(R.string.cancel))
             }
         }
     )

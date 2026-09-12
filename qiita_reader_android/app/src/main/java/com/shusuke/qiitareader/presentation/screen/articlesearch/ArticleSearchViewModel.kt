@@ -1,48 +1,52 @@
 package com.shusuke.qiitareader.presentation.screen.articlesearch
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shusuke.qiitareader.data.infrastructure.api.CustomApiError
 import com.shusuke.qiitareader.data.repository.items.ItemList
-import com.shusuke.qiitareader.data.repository.language.LanguageRepository
 import com.shusuke.qiitareader.domain.reporterror.ReportErrorUseCase
 import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCase
+import com.shusuke.qiitareader.shared.viewmodel.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ArticleSearchViewModel(
     private val searchArticlesUseCase: SearchArticlesUseCase,
-    private val reportErrorUseCase: ReportErrorUseCase,
-    private val languageRepository: LanguageRepository
-) : ViewModel() {
+    private val reportErrorUseCase: ReportErrorUseCase
+) : BaseViewModel<ArticleSearchUiState, ArticleSearchAction>() {
 
-    private val _uiState = MutableStateFlow(ArticleSearchUiState())
-    val uiState: StateFlow<ArticleSearchUiState> = combine(
-        _uiState,
-        languageRepository.currentLanguage
-    ) { state, language ->
-        state.copy(language = language)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = ArticleSearchUiState()
-    )
+    private val _uiState = MutableStateFlow<ArticleSearchUiState>(ArticleSearchUiState.Initial)
+    override val uiState: StateFlow<ArticleSearchUiState> = _uiState.asStateFlow()
+
+    override fun onAction(action: ArticleSearchAction) {
+        when (action) {
+            is ArticleSearchAction.QueryChanged -> _query.value = action.value
+            is ArticleSearchAction.Search -> searchItems()
+            is ArticleSearchAction.DismissPageError -> dismissPageError()
+        }
+    }
+
+    private fun dismissPageError() {
+        _uiState.update { state ->
+            if (state is ArticleSearchUiState.Searched.PageError) {
+                ArticleSearchUiState.Searched.List(state.itemList)
+            } else {
+                state
+            }
+        }
+    }
+
+    private val _query = MutableStateFlow("")
+    val query: StateFlow<String> = _query.asStateFlow()
 
     private var page = 1
 
-    fun updateQuery(value: String) {
-        _uiState.update { it.copy(query = value) }
-    }
-
-    fun searchItems() {
-        val query = _uiState.value.query
+    private fun searchItems() {
+        val query = _query.value
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { ArticleSearchUiState.Loading }
             searchArticlesUseCase(page = page, query = query).collect { result ->
                 result.fold(
                     onSuccess = { itemList -> updateStateOnSearchSuccess(itemList) },
@@ -54,26 +58,18 @@ class ArticleSearchViewModel(
 
     private fun updateStateOnSearchSuccess(itemList: ItemList) {
         _uiState.update {
-            it.copy(
-                isLoading = false,
-                content = if (itemList.list.isEmpty()) {
-                    ArticleSearchUiState.ArticleSearchContent.Failure(ArticleSearchError.NotFoundArticles)
-                } else {
-                    ArticleSearchUiState.ArticleSearchContent.Success(itemList)
-                }
-            )
+            if (itemList.list.isEmpty()) {
+                ArticleSearchUiState.SearchError(ArticleSearchError.NotFoundArticles)
+            } else {
+                ArticleSearchUiState.Searched.List(itemList)
+            }
         }
     }
 
     private fun handleSearchFailure(e: Throwable, query: String) {
         val apiError = (e as? CustomApiError) ?: CustomApiError.Unknown
         _uiState.update {
-            it.copy(
-                isLoading = false,
-                content = ArticleSearchUiState.ArticleSearchContent.Failure(
-                    ArticleSearchError.FromApi(apiError)
-                )
-            )
+            ArticleSearchUiState.SearchError(ArticleSearchError.FromApi(apiError))
         }
         reportErrorUseCase(
             error = e,
