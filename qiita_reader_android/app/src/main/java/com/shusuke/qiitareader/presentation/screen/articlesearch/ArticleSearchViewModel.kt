@@ -16,20 +16,23 @@ class ArticleSearchViewModel(
     private val searchArticlesUseCase: SearchArticlesUseCase,
     private val reportErrorUseCase: ReportErrorUseCase
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(ArticleSearchUiState.Initial)
+    
+    private val _uiState = MutableStateFlow<ArticleSearchUiState>(ArticleSearchUiState.Initial)
     val uiState: StateFlow<ArticleSearchUiState> = _uiState.asStateFlow()
+
+    private val _query = MutableStateFlow("")
+    val query: StateFlow<String> = _query.asStateFlow()
 
     private var page = 1
 
     fun updateQuery(value: String) {
-        _uiState.update { it.copy(query = value) }
+        _query.value = value
     }
 
     fun searchItems() {
-        val query = _uiState.value.query
+        val query = _query.value
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { ArticleSearchUiState.Loading }
             searchArticlesUseCase(page = page, query = query).collect { result ->
                 result.fold(
                     onSuccess = { itemList -> updateStateOnSearchSuccess(itemList) },
