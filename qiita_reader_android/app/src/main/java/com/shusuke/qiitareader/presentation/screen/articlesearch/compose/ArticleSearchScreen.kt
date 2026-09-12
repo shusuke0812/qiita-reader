@@ -60,7 +60,6 @@ fun ArticleSearchScreen(
     onTagClick: (String) -> Unit,
     onItemClick: (String) -> Unit,
     onStockClick: (String) -> Unit,
-    onPageErrorDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -140,7 +139,7 @@ fun ArticleSearchScreen(
                     PageErrorDialog(
                         message = resourceProvider.getString(uiState.error.messageResId()),
                         resourceProvider = resourceProvider,
-                        onDismiss = onPageErrorDismiss
+                        onDismiss = {}
                     )
                 }
                 is ArticleSearchUiState.SearchError -> ErrorView(
@@ -272,7 +271,6 @@ private fun ArticleSearchScreenInitialPreview() {
             onTagClick = {},
             onItemClick = {},
             onStockClick = {},
-            onPageErrorDismiss = {}
         )
     }
 }
@@ -291,7 +289,6 @@ private fun ArticleSearchScreenLoadingPreview() {
             onTagClick = {},
             onItemClick = {},
             onStockClick = {},
-            onPageErrorDismiss = {}
         )
     }
 }
@@ -317,7 +314,6 @@ private fun ArticleSearchScreenSuccessPreview() {
             onTagClick = {},
             onItemClick = {},
             onStockClick = {},
-            onPageErrorDismiss = {}
         )
     }
 }
@@ -343,7 +339,6 @@ private fun ArticleSearchScreenPageLoadingPreview() {
             onTagClick = {},
             onItemClick = {},
             onStockClick = {},
-            onPageErrorDismiss = {}
         )
     }
 }
@@ -370,7 +365,6 @@ private fun ArticleSearchScreenPageErrorPreview() {
             onTagClick = {},
             onItemClick = {},
             onStockClick = {},
-            onPageErrorDismiss = {}
         )
     }
 }
@@ -389,7 +383,6 @@ private fun ArticleSearchScreenErrorPreview() {
             onTagClick = {},
             onItemClick = {},
             onStockClick = {},
-            onPageErrorDismiss = {}
         )
     }
 }
