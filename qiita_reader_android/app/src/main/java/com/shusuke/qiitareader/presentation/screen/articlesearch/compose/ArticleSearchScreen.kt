@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.shusuke.qiitareader.R
 import com.shusuke.qiitareader.data.repository.items.Item
 import com.shusuke.qiitareader.data.repository.items.ItemList
+import com.shusuke.qiitareader.data.repository.language.LanguageRepository
 import com.shusuke.qiitareader.presentation.ResourceProvider
 import com.shusuke.qiitareader.presentation.screen.articlesearch.ArticleSearchError
 import com.shusuke.qiitareader.presentation.screen.articlesearch.ArticleSearchUiState
@@ -61,7 +62,6 @@ fun ArticleSearchScreen(
     onStockClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val language = uiState.language
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -79,7 +79,7 @@ fun ArticleSearchScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                placeholder = { Text(resourceProvider.getString(R.string.search_articles_placeholder, language)) },
+                placeholder = { Text(resourceProvider.getString(R.string.search_articles_placeholder)) },
                 singleLine = true,
                 leadingIcon = {
                     Icon(
@@ -116,7 +116,7 @@ fun ArticleSearchScreen(
             } else {
                 when (val content = uiState.content) {
                     is ArticleSearchUiState.ArticleSearchContent.Standby -> StandbyView(
-                        message = resourceProvider.getString(R.string.search_standby_message, language)
+                        message = resourceProvider.getString(R.string.search_standby_message)
                     )
                     is ArticleSearchUiState.ArticleSearchContent.Success -> ArticleListView(
                         itemList = content.itemList,
@@ -125,7 +125,7 @@ fun ArticleSearchScreen(
                         onStockClick = onStockClick
                     )
                     is ArticleSearchUiState.ArticleSearchContent.Failure -> ErrorView(
-                        message = resourceProvider.getString(content.error.messageResId(), language)
+                        message = resourceProvider.getString(content.error.messageResId())
                     )
                 }
             }
@@ -219,7 +219,7 @@ private fun ArticleSearchScreenStandbyPreview() {
     QiitaReaderTheme {
         ArticleSearchScreen(
             uiState = ArticleSearchUiState(),
-            resourceProvider = ResourceProvider(context),
+            resourceProvider = ResourceProvider(context, LanguageRepository()),
             onQueryChange = {},
             onSearch = {},
             onTagClick = {},
@@ -236,7 +236,7 @@ private fun ArticleSearchScreenLoadingPreview() {
     QiitaReaderTheme {
         ArticleSearchScreen(
             uiState = ArticleSearchUiState(query = "Kotlin", isLoading = true),
-            resourceProvider = ResourceProvider(context),
+            resourceProvider = ResourceProvider(context, LanguageRepository()),
             onQueryChange = {},
             onSearch = {},
             onTagClick = {},
@@ -263,7 +263,7 @@ private fun ArticleSearchScreenSuccessPreview() {
                     )
                 )
             ),
-            resourceProvider = ResourceProvider(context),
+            resourceProvider = ResourceProvider(context, LanguageRepository()),
             onQueryChange = {},
             onSearch = {},
             onTagClick = {},
@@ -283,7 +283,7 @@ private fun ArticleSearchScreenErrorPreview() {
                 query = "Kotlin",
                 content = ArticleSearchUiState.ArticleSearchContent.Failure(ArticleSearchError.NotFoundArticles),
             ),
-            resourceProvider = ResourceProvider(context),
+            resourceProvider = ResourceProvider(context, LanguageRepository()),
             onQueryChange = {},
             onSearch = {},
             onTagClick = {},

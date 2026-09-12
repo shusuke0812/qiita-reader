@@ -12,5 +12,5 @@ val presentationModule = module {
     viewModelOf(::ArticleSearchViewModel)
     viewModelOf(::SettingViewModel)
 
-    single { ResourceProvider(androidContext()) }
+    single { ResourceProvider(androidContext(), get()) }
 }
