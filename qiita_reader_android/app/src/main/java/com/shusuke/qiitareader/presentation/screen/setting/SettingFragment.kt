@@ -33,7 +33,7 @@ class SettingFragment : Fragment() {
                     SettingScreen(
                         uiState = uiState,
                         resourceProvider = resourceProvider,
-                        onLanguageSelected = viewModel::setLanguage
+                        onLanguageSelected = { language -> viewModel.onAction(SettingAction.LanguageSelected(language)) }
                     )
                 }
             }
