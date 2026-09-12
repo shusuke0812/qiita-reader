@@ -20,17 +20,17 @@ class ArticleSearchViewModel(
     private val _uiState = MutableStateFlow<ArticleSearchUiState>(ArticleSearchUiState.Initial)
     override val uiState: StateFlow<ArticleSearchUiState> = _uiState.asStateFlow()
 
-    private val _query = MutableStateFlow("")
-    val query: StateFlow<String> = _query.asStateFlow()
-
-    private var page = 1
-
     override fun onAction(action: ArticleSearchAction) {
         when (action) {
             is ArticleSearchAction.QueryChanged -> _query.value = action.value
             is ArticleSearchAction.Search -> searchItems()
         }
     }
+
+    private val _query = MutableStateFlow("")
+    val query: StateFlow<String> = _query.asStateFlow()
+
+    private var page = 1
 
     private fun searchItems() {
         val query = _query.value
