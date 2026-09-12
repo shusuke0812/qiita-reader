@@ -24,6 +24,17 @@ class ArticleSearchViewModel(
         when (action) {
             is ArticleSearchAction.QueryChanged -> _query.value = action.value
             is ArticleSearchAction.Search -> searchItems()
+            is ArticleSearchAction.DismissPageError -> dismissPageError()
+        }
+    }
+
+    private fun dismissPageError() {
+        _uiState.update { state ->
+            if (state is ArticleSearchUiState.Searched.PageError) {
+                ArticleSearchUiState.Searched.List(state.itemList)
+            } else {
+                state
+            }
         }
     }
 

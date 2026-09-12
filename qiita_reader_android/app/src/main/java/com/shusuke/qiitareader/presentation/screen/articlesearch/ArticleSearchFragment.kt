@@ -39,7 +39,8 @@ class ArticleSearchFragment : Fragment() {
                         onSearch = { viewModel.onAction(ArticleSearchAction.Search) },
                         onTagClick = { _ -> /* TODO: タグ記事画面へ */ },
                         onItemClick = { _ -> /* TODO: 記事詳細へ */ },
-                        onStockClick = { _ -> /* TODO: ストック */ }
+                        onStockClick = { _ -> /* TODO: ストック */ },
+                        onPageErrorDismiss = { viewModel.onAction(ArticleSearchAction.DismissPageError) }
                     )
                 }
             }
