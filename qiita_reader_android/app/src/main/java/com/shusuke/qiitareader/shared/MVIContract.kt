@@ -17,29 +17,33 @@ interface MVISideEffect
 interface MVI<State: MVIState, Action: MVIAction, SideEffect: MVISideEffect> {
     val state: StateFlow<State>
     val currentState: State
+    suspend fun update(block: suspend  (State) -> State)
+
     val sideEffect: Flow<SideEffect>
+    suspend fun sideEffect(effect: SideEffect)
 
     fun onAction(action: Action)
-    suspend fun update(block: suspend  (State) -> State)
-    suspend fun sideEffect(effect: SideEffect)
 }
 
 abstract class MVIContractDelegate<State: MVIState, Action: MVIAction, SideEffect: MVISideEffect>(
     initialState: State
 ) : MVI<State, Action, SideEffect>, ViewModel() {
+    // 画面の状態
     private val _state = MutableStateFlow(initialState)
     override val state: StateFlow<State> = _state.asStateFlow()
     override val currentState: State
         get() = _state.value
-
-    private val _sideEffect by lazy { Channel<SideEffect>() }
-    override val sideEffect: Flow<SideEffect> by lazy { _sideEffect.receiveAsFlow() }
-
-    override fun onAction(action: Action) {}
-    override suspend fun sideEffect(effect: SideEffect) {
-        coroutineScope { _sideEffect.send(effect) }
-    }
     override suspend fun update(block: suspend (State) -> State) {
         _state.update { block(it) }
     }
+
+    // 画面遷移、ダイアログ表示などワンショットで終わるイベントを通知
+    private val _sideEffect by lazy { Channel<SideEffect>() }
+    override val sideEffect: Flow<SideEffect> by lazy { _sideEffect.receiveAsFlow() }
+    override suspend fun sideEffect(effect: SideEffect) {
+        coroutineScope { _sideEffect.send(effect) }
+    }
+
+    // ユーザーからのアクション操作
+    override fun onAction(action: Action) {}
 }
