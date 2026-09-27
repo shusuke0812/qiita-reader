@@ -1,6 +1,6 @@
 package com.shusuke.qiitareader.data.infrastructure.qiitaapi
 
-import com.shusuke.qiitareader.BuildConfig
+import com.shusuke.qiitareader.shared.config.Env
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -8,8 +8,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import okhttp3.MediaType.Companion.toMediaType
 import java.util.concurrent.TimeUnit
-
-private const val BASE_URL = "https://qiita.com/api/v2/"
 
 object QiitaApiClient {
 
@@ -28,7 +26,7 @@ object QiitaApiClient {
         .build()
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(Env.Qiita.baseUrl)
         .client(okHttpClient)
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .build()

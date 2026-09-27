@@ -44,5 +44,11 @@ object Env {
                 Flavor.PROD -> BuildConfig.SENTRY_DNS
                 Flavor.STAGING -> BuildConfig.STG_SENTRY_DNS
             }
+
+        val baseUrl: String
+            get() = when(flavor) {
+                Flavor.PROD -> BuildConfig.BASE_URL
+                Flavor.STAGING -> BuildConfig.STG_BASE_URL
+            }
     }
 }
