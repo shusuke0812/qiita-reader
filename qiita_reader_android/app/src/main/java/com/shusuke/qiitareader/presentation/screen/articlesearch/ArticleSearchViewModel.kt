@@ -5,36 +5,21 @@ import com.shusuke.qiitareader.data.infrastructure.api.CustomApiError
 import com.shusuke.qiitareader.data.repository.items.ItemList
 import com.shusuke.qiitareader.domain.reporterror.ReportErrorUseCase
 import com.shusuke.qiitareader.domain.searcharticles.SearchArticlesUseCase
-import com.shusuke.qiitareader.shared.viewmodel.BaseViewModel
+import com.shusuke.qiitareader.shared.MVIContractDelegate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ArticleSearchViewModel(
     private val searchArticlesUseCase: SearchArticlesUseCase,
     private val reportErrorUseCase: ReportErrorUseCase
-) : BaseViewModel<ArticleSearchUiState, ArticleSearchAction>() {
-
-    private val _uiState = MutableStateFlow<ArticleSearchUiState>(ArticleSearchUiState.Initial)
-    override val uiState: StateFlow<ArticleSearchUiState> = _uiState.asStateFlow()
+) : MVIContractDelegate<ArticleSearchUiState, ArticleSearchAction, ArticleSearchSideEffect>(ArticleSearchUiState.Initial) {
 
     override fun onAction(action: ArticleSearchAction) {
         when (action) {
             is ArticleSearchAction.QueryChanged -> _query.value = action.value
             is ArticleSearchAction.Search -> searchItems()
-            is ArticleSearchAction.DismissPageError -> dismissPageError()
-        }
-    }
-
-    private fun dismissPageError() {
-        _uiState.update { state ->
-            if (state is ArticleSearchUiState.Searched.PageError) {
-                ArticleSearchUiState.Searched.List(state.itemList)
-            } else {
-                state
-            }
         }
     }
 
@@ -46,7 +31,7 @@ class ArticleSearchViewModel(
     private fun searchItems() {
         val query = _query.value
         viewModelScope.launch {
-            _uiState.update { ArticleSearchUiState.Loading }
+            update { ArticleSearchUiState.Loading }
             searchArticlesUseCase(page = page, query = query).collect { result ->
                 result.fold(
                     onSuccess = { itemList -> updateStateOnSearchSuccess(itemList) },
@@ -56,8 +41,8 @@ class ArticleSearchViewModel(
         }
     }
 
-    private fun updateStateOnSearchSuccess(itemList: ItemList) {
-        _uiState.update {
+    private suspend fun updateStateOnSearchSuccess(itemList: ItemList) {
+        update {
             if (itemList.list.isEmpty()) {
                 ArticleSearchUiState.SearchError(ArticleSearchError.NotFoundArticles)
             } else {
@@ -66,9 +51,9 @@ class ArticleSearchViewModel(
         }
     }
 
-    private fun handleSearchFailure(e: Throwable, query: String) {
+    private suspend fun handleSearchFailure(e: Throwable, query: String) {
         val apiError = (e as? CustomApiError) ?: CustomApiError.Unknown
-        _uiState.update {
+        update {
             ArticleSearchUiState.SearchError(ArticleSearchError.FromApi(apiError))
         }
         reportErrorUseCase(

@@ -29,7 +29,7 @@ class ArticleSearchFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 QiitaReaderTheme {
-                    val uiState by viewModel.uiState.collectAsState()
+                    val uiState by viewModel.state.collectAsState()
                     val query by viewModel.query.collectAsState()
                     ArticleSearchScreen(
                         uiState = uiState,
@@ -40,7 +40,6 @@ class ArticleSearchFragment : Fragment() {
                         onTagClick = { _ -> /* TODO: タグ記事画面へ */ },
                         onItemClick = { _ -> /* TODO: 記事詳細へ */ },
                         onStockClick = { _ -> /* TODO: ストック */ },
-                        onPageErrorDismiss = { viewModel.onAction(ArticleSearchAction.DismissPageError) }
                     )
                 }
             }
